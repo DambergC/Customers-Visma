@@ -5,7 +5,7 @@ $bigram = 'Visma'
 $Today = (get-date -Format yyyyMMdd)
 
 # Services to check
-$services = "Ciceron Server Manager","PersonecPBatchManager","ersonec P utdata export Import Service","RSPFlexService"
+$services = "Ciceron Server Manager","PersonecPBatchManager","Personec P utdata export Import Service","RSPFlexService"
 
 # Array to save data
 $data = @()
