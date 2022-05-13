@@ -20,8 +20,9 @@
    Author: Christian Damberg
    Website: https://www.damberg.org
    Email: christian@damberg.org
-   Modified date: 2022-04-22
+   Modified date: 2022-05-12
    Version 1.0 - First release
+   Version 1.1 - Updated step inventory to extract appool settings
    
 #>
 
