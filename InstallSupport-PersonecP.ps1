@@ -7,14 +7,14 @@
    Get data about services status before update
    Get info about .net 4.8
 .EXAMPLE
-   Pre-InstallPersonec_P.ps1 -backuponly
+   InstallSupport-PersonecP.ps1 -backup
    Runs backup of folders 
 .EXAMPLE
-   Set-BGInfo.ps1 -TxtOnly
+   InstallSupport-PersonecP.ps1 -Inventory
 .EXAMPLE
-   Set-BGInfo.ps1 -ShutdownSrvOnly
+   InstallSupport-PersonecP.ps1 -ShutdownServices
 .EXAMPLE
-   Set-BGInfo.ps1 -All
+   Set-BGInfo.ps1 -CopyReports
 .NOTES
    Filename: Pre-InstallPersonec_P.ps1
    Author: Christian Damberg
@@ -44,7 +44,7 @@
 # Variables & arrays
 
     #$bigram = read-host 'Bigram?'
-    $bigram = 'Visma'
+    $bigram = 'HAEDAT'
     
     # Todays date (used with backupfolder and Pre-Check txt file
     $Today = (get-date -Format yyyyMMdd)
@@ -78,6 +78,8 @@
       $Line = "$Stamp $Level $Message"
       "$Stamp $Level $Message" | Out-File -Encoding utf8 $logfile -Append
       }
+
+      write-log -Level INFO -Message "Running script"
 #------------------------------------------------#
 # Service and web.config
 
@@ -166,8 +168,9 @@ if ($ShutdownServices -eq $true)
     }
 
 #------------------------------------------------#
-# Copy customermade reports
-
+<# Copy customermade reports
+if ($CopyReports -eq $true)
+    {
 # Personec P web
     $Folder1path = "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt"
     $Folder2path = "D:\Visma\Wwwroot\VISMA\ppp\Personec_P_web\Lon\cr\rpt"
@@ -209,3 +212,5 @@ Get-ChildItem -Path $Folder1Path -Recurse | Where-Object {
         write-log -Level INFO -Message "Copy $_. to $dest"
     }
 }
+}
+#>
