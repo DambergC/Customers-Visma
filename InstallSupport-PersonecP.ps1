@@ -90,7 +90,7 @@ if ($Inventory -eq $true)
     foreach ($Service in $Services)
     {
         $InfoOnService = Get-WmiObject Win32_Service | where Name -eq $Service | Select-Object name,startname,state,Startmode -ErrorAction SilentlyContinue
-        Write-Log -Level INFO -Message "Checking status for $service "
+        #Write-Log -Level INFO -Message "Checking status for $service "
         $data += $InfoOnService
     }
     
@@ -141,12 +141,12 @@ if ($Inventory -eq $true)
 # Copy to backup
 if ($Backup -eq $true)
     {
-       write-log -Level INFO -Message "Start copy from Programs to backup"
+       #write-log -Level INFO -Message "Start copy from Programs to backup"
        copy-item D:\visma\Programs -Destination $PSScriptRoot\$today\Programs -Recurse -Exclude *.log -Verbose
-       write-log -Level INFO -Message "Finished copy from Programs to backup"
-       write-log -Level INFO -Message "Start copy from WWWroot to backup"
+       #write-log -Level INFO -Message "Finished copy from Programs to backup"
+       #write-log -Level INFO -Message "Start copy from WWWroot to backup"
        copy-item D:\visma\Wwwroot -Destination $PSScriptRoot\$Today\Wwwroot -Recurse -Exclude *.log -Verbose
-       write-log -Level INFO -Message "Finished copy from WWWroot to backup" 
+       #write-log -Level INFO -Message "Finished copy from WWWroot to backup" 
     }
 
 
@@ -157,12 +157,12 @@ if ($ShutdownServices -eq $true)
     {
         # Stop WWW site Bigram
         Stop-IISSite -Name $bigram -Verbose -Confirm:$false
-        Write-Log -Level INFO -Message "Stopped website for $bigram"
+        #Write-Log -Level INFO -Message "Stopped website for $bigram"
 
         foreach ($Service in $Services)
         {
             Stop-Service -Name $Service -Force -ErrorAction SilentlyContinue -Verbose
-            Write-Log -Level INFO -Message "Stopped $service if it was running"
+            #Write-Log -Level INFO -Message "Stopped $service if it was running"
             
         }
         
@@ -189,7 +189,7 @@ Get-ChildItem -Path $Folder1Path -Recurse | Where-Object {
         # Create destination path that contains folder structure
         $dest = $_.FullName.Replace($Folder1path, $Folder2path)
         Copy-Item -Path $_.FullName -Destination $dest -Verbose -Force
-        write-log -Level INFO -Message "Copy $_. to $dest"
+        #write-log -Level INFO -Message "Copy $_. to $dest"
     }
 }
 
@@ -210,7 +210,7 @@ Get-ChildItem -Path $Folder1Path -Recurse | Where-Object {
         # Create destination path that contains folder structure
         $dest = $_.FullName.Replace($Folder1path, $Folder2path)
         Copy-Item -Path $_.FullName -Destination $dest -Verbose -Force
-        write-log -Level INFO -Message "Copy $_. to $dest"
+        #write-log -Level INFO -Message "Copy $_. to $dest"
     }
 }
 }
