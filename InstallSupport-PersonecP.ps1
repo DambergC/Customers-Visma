@@ -49,6 +49,8 @@
     
     # Todays date (used with backupfolder and Pre-Check txt file
     $Today = (get-date -Format yyyyMMdd)
+
+    $time = (get-date -Format HH:MM:ss)
     
     # Services to check
     $services = "Ciceron Server Manager","PersonecPBatchManager","Personec P utdata export Import Service","RSPFlexService"
@@ -95,27 +97,46 @@ if ($Inventory -eq $true)
     }
     
     # Send data to file about services
-    $data | Out-File $PSScriptRoot\$today\Services_$Today.txt
+    $data | Out-File $PSScriptRoot\$today\Services_$Today.txt -Append
     
     # Check dotnet version installed and send to file
-    $dotnet = Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name version -EA 0 | Where { $_.PSChildName -Match '^(?!S)\p{L}'} | Select PSChildName, version | Sort-Object version -Descending | Out-File $PSScriptRoot\$today\DotNet_$today.txt
+    $dotnet = Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name version -EA 0 | Where { $_.PSChildName -Match '^(?!S)\p{L}'} | Select PSChildName, version | Sort-Object version -Descending | Out-File $PSScriptRoot\$today\DotNet_$today.txt -Append
    
-
+    ########################################
     # UserSSo check
+    
+    try {
     [XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\$bigram\Login\Web.config" -ErrorAction SilentlyContinue
-    $UseSSO.configuration.appSettings.add | out-file "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" 
+    $time | Out-File "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
+    $UseSSO.configuration.appSettings.add | out-file "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
+    }
+    catch
+    {
+     write-host "No webserver"
+    }
 
-    # PIA Batch check
+
+    #########################################
+    # Batch check
+
+    
     [XML]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
-    $Batch.configuration.appSettings.add | out-file "$PSScriptRoot\$today\Batch_$Today.txt"
+    $time | Out-File "$PSScriptRoot\$today\Batch_$Today.txt" -Append
+    $Batch.configuration.appSettings.add | out-file "$PSScriptRoot\$today\Batch_$Today.txt" -Append
 
 
     # PIA Webconfig check
     [XML]$PIAWEB = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
-    $PIAWEB.configuration.appSettings.add | out-file "$PSScriptRoot\$today\PIAWebconfig_$Today.txt"
+    $PIAWEB.configuration.appSettings.add | out-file "$PSScriptRoot\$today\PIAWebconfig_$Today.txt" -Append
 
+   
+   ####################################################################
     # AppPool check
+
+    try 
+    {
     $appPools = Get-WebConfiguration -Filter '/system.applicationHost/applicationPools/add'
+
     $appPoolResultat = [System.Collections.ArrayList]::new()
     foreach($appPool in $appPools)
     {
@@ -134,7 +155,20 @@ if ($Inventory -eq $true)
 
 
     }
-    $appPoolResultat |out-file "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt"
+
+    $appPoolResultat |out-file "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
+    }
+
+    catch {
+    
+        write-host "no webserver"
+
+    }
+
+    #################################    
+    
+
+    
 
 }
 
