@@ -45,13 +45,13 @@
 # Variables & arrays
 
     #$bigram = read-host 'Bigram?'
-    $bigram = 'HAEDAT'
+    $bigram = 'HAEDAK'
     
     # Todays date (used with backupfolder and Pre-Check txt file
     $Today = (get-date -Format yyyyMMdd)
     
     # Services to check
-    $services = "Ciceron Server Manager","PersonecPBatchManager","Personec P utdata export Import Service","RSPFlexService","World Wide Web Publishing Service"
+    $services = "Ciceron Server Manager","PersonecPBatchManager","Personec P utdata export Import Service","RSPFlexService"
     
     # Array to save data
     $data = @()
@@ -104,6 +104,11 @@ if ($Inventory -eq $true)
     # UserSSo check
     [XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\$bigram\Login\Web.config" -ErrorAction SilentlyContinue
     $UseSSO.configuration.appSettings.add | out-file "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" 
+
+    # PIA Batch check
+    [XML]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
+    $Batch.configuration.appSettings.add | out-file "$PSScriptRoot\$today\Batch_$Today.txt"
+
 
     # PIA Webconfig check
     [XML]$PIAWEB = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
