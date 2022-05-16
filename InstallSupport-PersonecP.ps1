@@ -51,7 +51,7 @@
     $Today = (get-date -Format yyyyMMdd)
     
     # Services to check
-    $services = "Ciceron Server Manager","PersonecPBatchManager","Personec P utdata export Import Service","RSPFlexService"
+    $services = "Ciceron Server Manager","PersonecPBatchManager","Personec P utdata export Import Service","RSPFlexService","World Wide Web Publishing Service"
     
     # Array to save data
     $data = @()
@@ -80,7 +80,7 @@
       "$Stamp $Level $Message" | Out-File -Encoding utf8 $logfile -Append
       }
 
-      write-log -Level INFO -Message "Running script"
+      #write-log -Level INFO -Message "Running script"
 #------------------------------------------------#
 # Service and web.config
 
