@@ -45,7 +45,7 @@
 # Variables & arrays
 
     #$bigram = read-host 'Bigram?'
-    $bigram = 'HAEDAK'
+    $bigram = 'TINYDT'
     
     # Todays date (used with backupfolder and Pre-Check txt file
     $Today = (get-date -Format yyyyMMdd)
@@ -53,7 +53,7 @@
     $time = (get-date -Format HH:MM:ss)
     
     # Services to check
-    $services = "Ciceron Server Manager","PersonecPBatchManager","Personec P utdata export Import Service","RSPFlexService"
+    $services = "Ciceron Server Manager","PersonecPBatchManager","Personec P utdata export Import Service","RSPFlexService","World Wide Web Publishing Service"
     
     # Array to save data
     $data = @()
@@ -82,6 +82,52 @@
       "$Stamp $Level $Message" | Out-File -Encoding utf8 $logfile -Append
       }
 
+
+      function Get-IniFile 
+{  
+    param(  
+        [parameter(Mandatory = $true)] [string] $filePath  
+    )  
+    
+    $anonymous = "NoSection"
+  
+    $ini = @{}  
+    switch -regex -file $filePath  
+    {  
+        "^\[(.+)\]$" # Section  
+        {  
+            $section = $matches[1]  
+            $ini[$section] = @{}  
+            $CommentCount = 0  
+        }  
+
+        "^(;.*)$" # Comment  
+        {  
+            if (!($section))  
+            {  
+                $section = $anonymous  
+                $ini[$section] = @{}  
+            }  
+            $value = $matches[1]  
+            $CommentCount = $CommentCount + 1  
+            $name = "Comment" + $CommentCount  
+            $ini[$section][$name] = $value  
+        }   
+
+        "(.+?)\s*=\s*(.*)" # Key  
+        {  
+            if (!($section))  
+            {  
+                $section = $anonymous  
+                $ini[$section] = @{}  
+            }  
+            $name,$value = $matches[1..2]  
+            $ini[$section][$name] = $value  
+        }  
+    }  
+
+    return $ini  
+} 
       #write-log -Level INFO -Message "Running script"
 #------------------------------------------------#
 # Service and web.config
@@ -97,7 +143,8 @@ if ($Inventory -eq $true)
     }
     
     # Send data to file about services
-    $data | Out-File $PSScriptRoot\$today\Services_$Today.txt -Append
+    $time | Out-File "$PSScriptRoot\$today\Services_$Today.txt" -Append
+    $data | Out-File "$PSScriptRoot\$today\Services_$Today.txt" -Append
     
     # Check dotnet version installed and send to file
     $dotnet = Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name version -EA 0 | Where { $_.PSChildName -Match '^(?!S)\p{L}'} | Select PSChildName, version | Sort-Object version -Descending | Out-File $PSScriptRoot\$today\DotNet_$today.txt -Append
@@ -115,6 +162,33 @@ if ($Inventory -eq $true)
      write-host "No webserver"
     }
 
+    #######################################
+    # PStid.ini
+
+    $pstid = Get-IniFile -filePath "$PSScriptRoot\$today\programs\$bigram\ppp\Personec_p\pstid.ini"
+    $psres = $pstid.styr
+    try {
+    $pstid = Get-Content "$PSScriptRoot\$today\programs\$bigram\ppp\Personec_p\pstid.ini" -ErrorAction SilentlyContinue
+    $time | Out-File "$PSScriptRoot\$today\pstid_$Today.txt" -Append
+    $psres | out-file "$PSScriptRoot\$today\pstid_$Today.txt" -Append
+    }
+    catch
+    {
+     write-host "No webserver"
+    }
+
+    ########################################
+    # Login check
+    
+    try {
+    [XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\$bigram\Login\Web.config" -ErrorAction SilentlyContinue
+    $time | Out-File "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
+    $UseSSO.configuration.appSettings.add | out-file "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
+    }
+    catch
+    {
+     write-host "No webserver"
+    }
 
     #########################################
     # Batch check
