@@ -165,23 +165,28 @@ if ($Inventory -eq $true)
     #######################################
     # PStid.ini
 
-    $pstid = Get-IniFile -filePath "$PSScriptRoot\$today\programs\$bigram\ppp\Personec_p\pstid.ini"
-    $psres = $pstid.styr
-    try {
-    $pstid = Get-Content "$PSScriptRoot\$today\programs\$bigram\ppp\Personec_p\pstid.ini" -ErrorAction SilentlyContinue
-    $time | Out-File "$PSScriptRoot\$today\pstid_$Today.txt" -Append
-    $psres | out-file "$PSScriptRoot\$today\pstid_$Today.txt" -Append
-    }
-    catch
+    $pathPStid = (Test-Path "$PSScriptRoot\$today\programs\$bigram\ppp\Personec_p\pstid.ini")
+    
+    if ($pathPStid -eq $true)
+
     {
-     write-host "No app"
+        $pstid = Get-Content "$PSScriptRoot\$today\programs\$bigram\ppp\Personec_p\pstid.ini"
+        $psres = $pstid.styr
+        $time | Out-File "$PSScriptRoot\$today\pstid_$Today.txt" -Append
+        $psres | out-file "$PSScriptRoot\$today\pstid_$Today.txt" -Append
+    }
+   
+    else
+
+    {
+        write-host "No PSTID"
     }
 
     ########################################
     # Login check
     
     try {
-    [XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\$bigram\Login\Web.config" -ErrorAction SilentlyContinue
+    [XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\$bigram\Login\Web.config"
     $time | Out-File "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
     $UseSSO.configuration.appSettings.add | out-file "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
     }
@@ -190,6 +195,20 @@ if ($Inventory -eq $true)
      write-host "No sso"
     }
 
+    }
+
+        ########################################
+    # Egna rapporter check
+    
+    try {
+    $rapport = Get-ChildItem -Recurse "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt"
+    $time | Out-File "$PSScriptRoot\$today\Reports_$Today.txt" -Append
+    $rapport | out-file "$PSScriptRoot\$today\reports_$Today.txt" -Append
+    }
+    catch
+    {
+     write-host "No reports"
+    }
     #########################################
     # Batch check
 
@@ -250,10 +269,6 @@ if ($Inventory -eq $true)
 
     #################################    
     
-
-    
-
-}
 
     
 
