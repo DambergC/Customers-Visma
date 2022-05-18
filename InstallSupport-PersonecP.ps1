@@ -174,7 +174,7 @@ if ($Inventory -eq $true)
     }
     catch
     {
-     write-host "No webserver"
+     write-host "No app"
     }
 
     ########################################
@@ -187,22 +187,31 @@ if ($Inventory -eq $true)
     }
     catch
     {
-     write-host "No webserver"
+     write-host "No sso"
     }
 
     #########################################
     # Batch check
 
-    
+    try{
     [XML]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
     $time | Out-File "$PSScriptRoot\$today\Batch_$Today.txt" -Append
     $Batch.configuration.appSettings.add | out-file "$PSScriptRoot\$today\Batch_$Today.txt" -Append
+    }
+    catch
+    {
+        write-host "No batch"
+    }
 
-
+    try{
     # PIA Webconfig check
     [XML]$PIAWEB = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
     $PIAWEB.configuration.appSettings.add | out-file "$PSScriptRoot\$today\PIAWebconfig_$Today.txt" -Append
-
+    }
+    catch
+    {
+        WRITE-HOST "No PIA"
+    }
    
    ####################################################################
     # AppPool check
@@ -235,7 +244,7 @@ if ($Inventory -eq $true)
 
     catch {
     
-        write-host "no webserver"
+        write-host "no app-pool"
 
     }
 
