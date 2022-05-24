@@ -45,7 +45,7 @@
 # Variables & arrays
 
     #$bigram = read-host 'Bigram?'
-    $bigram = 'TINYDT'
+    $bigram = 'VAEOET'
     
     # Todays date (used with backupfolder and Pre-Check txt file
     $Today = (get-date -Format yyyyMMdd)
@@ -162,6 +162,19 @@ if ($Inventory -eq $true)
      write-host "No webserver"
     }
 
+    ######################################
+    # Befolkning
+
+        try {
+    [XML]$UseBEfolk = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\web.config" -ErrorAction SilentlyContinue
+    $time | Out-File "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
+    $UseBEfolk.configuration.appSettings.add | out-file "$PSScriptRoot\$today\Befolk_Check_$Today.txt" -Append
+    }
+    catch
+    {
+     write-host "No webserver"
+    }
+
     #######################################
     # PStid.ini
 
@@ -170,7 +183,7 @@ if ($Inventory -eq $true)
     if ($pathPStid -eq $true)
 
     {
-        $pstid = Get-Content "$PSScriptRoot\$today\programs\$bigram\ppp\Personec_p\pstid.ini"
+        $pstid = Get-IniFile "$PSScriptRoot\$today\programs\$bigram\ppp\Personec_p\pstid.ini"
         $psres = $pstid.styr
         $time | Out-File "$PSScriptRoot\$today\pstid_$Today.txt" -Append
         $psres | out-file "$PSScriptRoot\$today\pstid_$Today.txt" -Append
