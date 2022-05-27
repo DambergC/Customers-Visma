@@ -10,7 +10,9 @@
    InstallSupport-PersonecP.ps1 -backup
    Runs backup of folders 
 .EXAMPLE
-   InstallSupport-PersonecP.ps1 -Inventory
+   InstallSupport-PersonecP.ps1 -InventorySystem
+.EXAMPLE
+   InstallSupport-PersonecP.ps1 -InventoryConfig
 .EXAMPLE
    InstallSupport-PersonecP.ps1 -ShutdownServices
 .EXAMPLE
@@ -33,7 +35,9 @@
     [Parameter(Mandatory=$false)]
     [Switch]$Backup,
     [Parameter(Mandatory=$false)]
-    [Switch]$Inventory,
+    [Switch]$InventoryConfig,
+    [Parameter(Mandatory=$false)]
+    [Switch]$InventorySystem,
     [Parameter(Mandatory=$false)]
     [Switch]$ShutdownServices,
     [Parameter(Mandatory=$false)]
@@ -45,7 +49,7 @@
 # Variables & arrays
 
     #$bigram = read-host 'Bigram?'
-    $bigram = 'VAEOET'
+    $bigram = 'KUMLAK'
     
     # Todays date (used with backupfolder and Pre-Check txt file
     $Today = (get-date -Format yyyyMMdd)
@@ -132,7 +136,15 @@
 #------------------------------------------------#
 # Service and web.config
 
-if ($Inventory -eq $true)
+$folder = (test-path -Path "D:\visma\Install\Backup\$Today\")
+
+if ($folder -eq $false)
+{
+    New-Item -Path "d:\visma\install\backup\" -ItemType Directory  -Name $Today
+}
+
+
+if ($InventorySystem -eq $true)
 {
    # Check and document services
     foreach ($Service in $Services)
@@ -149,31 +161,43 @@ if ($Inventory -eq $true)
     # Check dotnet version installed and send to file
     $dotnet = Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name version -EA 0 | Where { $_.PSChildName -Match '^(?!S)\p{L}'} | Select PSChildName, version | Sort-Object version -Descending | Out-File $PSScriptRoot\$today\DotNet_$today.txt -Append
    
+}
+
+if ($InventoryConfig -eq $true)
+{
+
     ########################################
     # UserSSo check
-    
-    try {
-    [XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\$bigram\Login\Web.config" -ErrorAction SilentlyContinue
-    $time | Out-File "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
-    $UseSSO.configuration.appSettings.add | out-file "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
-    }
-    catch
-    {
-     write-host "No webserver"
-    }
+    $UseSSOBackup = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$bigram\$bigram\Login\Web.config")
+
+    if ($UseSSOBackup -eq $true)
+
+        {
+        [XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\$bigram\Login\Web.config" -ErrorAction SilentlyContinue
+        $time | Out-File "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
+        $UseSSO.configuration.appSettings.add | out-file "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
+        }
+    Else
+        {
+         write-host "No web.config for UseSSO in backup"
+        }
 
     ######################################
     # Befolkning
 
-        try {
-    [XML]$UseBEfolk = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\web.config" -ErrorAction SilentlyContinue
-    $time | Out-File "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
-    $UseBEfolk.configuration.appSettings.add | out-file "$PSScriptRoot\$today\Befolk_Check_$Today.txt" -Append
-    }
-    catch
-    {
-     write-host "No webserver"
-    }
+    $befolkningBackup = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\web.config")
+
+    if ($befolkningBackup -eq $true)
+
+        {
+        [XML]$UseBEfolk = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\web.config" -ErrorAction SilentlyContinue
+        $time | Out-File "$PSScriptRoot\$today\Befolk_Check_$Today.txt" -Append
+        $UseBEfolk.configuration.appSettings.add | out-file "$PSScriptRoot\$today\Befolk_Check_$Today.txt" -Append
+        }
+    else
+        {
+         write-host "No web.config for befolkning in backup"
+        }
 
     #######################################
     # PStid.ini
@@ -182,107 +206,97 @@ if ($Inventory -eq $true)
     
     if ($pathPStid -eq $true)
 
-    {
+        {
         $pstid = Get-IniFile "$PSScriptRoot\$today\programs\$bigram\ppp\Personec_p\pstid.ini"
         $psres = $pstid.styr
         $time | Out-File "$PSScriptRoot\$today\pstid_$Today.txt" -Append
         $psres | out-file "$PSScriptRoot\$today\pstid_$Today.txt" -Append
-    }
-   
-    else
-
-    {
+        }
+   else
+        {
         write-host "No PSTID"
-    }
+        }
 
     ########################################
-    # Login check
-    
-    try {
-    [XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\$bigram\Login\Web.config"
-    $time | Out-File "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
-    $UseSSO.configuration.appSettings.add | out-file "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
-    }
-    catch
-    {
-     write-host "No sso"
-    }
-
-    }
-
-        ########################################
     # Egna rapporter check
-    
-    try {
-    $rapport = Get-ChildItem -Recurse "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt"
-    $time | Out-File "$PSScriptRoot\$today\Reports_$Today.txt" -Append
-    $rapport | out-file "$PSScriptRoot\$today\reports_$Today.txt" -Append
-    }
-    catch
-    {
-     write-host "No reports"
-    }
+
+    $ReportsBackup = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt")
+
+    if ($ReportsBackup -eq $true)
+        {
+        $rapport = Get-ChildItem -Recurse "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt"
+        $time | Out-File "$PSScriptRoot\$today\Reports_$Today.txt" -Append
+        $rapport | out-file "$PSScriptRoot\$today\reports_$Today.txt" -Append
+        }
+else 
+        {
+         write-host "No reports in backup"
+        }
     #########################################
     # Batch check
+    $BatchBackup = (Test-Path "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config")
 
-    try{
-    [XML]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
-    $time | Out-File "$PSScriptRoot\$today\Batch_$Today.txt" -Append
-    $Batch.configuration.appSettings.add | out-file "$PSScriptRoot\$today\Batch_$Today.txt" -Append
-    }
-    catch
-    {
+    if ($BatchBackup -eq $true)
+        {
+        [XML]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
+        $time | Out-File "$PSScriptRoot\$today\Batch_$Today.txt" -Append
+        $Batch.configuration.appSettings.add | out-file "$PSScriptRoot\$today\Batch_$Today.txt" -Append
+        }
+    Else
+        {
         write-host "No batch"
-    }
+        }
 
-    try{
+    #########################################
     # PIA Webconfig check
-    [XML]$PIAWEB = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
-    $PIAWEB.configuration.appSettings.add | out-file "$PSScriptRoot\$today\PIAWebconfig_$Today.txt" -Append
-    }
-    catch
-    {
-        WRITE-HOST "No PIA"
-    }
+      $PiaBackup = (Test-Path "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config")
+
+    if ($PiaBackup -eq $true)
+        {
+        [XML]$PIAWEB = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
+        $time | Out-File "$PSScriptRoot\$today\PIAWebconfig_$Today.txt" -Append
+        $PIAWEB.configuration.appSettings.add | out-file "$PSScriptRoot\$today\PIAWebconfig_$Today.txt" -Append
+        }
+    Else
+        {
+        WRITE-HOST "No web.config for PIA in backup"
+        }
    
    ####################################################################
     # AppPool check
 
     try 
-    {
-    $appPools = Get-WebConfiguration -Filter '/system.applicationHost/applicationPools/add'
+        {
+        $appPools = Get-WebConfiguration -Filter '/system.applicationHost/applicationPools/add'
+        $appPoolResultat = [System.Collections.ArrayList]::new()
+        
+        foreach($appPool in $appPools)
+        {
+            if($appPool.ProcessModel.identityType -eq "SpecificUser")
+                {
+                #Write-Host $appPool.Name -ForegroundColor Green -NoNewline
+                #Write-Host " -"$appPool.ProcessModel.UserName"="$appPool.ProcessModel.Password
+                #Write-Host " -"$appPool.ProcessModel.UserName
 
-    $appPoolResultat = [System.Collections.ArrayList]::new()
-    foreach($appPool in $appPools)
-    {
-        if($appPool.ProcessModel.identityType -eq "SpecificUser")
-            {
-            #Write-Host $appPool.Name -ForegroundColor Green -NoNewline
-            #Write-Host " -"$appPool.ProcessModel.UserName"="$appPool.ProcessModel.Password
-            #Write-Host " -"$appPool.ProcessModel.UserName
-
-            [void]$appPoolResultat.add([PSCustomObject]@{
-            Name = $appPool.name
-            User = $appPool.ProcessModel.UserName
-            #Password = $appPool.ProcessModel.Password
-            })
-            }
-
-
+                [void]$appPoolResultat.add([PSCustomObject]@{
+                Name = $appPool.name
+                User = $appPool.ProcessModel.UserName
+                #Password = $appPool.ProcessModel.Password
+                })
+                }
+        }
+        $time | Out-File "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
+        $appPoolResultat |out-file "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
     }
 
-    $appPoolResultat |out-file "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
-    }
-
-    catch {
-    
+    catch 
+        {
         write-host "no app-pool"
-
-    }
+        }
 
     #################################    
     
-
+    }
     
 
 #------------------------------------------------#
@@ -291,12 +305,8 @@ if ($Inventory -eq $true)
 # Copy to backup
 if ($Backup -eq $true)
     {
-       #write-log -Level INFO -Message "Start copy from Programs to backup"
-       copy-item D:\visma\Programs -Destination $PSScriptRoot\$today\Programs -Recurse -Exclude *.log -Verbose
-       #write-log -Level INFO -Message "Finished copy from Programs to backup"
-       #write-log -Level INFO -Message "Start copy from WWWroot to backup"
-       copy-item D:\visma\Wwwroot -Destination $PSScriptRoot\$Today\Wwwroot -Recurse -Exclude *.log -Verbose
-       #write-log -Level INFO -Message "Finished copy from WWWroot to backup" 
+        robocopy D:\Visma\Wwwroot\ D:\Visma\Install\backup\$Today\wwwroot\ /e /xf *.log
+        robocopy D:\Visma\Programs\ D:\Visma\Install\backup\$Today\programs\ /e /xf *.log
     }
 
 
