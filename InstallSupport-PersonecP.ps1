@@ -305,7 +305,7 @@ else
 # Copy to backup
 if ($Backup -eq $true)
     {
-        robocopy D:\Visma\Wwwroot\ D:\Visma\Install\backup\$Today\wwwroot\ /e /xf *.log
+        robocopy D:\Visma\Wwwroot\ D:\Visma\Install\backup\$Today\wwwroot\ /e /xf *.log, *.svclog
         robocopy D:\Visma\Programs\ D:\Visma\Install\backup\$Today\programs\ /e /xf *.log
     }
 
