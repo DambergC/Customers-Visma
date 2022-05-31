@@ -49,7 +49,7 @@
 # Variables & arrays
 
     #$bigram = read-host 'Bigram?'
-    $bigram = 'KUMLAK'
+    $bigram = 'ASKNDK'
     
     # Todays date (used with backupfolder and Pre-Check txt file
     $Today = (get-date -Format yyyyMMdd)
@@ -57,7 +57,7 @@
     $time = (get-date -Format HH:MM:ss)
     
     # Services to check
-    $services = "Ciceron Server Manager","PersonecPBatchManager","Personec P utdata export Import Service","RSPFlexService","World Wide Web Publishing Service"
+    $services = "Ciceron Server Manager","PersonecPBatchManager","Personec P utdata export Import Service","RSPFlexService","W3SVC","World Wide Web Publishing Service"
     
     # Array to save data
     $data = @()
@@ -180,6 +180,23 @@ if ($InventoryConfig -eq $true)
     Else
         {
          write-host "No web.config for UseSSO in backup"
+        }
+
+
+ ########################################
+    # förhandling check
+    $forhandling = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$bigram\pfh\services\Web.config")
+
+    if ($forhandling -eq $true)
+
+        {
+        [XML]$forhandlingsettings = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\pfh\services\Web.config" -ErrorAction SilentlyContinue
+        $time | Out-File "$PSScriptRoot\$today\forhandling_$Today.txt" -Append
+        $forhandlingsettings.configuration.appSettings.add | out-file "$PSScriptRoot\$today\forhandling_$Today.txt" -Append
+        }
+    Else
+        {
+         write-host "No web.config for forhandling in backup"
         }
 
     ######################################
