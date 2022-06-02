@@ -237,18 +237,31 @@ if ($InventoryConfig -eq $true)
     ########################################
     # Egna rapporter check
 
-    $ReportsBackup = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt")
+    $ReportsBackupPPP = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt")
 
-    if ($ReportsBackup -eq $true)
+    if ($ReportsBackupPPP -eq $true)
         {
         $rapport = Get-ChildItem -Recurse "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt"
-        $time | Out-File "$PSScriptRoot\$today\Reports_$Today.txt" -Append
-        $rapport | out-file "$PSScriptRoot\$today\reports_$Today.txt" -Append
+        $time | Out-File "$PSScriptRoot\$today\ReportsPPP_$Today.txt" -Append
+        $rapport | out-file "$PSScriptRoot\$today\reportsPPP_$Today.txt" -Append
         }
 else 
         {
-         write-host "No reports in backup"
+         write-host "No reports for PPP in backup"
         }
+
+      $ReportsBackupAG = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_AG\CR\rpt")
+
+    if ($ReportsBackupAG -eq $true)
+        {
+        $rapport = Get-ChildItem -Recurse "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_AG\CR\rpt"
+        $time | Out-File "$PSScriptRoot\$today\ReportsAG_$Today.txt" -Append
+        $rapport | out-file "$PSScriptRoot\$today\reportsAG_$Today.txt" -Append
+        }
+else 
+        {
+         write-host "No reports for AG in backup"
+        }        
     #########################################
     # Batch check
     $BatchBackup = (Test-Path "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config")
