@@ -49,7 +49,7 @@
 # Variables & arrays
 
     #$bigram = read-host 'Bigram?'
-    $bigram = 'ASKNDK'
+    $bigram = 'LEKRGK'
     
     # Todays date (used with backupfolder and Pre-Check txt file
     $Today = (get-date -Format yyyyMMdd)
@@ -161,6 +161,16 @@ if ($InventorySystem -eq $true)
     # Check dotnet version installed and send to file
     $dotnet = Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name version -EA 0 | Where { $_.PSChildName -Match '^(?!S)\p{L}'} | Select PSChildName, version | Sort-Object version -Descending | Out-File $PSScriptRoot\$today\DotNet_$today.txt -Append
    
+   # get installed software
+
+   $installed = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
+                    'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*',
+                    'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
+                    'HKCU:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction Ignore | Where-Object publisher -eq 'Visma' | Select-Object -Property DisplayName, DisplayVersion, Publisher | Sort-Object -Property DisplayName
+   $time | Out-File "$PSScriptRoot\$today\InstalledSoftware_$Today.txt" -Append
+   $installed | Out-File "$PSScriptRoot\$today\InstalledSoftware_$Today.txt" -Append
+
+
 }
 
 if ($InventoryConfig -eq $true)
