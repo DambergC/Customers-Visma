@@ -243,7 +243,8 @@ if ($InventoryConfig -eq $true)
         'NeptunePwd' = $NeptunePwd
                     }
      
-        $NeptuneData | out-file "$PSScriptRoot\$today\Neptune_$Today.txt" -Append
+        $NeptuneData | out-file "$PSScriptRoot\$today\Neptune_$Today.txt"
+        $NeptuneData | Out-File "$PSScriptRoot\$today\Personec_P.txt"
         }
    else
         {
@@ -291,11 +292,13 @@ else
         $batchpwd = $batch.configuration.appSettings.add |Where-Object {$_.key -eq 'SysPassword'} | Select-Object value
 
         $batchData = @{
-        'Batchuser' = $batchuser.value
         'BatchPassword' = $batchpwd.value
+        'Batchuser' = $batchuser.value
+        
         }
 
         $batchData | Out-File "$PSScriptRoot\$today\Batch_$Today.txt"
+        $batchData | Out-File "$PSScriptRoot\$today\Personec_P.txt" -Append
         
         }
     Else
