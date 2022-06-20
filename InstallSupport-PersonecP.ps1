@@ -49,7 +49,7 @@
 # Variables & arrays
 
     #$bigram = read-host 'Bigram?'
-    $bigram = 'LEKRGK'
+    $bigram = 'VISMA'
     
     # Todays date (used with backupfolder and Pre-Check txt file
     $Today = (get-date -Format yyyyMMdd)
@@ -235,9 +235,15 @@ if ($InventoryConfig -eq $true)
 
         {
         $pstid = Get-IniFile "$PSScriptRoot\$today\programs\$bigram\ppp\Personec_p\pstid.ini"
-        $psres = $pstid.styr
-        $time | Out-File "$PSScriptRoot\$today\pstid_$Today.txt" -Append
-        $psres | out-file "$PSScriptRoot\$today\pstid_$Today.txt" -Append
+        $NeptuneUser = $PSTID.styr.NeptuneUser
+        $NeptunePwd = $PSTID.styr.neptunepassword
+        
+        $NeptuneData = @{
+        'NeptuneUser' = $NeptuneUser
+        'NeptunePwd' = $NeptunePwd
+                    }
+     
+        $NeptuneData | out-file "$PSScriptRoot\$today\Neptune_$Today.txt" -Append
         }
    else
         {
@@ -278,9 +284,19 @@ else
 
     if ($BatchBackup -eq $true)
         {
-        [XML]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
-        $time | Out-File "$PSScriptRoot\$today\Batch_$Today.txt" -Append
-        $Batch.configuration.appSettings.add | out-file "$PSScriptRoot\$today\Batch_$Today.txt" -Append
+        [xml]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue 
+
+
+        $batchuser = $Batch.configuration.appSettings.add |Where-Object {$_.key -eq 'sysuser'} | Select-Object value
+        $batchpwd = $batch.configuration.appSettings.add |Where-Object {$_.key -eq 'SysPassword'} | Select-Object value
+
+        $batchData = @{
+        'Batchuser' = $batchuser.value
+        'BatchPassword' = $batchpwd.value
+        }
+
+        $batchData | Out-File "$PSScriptRoot\$today\Batch_$Today.txt"
+        
         }
     Else
         {
@@ -289,13 +305,26 @@ else
 
     #########################################
     # PIA Webconfig check
-      $PiaBackup = (Test-Path "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config")
+      $PiaBackup = (Test-Path "$PSScriptRoot\$today\wwwroot\$bigram\PIA\PUF_IA Module\web.config")
 
     if ($PiaBackup -eq $true)
         {
-        [XML]$PIAWEB = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
-        $time | Out-File "$PSScriptRoot\$today\PIAWebconfig_$Today.txt" -Append
-        $PIAWEB.configuration.appSettings.add | out-file "$PSScriptRoot\$today\PIAWebconfig_$Today.txt" -Append
+        [XML]$PIA = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
+
+        $PIA_PPP_USER = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'P.Database.User'} | Select-Object value
+        $PIA_PPP_PWD = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'P.Database.Password'} | Select-Object value
+        $PIA_PUD_USER = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'U.Database.User'} | Select-Object value
+        $PIA_PUD_PWD = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'U.Database.Password'} | Select-Object value
+        $PIA_SRV_USER = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'ServiceUser.Login'} | Select-Object value
+        $PIA_SRV_PWD = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'ServiceUser.secret'} | Select-Object value
+        
+        $PIADATA = @{
+        'PPP' = $PIA_PPP_USER.value,$PIA_PPP_PWD.value
+        'PUD' = $PIA_PUD_USER.value,$PIA_PUD_PWD.value
+        'PFH' = $PIA_PFH_USER.value,$PIA_PFH_PWD.value
+        'Service' = $PIA_SRV_USER.value,$PIA_SRV_PWD.value
+                    }
+        $PIADATA | out-file "$PSScriptRoot\$today\PIA_$Today.txt"
         }
     Else
         {
