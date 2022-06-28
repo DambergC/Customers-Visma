@@ -41,7 +41,9 @@
     [Parameter(Mandatory=$false)]
     [Switch]$ShutdownServices,
     [Parameter(Mandatory=$false)]
-    [Switch]$CopyReports
+    [Switch]$CopyReports,
+    [Parameter(Mandatory=$false)]
+    [Switch]$FlyttaMallar
     )
 
 
@@ -447,3 +449,15 @@ Get-ChildItem -Path $Folder1Path -Recurse | Where-Object {
 }
 }
 #>
+#------------------------------------------------#
+# Move Template folders
+if ($FlyttaMallar -eq $true)
+    {
+        Remove-Item -Path "D:\Visma\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt\*"
+        Remove-Item -Path "D:\Visma\wwwroot\$bigram\PPP\Personec_AG\CR\rpt\*"
+        Write-Output("Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt D:\Visma\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt")
+        Write-Output("Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_AG\CR\rpt D:\Visma\wwwroot\$bigram\PPP\Personec_AG\CR\rpt")
+    }
+
+
+#------------------------------------------------#
