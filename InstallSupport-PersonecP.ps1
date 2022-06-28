@@ -43,7 +43,9 @@
     [Parameter(Mandatory=$false)]
     [Switch]$CopyReports,
     [Parameter(Mandatory=$false)]
-    [Switch]$FlyttaMallar
+    [Switch]$FlyttaMallar,
+    [Parameter(Mandatory=$false)]
+    [Switch]$SqlQuery
     )
 
 
@@ -66,6 +68,14 @@
 
     $logfile = "$PSScriptRoot\$today\Pre-InstallPersonec_P_$today.log"
 
+    #Long DB Version
+    $long_db_version = 22040
+
+    #Short DB Version
+    $short_db_version = 2240
+
+    #DB script path
+    $db_script_path = "D:\Visma"
 #------------------------------------------------#
 # Functions in script
    
@@ -461,3 +471,53 @@ if ($FlyttaMallar -eq $true)
 
 
 #------------------------------------------------#
+# Get Sql Query
+if ($SqlQuery -eq $true)
+    {
+        $query = "##Personic P" +    
+        "`rUSE $bigram" + "_PPP" +
+        "`rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997" + 
+        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPu$short_db_version.sql" +
+            
+        "`n`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPview.sql" +
+        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPproc.sql" +
+        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPtriggers.sql" +
+        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPgra.sql" +
+        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\msDBUPDATERIGHTSP.sql" +
+        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\PPPds_Feltexter.sql" +
+            
+        "`n`rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997" +
+        "`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc" +
+        "`r#------------------------------------------------#" +
+        "`n`r#Personic U" +
+        "`rUSE $bigram" + "_PUD" +
+        "`rSELECT * FROM dbo.PU_VERSIONSINFO" +
+        "`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUu$short_db_version.sql" +
+            
+        "`n`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUproc.sql" +
+        "`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUview.sql" +
+        "`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUgra.sql" +
+        "`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\msdbupdaterightsU.sql" +
+            
+        "`n`rSELECT * FROM dbo.PU_VERSIONSINFO" +
+        "`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc" +
+        "`r#------------------------------------------------#" +
+        "`n`r##Personic PFH" +
+            
+        "`rUSE $bigram" + "_PFH" +
+        "`rSELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997" +
+        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFu$short_db_version.sql" +
+            
+        "`n`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFproc.sql" +
+        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFview.sql" +
+        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFgra.sql" +
+        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\msDBUPDATERIGHTSF.sql" +
+        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\PFHds_Feltexter.sql" +
+            
+        "`n`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc"
+            
+        Out-File -FilePath $PSScriptRoot\SqlQuery.txt -Encoding Unicode -InputObject $query
+    }
+        
+#------------------------------------------------#
+        
