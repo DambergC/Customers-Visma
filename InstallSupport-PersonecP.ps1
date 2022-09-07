@@ -513,7 +513,8 @@ if ($SqlQuery -eq $true)
         "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFgra.sql" +
         "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\msDBUPDATERIGHTSF.sql" +
         "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\PFHds_Feltexter.sql" +
-            
+        
+        "`rSELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997" +
         "`n`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc"
             
         Out-File -FilePath $PSScriptRoot\SqlQuery.txt -Encoding Unicode -InputObject $query
