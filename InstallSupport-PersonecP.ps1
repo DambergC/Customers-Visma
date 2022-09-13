@@ -537,5 +537,5 @@ if ($SqlUsers -eq $true)
         "sp_change_users_login update_one,"+$BIGRAM+"_NeptuneAdmin,"+ $BIGRAM+"_NeptuneAdmin" +
         "sp_change_users_login update_one,"+$BIGRAM+"_NeptuneUser,"+$BIGRAM+"_NeptuneUser"
             
-        Out-File -FilePath $PSScriptRoot\SqlQuery.txt -Encoding Unicode -InputObject $sql_users
+        Out-File -FilePath $PSScriptRoot\SqlUsers.txt -Encoding Unicode -InputObject $sql_users
     }
