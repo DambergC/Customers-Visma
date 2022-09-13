@@ -45,7 +45,9 @@
     [Parameter(Mandatory=$false)]
     [Switch]$FlyttaMallar,
     [Parameter(Mandatory=$false)]
-    [Switch]$SqlQuery
+    [Switch]$SqlQuery,
+    [Parameter(Mandatory=$false)]
+    [Switch]$SqlUsers
     )
 
 
@@ -74,7 +76,7 @@
     #Short DB Version
     $short_db_version = 2240
 
-    #DB script path
+    #DB script path (Parent directory where you find "Install/HRM")
     $db_script_path = "D:\Visma"
 #------------------------------------------------#
 # Functions in script
@@ -521,4 +523,19 @@ if ($SqlQuery -eq $true)
     }
         
 #------------------------------------------------#
-        
+#SQL Query for importing accounts
+if ($SqlUsers -eq $true)
+    {
+        $sql_users = "##Personic P" +
+        "sp_change_users_login report" +
+        "sp_change_users_login update_one,rspdbuser,rspdbuser" +
+        "sp_change_users_login update_one,psutotint,psutotint" +
+        "sp_change_users_login update_one,eko,eko" + 
+        "sp_change_users_login update_one,"+$BIGRAM+"_DashboardUser,"+$BIGRAM+"_DashboardUser" +
+        "sp_change_users_login update_one,"+$BIGRAM+"_MenuUser,"+$BIGRAM+"_MenuUser" +
+        "sp_change_users_login update_one,"+$BIGRAM+"_SecurityUser,"+$BIGRAM+"_SecurityUser" +
+        "sp_change_users_login update_one,"+$BIGRAM+"_NeptuneAdmin,"+ $BIGRAM+"_NeptuneAdmin" +
+        "sp_change_users_login update_one,"+$BIGRAM+"_NeptuneUser,"+$BIGRAM+"_NeptuneUser"
+            
+        Out-File -FilePath $PSScriptRoot\SqlQuery.txt -Encoding Unicode -InputObject $sql_users
+    }
