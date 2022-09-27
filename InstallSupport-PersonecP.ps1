@@ -41,7 +41,13 @@
     [Parameter(Mandatory=$false)]
     [Switch]$ShutdownServices,
     [Parameter(Mandatory=$false)]
-    [Switch]$CopyReports
+    [Switch]$CopyReports,
+    [Parameter(Mandatory=$false)]
+    [Switch]$FlyttaMallar,
+    [Parameter(Mandatory=$false)]
+    [Switch]$SqlQuery,
+    [Parameter(Mandatory=$false)]
+    [Switch]$SqlUsers
     )
 
 
@@ -64,6 +70,14 @@
 
     $logfile = "$PSScriptRoot\$today\Pre-InstallPersonec_P_$today.log"
 
+    #Long DB Version
+    $long_db_version = 22040
+
+    #Short DB Version
+    $short_db_version = 2240
+
+    #DB script path (Parent directory where you find "Install/HRM")
+    $db_script_path = "D:\Visma"
 #------------------------------------------------#
 # Functions in script
    
@@ -447,3 +461,81 @@ Get-ChildItem -Path $Folder1Path -Recurse | Where-Object {
 }
 }
 #>
+#------------------------------------------------#
+# Move Template folders
+if ($FlyttaMallar -eq $true)
+    {
+        Remove-Item -Path "D:\Visma\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt\*"
+        Remove-Item -Path "D:\Visma\wwwroot\$bigram\PPP\Personec_AG\CR\rpt\*"
+        Write-Output("Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt D:\Visma\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt")
+        Write-Output("Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_AG\CR\rpt D:\Visma\wwwroot\$bigram\PPP\Personec_AG\CR\rpt")
+    }
+
+
+#------------------------------------------------#
+# Get Sql Query
+if ($SqlQuery -eq $true)
+    {
+        $query = "##Personic P" +    
+        "`rUSE $bigram" + "_PPP" +
+        "`rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997" + 
+        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPu$short_db_version.sql" +
+            
+        "`n`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPview.sql" +
+        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPproc.sql" +
+        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPtriggers.sql" +
+        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPgra.sql" +
+        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\msDBUPDATERIGHTSP.sql" +
+        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\PPPds_Feltexter.sql" +
+            
+        "`n`rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997" +
+        "`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc" +
+        "`r#------------------------------------------------#" +
+        "`n`r#Personic U" +
+        "`rUSE $bigram" + "_PUD" +
+        "`rSELECT * FROM dbo.PU_VERSIONSINFO" +
+        "`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUu$short_db_version.sql" +
+            
+        "`n`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUproc.sql" +
+        "`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUview.sql" +
+        "`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUgra.sql" +
+        "`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\msdbupdaterightsU.sql" +
+            
+        "`n`rSELECT * FROM dbo.PU_VERSIONSINFO" +
+        "`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc" +
+        "`r#------------------------------------------------#" +
+        "`n`r##Personic PFH" +
+            
+        "`rUSE $bigram" + "_PFH" +
+        "`rSELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997" +
+        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFu$short_db_version.sql" +
+            
+        "`n`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFproc.sql" +
+        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFview.sql" +
+        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFgra.sql" +
+        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\msDBUPDATERIGHTSF.sql" +
+        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\PFHds_Feltexter.sql" +
+        
+        "`rSELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997" +
+        "`n`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc"
+            
+        Out-File -FilePath $PSScriptRoot\SqlQuery.txt -Encoding Unicode -InputObject $query
+    }
+        
+#------------------------------------------------#
+#SQL Query for importing accounts
+if ($SqlUsers -eq $true)
+    {
+        $sql_users = "##Personic P" +
+        "sp_change_users_login report" +
+        "sp_change_users_login update_one,rspdbuser,rspdbuser" +
+        "sp_change_users_login update_one,psutotint,psutotint" +
+        "sp_change_users_login update_one,eko,eko" + 
+        "sp_change_users_login update_one,"+$BIGRAM+"_DashboardUser,"+$BIGRAM+"_DashboardUser" +
+        "sp_change_users_login update_one,"+$BIGRAM+"_MenuUser,"+$BIGRAM+"_MenuUser" +
+        "sp_change_users_login update_one,"+$BIGRAM+"_SecurityUser,"+$BIGRAM+"_SecurityUser" +
+        "sp_change_users_login update_one,"+$BIGRAM+"_NeptuneAdmin,"+ $BIGRAM+"_NeptuneAdmin" +
+        "sp_change_users_login update_one,"+$BIGRAM+"_NeptuneUser,"+$BIGRAM+"_NeptuneUser"
+            
+        Out-File -FilePath $PSScriptRoot\SqlUsers.txt -Encoding Unicode -InputObject $sql_users
+    }
