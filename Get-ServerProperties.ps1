@@ -1,3 +1,4 @@
+×
 
 <#
 .Synopsis
@@ -36,16 +37,18 @@ $ipadress = Get-NetIPAddress -AddressFamily IPv4 -InterfaceIndex $(Get-NetConnec
 
 
 # vilket bigram har kunden
-$bigram = 'CM'
+$bigram = 'DANYDK'
 
 # Lista vilka db som finns kopplade till 
 #$database = Invoke-Sqlcmd -Username 'viwinstall' -Password 'W{JX3%2TrLS8Fr{8' -Query "SELECT name FROM sys.databases where name LIKE '$bigram%' order by name;" 
-$database = Invoke-Sqlcmd -Query "SELECT name FROM sys.databases where name LIKE '%r%' order by name;" 
+$database = Invoke-Sqlcmd -Query "SELECT name FROM sys.databases where name LIKE '$bigram%' order by name;" 
 
 
 # lista servernamn och core
-$core = Get-WmiObject –class Win32_processor 
+$core = Get-WmiObject –class Win32_processor | Measure-Object -Property numberofcores -Sum
 $countcpu = Get-WmiObject win32_processor
+
+$test = $countcpu.count
 
 # ta ut sql version
 $sqlversion = Invoke-Sqlcmd -ServerInstance "localhost" -Query "SELECT
@@ -81,12 +84,12 @@ $logicalDisk = Get-WmiObject Win32_LogicalDisk -Filter "DriveType=3"|
 
 
     $output = [ordered]@{
-        'ServerName'            = $core.PSComputerName
+        'ServerName'            = $env:COMPUTERNAME
         'OperatingSystem'       = (Get-CimInstance -ComputerName $server -ClassName Win32_OperatingSystem).Caption
         'IP-adress'             = $ipadress
         'SQL Server Version'    = $sqlname
-        'Numbers of Core'       = $countcpu.NumberOfCores
-        'Numbers of Processors' = $countcpu.NumberOfLogicalProcessors
+        'Numbers of Core'       = $core.sum
+        'Numbers of Processors' = $test
         'Memory (GB)'           = $servermemory
         }
     [pscustomobject]$output | Format-list | out-file d:\visma\install\backup\Serverinventory_$filename.txt
@@ -95,3 +98,5 @@ $logicalDisk = Get-WmiObject Win32_LogicalDisk -Filter "DriveType=3"|
 $logicalDisk | out-file d:\visma\install\backup\Serverinventory_$filename.txt -Append
 
 $database | out-file d:\visma\install\backup\Serverinventory_$filename.txt -Append
+Copy to Local Clipboard	Request Remote Clipboard	Copy to Remote Clipboard
+Clear
