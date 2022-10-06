@@ -45,6 +45,7 @@ $database = Invoke-Sqlcmd -Query "SELECT name FROM sys.databases where name LIKE
 
 # lista servernamn och core
 $core = Get-WmiObject –class Win32_processor 
+$countcpu = Get-WmiObject win32_processor
 
 # ta ut sql version
 $sqlversion = Invoke-Sqlcmd -ServerInstance "localhost" -Query "SELECT
@@ -84,14 +85,13 @@ $logicalDisk = Get-WmiObject Win32_LogicalDisk -Filter "DriveType=3"|
         'OperatingSystem'       = (Get-CimInstance -ComputerName $server -ClassName Win32_OperatingSystem).Caption
         'IP-adress'             = $ipadress
         'SQL Server Version'    = $sqlname
-        'Numbers of Core'       = $core.NumberOfCores
-        'Numbers of Processors' = $Core.NumberOfLogicalProcessors
+        'Numbers of Core'       = $countcpu.NumberOfCores
+        'Numbers of Processors' = $countcpu.NumberOfLogicalProcessors
         'Memory (GB)'           = $servermemory
         }
-    [pscustomobject]$output | Format-list | out-file c:\temp\Serverinventory_$filename.txt
+    [pscustomobject]$output | Format-list | out-file d:\visma\install\backup\Serverinventory_$filename.txt
     
     
-$logicalDisk | out-file c:\temp\Serverinventory_$filename.txt -Append
+$logicalDisk | out-file d:\visma\install\backup\Serverinventory_$filename.txt -Append
 
-$database | out-file c:\temp\Serverinventory_$filename.txt -Append
-
+$database | out-file d:\visma\install\backup\Serverinventory_$filename.txt -Append
