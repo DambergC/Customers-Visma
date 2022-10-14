@@ -43,8 +43,6 @@
     [Parameter(Mandatory=$false)]
     [Switch]$CopyReports,
     [Parameter(Mandatory=$false)]
-    [Switch]$FlyttaMallar,
-    [Parameter(Mandatory=$false)]
     [Switch]$SqlQuery,
     [Parameter(Mandatory=$false)]
     [Switch]$SqlUsers
@@ -56,7 +54,16 @@
 
     #$bigram = read-host 'Bigram?'
     $bigram = 'VISMA'
-    
+
+    #DB script path (Parent directory where you find "Install/HRM")
+    $db_script_path = "D:\Visma"    
+
+    #Long DB Version
+    $long_db_version = 22040
+
+    #Short DB Version
+    $short_db_version = 2240
+
     # Todays date (used with backupfolder and Pre-Check txt file
     $Today = (get-date -Format yyyyMMdd)
 
@@ -70,14 +77,6 @@
 
     $logfile = "$PSScriptRoot\$today\Pre-InstallPersonec_P_$today.log"
 
-    #Long DB Version
-    $long_db_version = 22040
-
-    #Short DB Version
-    $short_db_version = 2240
-
-    #DB script path (Parent directory where you find "Install/HRM")
-    $db_script_path = "D:\Visma"
 #------------------------------------------------#
 # Functions in script
    
@@ -463,14 +462,14 @@ Get-ChildItem -Path $Folder1Path -Recurse | Where-Object {
 #>
 #------------------------------------------------#
 # Move Template folders
-if ($FlyttaMallar -eq $true)
+<#if ($FlyttaMallar -eq $true)
     {
         Remove-Item -Path "D:\Visma\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt\*"
         Remove-Item -Path "D:\Visma\wwwroot\$bigram\PPP\Personec_AG\CR\rpt\*"
-        Write-Output("Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt D:\Visma\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt")
-        Write-Output("Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_AG\CR\rpt D:\Visma\wwwroot\$bigram\PPP\Personec_AG\CR\rpt")
+        Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt\* D:\Visma\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt
+        Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_AG\CR\rpt\* D:\Visma\wwwroot\$bigram\PPP\Personec_AG\CR\rpt
     }
-
+#>
 
 #------------------------------------------------#
 # Get Sql Query
