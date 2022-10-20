@@ -1,7 +1,7 @@
 $bigram = "BIGRAM"
 $long_version = 22040
 $short_version = 2240
-$script_path = "D:\Visma\Install\Backup"
+$script_path = "D:\Visma\Install"
 $file_path = "D:\Visma\Install\Backup\SQL-query.txt"
 
 $query = "
