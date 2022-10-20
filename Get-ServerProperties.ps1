@@ -1,5 +1,3 @@
-×
-
 <#
 .Synopsis
    Script to inventory server for Visma application Personec P
