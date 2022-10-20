@@ -1,3 +1,5 @@
+
+
 <#
 .Synopsis
    Script to inventory server for Visma application Personec P
@@ -15,17 +17,7 @@
 .FUNCTIONALITY
    The functionality that best describes this workflow
 #>
-function Get-ServerInventory
-{
-    Param
-    (
-        # Param1 help description
-        [string]
-        $Viwinstallpassword
 
-    )
-
-}
 
 #dagens datum
 $filename = get-date -Format yyyy-MM-dd
@@ -35,11 +27,11 @@ $ipadress = Get-NetIPAddress -AddressFamily IPv4 -InterfaceIndex $(Get-NetConnec
 
 
 # vilket bigram har kunden
-$bigram = 'DANYDK'
+$bigram = 'VISMA'
 
 # Lista vilka db som finns kopplade till 
 #$database = Invoke-Sqlcmd -Username 'viwinstall' -Password 'W{JX3%2TrLS8Fr{8' -Query "SELECT name FROM sys.databases where name LIKE '$bigram%' order by name;" 
-$database = Invoke-Sqlcmd -Query "SELECT name FROM sys.databases where name LIKE '$bigram%' order by name;" 
+$database = Invoke-Sqlcmd -Query "SELECT name FROM sys.databases where name LIKE '$bigram%' order by name;" -Username viwinstall -Password 'W{JX3%2TrLS8Fr{8'
 
 
 # lista servernamn och core
@@ -57,7 +49,7 @@ $sqlversion = Invoke-Sqlcmd -ServerInstance "localhost" -Query "SELECT
     SERVERPROPERTY('ProductUpdateReference') AS UpdateReference,
     SERVERPROPERTY('ProductMajorVersion') AS Major,
     SERVERPROPERTY('ProductMinorVersion') AS Minor,
-    SERVERPROPERTY('ProductBuild') AS Build"
+    SERVERPROPERTY('ProductBuild') AS Build" -Username viwinstall -Password 'W{JX3%2TrLS8Fr{8'
 
 if ($sqlversion.major -eq '14')
 {
@@ -96,5 +88,3 @@ $logicalDisk = Get-WmiObject Win32_LogicalDisk -Filter "DriveType=3"|
 $logicalDisk | out-file d:\visma\install\backup\Serverinventory_$filename.txt -Append
 
 $database | out-file d:\visma\install\backup\Serverinventory_$filename.txt -Append
-Copy to Local Clipboard	Request Remote Clipboard	Copy to Remote Clipboard
-Clear
