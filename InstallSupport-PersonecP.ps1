@@ -197,8 +197,12 @@ if ($InventoryConfig -eq $true)
 
         {
         [XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\$bigram\Login\Web.config" -ErrorAction SilentlyContinue
-        $time | Out-File "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
-        $UseSSO.configuration.appSettings.add | out-file "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
+        $time | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT1 = 'SINGLESIGNON' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'UseSSO' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $usesso.configuration.appsettings.add.where{$_.key -eq 'UseSSo'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+
         }
     Else
         {
@@ -214,8 +218,12 @@ if ($InventoryConfig -eq $true)
 
         {
         [XML]$forhandlingsettings = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\pfh\services\Web.config" -ErrorAction SilentlyContinue
-        $time | Out-File "$PSScriptRoot\$today\forhandling_$Today.txt" -Append
-        $forhandlingsettings.configuration.appSettings.add | out-file "$PSScriptRoot\$today\forhandling_$Today.txt" -Append
+        $time | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT1 = 'FÖRHANDLING' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PotEditable' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $forhandlingsettings.configuration.appsettings.add.where{$_.key -eq 'PotEditable'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+
         }
     Else
         {
@@ -225,18 +233,23 @@ if ($InventoryConfig -eq $true)
     ######################################
     # Befolkning
 
-    $befolkningBackup = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\web.config")
+    $befolkningBackupAG = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_AG\web.config")
 
-    if ($befolkningBackup -eq $true)
+    if ($befolkningBackupAG -eq $true)
 
         {
-        [XML]$UseBEfolk = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\web.config" -ErrorAction SilentlyContinue
-        $time | Out-File "$PSScriptRoot\$today\Befolk_Check_$Today.txt" -Append
-        $UseBEfolk.configuration.appSettings.add | out-file "$PSScriptRoot\$today\Befolk_Check_$Today.txt" -Append
+        [XML]$UseBEfolkAG = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_AG\web.config" -ErrorAction SilentlyContinue
+        $time | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT1 = 'BEFOLKNINGSREGISTER AG-web.config' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'BefolkningsregisterConfigFileName' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $UseBEfolkAG.configuration.appsettings.add.where{$_.key -eq 'BefolkningsregisterConfigFileName'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'BefolkningsregisterConfigName' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $UseBEfolkAG.configuration.appsettings.add.where{$_.key -eq 'BefolkningsregisterConfigName'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
         }
     else
         {
-         write-host "No web.config for befolkning in backup"
+         write-host "No web.config for befolkning in backup för AG web.config"
         }
 
     #######################################
@@ -251,13 +264,14 @@ if ($InventoryConfig -eq $true)
         $NeptuneUser = $PSTID.styr.NeptuneUser
         $NeptunePwd = $PSTID.styr.neptunepassword
         
-        $NeptuneData = @{
-        'NeptuneUser' = $NeptuneUser
-        'NeptunePwd' = $NeptunePwd
-                    }
-     
-        $NeptuneData | out-file "$PSScriptRoot\$today\Neptune_$Today.txt"
-        $NeptuneData | Out-File "$PSScriptRoot\$today\Personec_P.txt"
+        $time | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT1 = 'PSTID' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'NeptuneUser' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $NeptuneUser | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'NeptunePassword' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $NeptunePwd | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+
         }
    else
         {
@@ -300,19 +314,15 @@ else
         {
         [xml]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue 
 
+        $time | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT1 = 'BATCHUSER-cHECK' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $Batch.configuration.appsettings.add.where{$_.key -eq 'sysuser'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $Batch.configuration.appsettings.add.where{$_.key -eq 'SysPassword'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
 
-        $batchuser = $Batch.configuration.appSettings.add |Where-Object {$_.key -eq 'sysuser'} | Select-Object value
-        $batchpwd = $batch.configuration.appSettings.add |Where-Object {$_.key -eq 'SysPassword'} | Select-Object value
-
-        $batchData = @{
-        'BatchPassword' = $batchpwd.value
-        'Batchuser' = $batchuser.value
-        
-        }
-
-        $batchData | Out-File "$PSScriptRoot\$today\Batch_$Today.txt"
-        $batchData | Out-File "$PSScriptRoot\$today\Personec_P.txt" -Append
-        
+      
         }
     Else
         {
@@ -326,21 +336,26 @@ else
     if ($PiaBackup -eq $true)
         {
         [XML]$PIA = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
+        $time | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT1 = 'PIA CHECK' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PPP Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'P.Database.User'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PPP Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'P.Database.Password'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PUD Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'U.Database.User'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PUD Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'U.Database.Password'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PFH Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'F.Database.User'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PFH Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'F.Database.Password'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'Service Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'ServiceUser.Login'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'Service Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'ServiceUser.secret'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
 
-        $PIA_PPP_USER = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'P.Database.User'} | Select-Object value
-        $PIA_PPP_PWD = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'P.Database.Password'} | Select-Object value
-        $PIA_PUD_USER = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'U.Database.User'} | Select-Object value
-        $PIA_PUD_PWD = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'U.Database.Password'} | Select-Object value
-        $PIA_SRV_USER = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'ServiceUser.Login'} | Select-Object value
-        $PIA_SRV_PWD = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'ServiceUser.secret'} | Select-Object value
-        
-        $PIADATA = @{
-        'PPP' = $PIA_PPP_USER.value,$PIA_PPP_PWD.value
-        'PUD' = $PIA_PUD_USER.value,$PIA_PUD_PWD.value
-        'PFH' = $PIA_PFH_USER.value,$PIA_PFH_PWD.value
-        'Service' = $PIA_SRV_USER.value,$PIA_SRV_PWD.value
-                    }
-        $PIADATA | out-file "$PSScriptRoot\$today\PIA_$Today.txt"
         }
     Else
         {
@@ -348,6 +363,7 @@ else
         }
    
    ####################################################################
+   
     # AppPool check
 
     try 
