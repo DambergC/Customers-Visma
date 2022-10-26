@@ -1,22 +1,30 @@
 <#
 .Synopsis
-   To run as preparation to update Personec P
+   Detta skript kan du änvända för att underlätta vid uppgradering av Personec P
 .DESCRIPTION
-   With the script you will extract data from web.config to be verified before update.
-   Backup of programs and wwwroot
-   Get data about services status before update
-   Get info about .net 4.8
+   Funktioner i skripet
+   - Backup av filstrukturen
+   - Ta fram vissa värden från web.config som du behöver vid uppgraderingen
+   - Kontroll av system
+    - DotNet 4.8
+    - Crystal Reports version
+    - Vilka tjänster som rullar samt med vilka konton som kör dom
+    - Vilka konton som applikationspoolerna körs med
+    - SQLquery framtagning av textfil för att underlätta när du ska köra sql-skript i SQLCMD
+    - Databasbackup
+    - Serverinventering för att underlätta dokumentation för onprem kunder
+    - Stopp av tjänster
 .EXAMPLE
    InstallSupport-PersonecP.ps1 -backup
-   Runs backup of folders 
+   Backup av filstruktur 
 .EXAMPLE
    InstallSupport-PersonecP.ps1 -InventorySystem
+   DotNet, Crystal reports, tjänster och applikationspooler
 .EXAMPLE
    InstallSupport-PersonecP.ps1 -InventoryConfig
+   Framtagning av värden som du behöver senare
 .EXAMPLE
    InstallSupport-PersonecP.ps1 -ShutdownServices
-.EXAMPLE
-   Set-BGInfo.ps1 -CopyReports
 .NOTES
    Filename: Pre-InstallPersonec_P.ps1
    Author: Christian Damberg
@@ -43,9 +51,9 @@
     [Parameter(Mandatory=$false)]
     [Switch]$CopyReports,
     [Parameter(Mandatory=$false)]
-    [Switch]$FlyttaMallar,
-    [Parameter(Mandatory=$false)]
     [Switch]$SqlQuery,
+    [Parameter(Mandatory=$false)]
+    [Switch]$DBAbackup,
     [Parameter(Mandatory=$false)]
     [Switch]$SqlUsers
     )
@@ -56,7 +64,16 @@
 
     #$bigram = read-host 'Bigram?'
     $bigram = 'VISMA'
-    
+
+    #DB script path (Parent directory where you find "Install/HRM")
+    $db_script_path = "D:\Visma"    
+
+    #Long DB Version
+    $long_db_version = 22100
+
+    #Short DB Version
+    $short_db_version = 22100
+
     # Todays date (used with backupfolder and Pre-Check txt file
     $Today = (get-date -Format yyyyMMdd)
 
@@ -70,14 +87,6 @@
 
     $logfile = "$PSScriptRoot\$today\Pre-InstallPersonec_P_$today.log"
 
-    #Long DB Version
-    $long_db_version = 22040
-
-    #Short DB Version
-    $short_db_version = 2240
-
-    #DB script path (Parent directory where you find "Install/HRM")
-    $db_script_path = "D:\Visma"
 #------------------------------------------------#
 # Functions in script
    
@@ -198,8 +207,12 @@ if ($InventoryConfig -eq $true)
 
         {
         [XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\$bigram\Login\Web.config" -ErrorAction SilentlyContinue
-        $time | Out-File "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
-        $UseSSO.configuration.appSettings.add | out-file "$PSScriptRoot\$today\UseSSO_Check_$Today.txt" -Append
+        $time | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT1 = 'SINGLESIGNON' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'UseSSO' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $usesso.configuration.appsettings.add.where{$_.key -eq 'UseSSo'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+
         }
     Else
         {
@@ -215,8 +228,12 @@ if ($InventoryConfig -eq $true)
 
         {
         [XML]$forhandlingsettings = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\pfh\services\Web.config" -ErrorAction SilentlyContinue
-        $time | Out-File "$PSScriptRoot\$today\forhandling_$Today.txt" -Append
-        $forhandlingsettings.configuration.appSettings.add | out-file "$PSScriptRoot\$today\forhandling_$Today.txt" -Append
+        $time | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT1 = 'FÖRHANDLING' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PotEditable' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $forhandlingsettings.configuration.appsettings.add.where{$_.key -eq 'PotEditable'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+
         }
     Else
         {
@@ -226,18 +243,23 @@ if ($InventoryConfig -eq $true)
     ######################################
     # Befolkning
 
-    $befolkningBackup = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\web.config")
+    $befolkningBackupAG = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_AG\web.config")
 
-    if ($befolkningBackup -eq $true)
+    if ($befolkningBackupAG -eq $true)
 
         {
-        [XML]$UseBEfolk = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\web.config" -ErrorAction SilentlyContinue
-        $time | Out-File "$PSScriptRoot\$today\Befolk_Check_$Today.txt" -Append
-        $UseBEfolk.configuration.appSettings.add | out-file "$PSScriptRoot\$today\Befolk_Check_$Today.txt" -Append
+        [XML]$UseBEfolkAG = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_AG\web.config" -ErrorAction SilentlyContinue
+        $time | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT1 = 'BEFOLKNINGSREGISTER AG-web.config' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'BefolkningsregisterConfigFileName' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $UseBEfolkAG.configuration.appsettings.add.where{$_.key -eq 'BefolkningsregisterConfigFileName'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'BefolkningsregisterConfigName' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $UseBEfolkAG.configuration.appsettings.add.where{$_.key -eq 'BefolkningsregisterConfigName'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
         }
     else
         {
-         write-host "No web.config for befolkning in backup"
+         write-host "No web.config for befolkning in backup för AG web.config"
         }
 
     #######################################
@@ -252,13 +274,14 @@ if ($InventoryConfig -eq $true)
         $NeptuneUser = $PSTID.styr.NeptuneUser
         $NeptunePwd = $PSTID.styr.neptunepassword
         
-        $NeptuneData = @{
-        'NeptuneUser' = $NeptuneUser
-        'NeptunePwd' = $NeptunePwd
-                    }
-     
-        $NeptuneData | out-file "$PSScriptRoot\$today\Neptune_$Today.txt"
-        $NeptuneData | Out-File "$PSScriptRoot\$today\Personec_P.txt"
+        $time | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT1 = 'PSTID' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'NeptuneUser' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $NeptuneUser | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'NeptunePassword' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $NeptunePwd | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+
         }
    else
         {
@@ -301,19 +324,15 @@ else
         {
         [xml]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue 
 
+        $time | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT1 = 'BATCHUSER-cHECK' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $Batch.configuration.appsettings.add.where{$_.key -eq 'sysuser'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $Batch.configuration.appsettings.add.where{$_.key -eq 'SysPassword'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
 
-        $batchuser = $Batch.configuration.appSettings.add |Where-Object {$_.key -eq 'sysuser'} | Select-Object value
-        $batchpwd = $batch.configuration.appSettings.add |Where-Object {$_.key -eq 'SysPassword'} | Select-Object value
-
-        $batchData = @{
-        'BatchPassword' = $batchpwd.value
-        'Batchuser' = $batchuser.value
-        
-        }
-
-        $batchData | Out-File "$PSScriptRoot\$today\Batch_$Today.txt"
-        $batchData | Out-File "$PSScriptRoot\$today\Personec_P.txt" -Append
-        
+      
         }
     Else
         {
@@ -327,21 +346,26 @@ else
     if ($PiaBackup -eq $true)
         {
         [XML]$PIA = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
+        $time | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT1 = 'PIA CHECK' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PPP Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'P.Database.User'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PPP Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'P.Database.Password'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PUD Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'U.Database.User'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PUD Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'U.Database.Password'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PFH Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'F.Database.User'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'PFH Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'F.Database.Password'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'Service Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'ServiceUser.Login'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT2 = 'Service Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $PIA.configuration.appsettings.add.where{$_.key -eq 'ServiceUser.secret'}.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+        $TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
 
-        $PIA_PPP_USER = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'P.Database.User'} | Select-Object value
-        $PIA_PPP_PWD = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'P.Database.Password'} | Select-Object value
-        $PIA_PUD_USER = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'U.Database.User'} | Select-Object value
-        $PIA_PUD_PWD = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'U.Database.Password'} | Select-Object value
-        $PIA_SRV_USER = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'ServiceUser.Login'} | Select-Object value
-        $PIA_SRV_PWD = $pia.configuration.appSettings.add |Where-Object {$_.key -eq 'ServiceUser.secret'} | Select-Object value
-        
-        $PIADATA = @{
-        'PPP' = $PIA_PPP_USER.value,$PIA_PPP_PWD.value
-        'PUD' = $PIA_PUD_USER.value,$PIA_PUD_PWD.value
-        'PFH' = $PIA_PFH_USER.value,$PIA_PFH_PWD.value
-        'Service' = $PIA_SRV_USER.value,$PIA_SRV_PWD.value
-                    }
-        $PIADATA | out-file "$PSScriptRoot\$today\PIA_$Today.txt"
         }
     Else
         {
@@ -373,6 +397,7 @@ else
         }
         $time | Out-File "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
         $appPoolResultat |out-file "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
+
     }
 
     catch 
@@ -463,14 +488,14 @@ Get-ChildItem -Path $Folder1Path -Recurse | Where-Object {
 #>
 #------------------------------------------------#
 # Move Template folders
-if ($FlyttaMallar -eq $true)
+<#if ($FlyttaMallar -eq $true)
     {
         Remove-Item -Path "D:\Visma\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt\*"
         Remove-Item -Path "D:\Visma\wwwroot\$bigram\PPP\Personec_AG\CR\rpt\*"
-        Write-Output("Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt D:\Visma\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt")
-        Write-Output("Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_AG\CR\rpt D:\Visma\wwwroot\$bigram\PPP\Personec_AG\CR\rpt")
+        Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt\* D:\Visma\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt
+        Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_AG\CR\rpt\* D:\Visma\wwwroot\$bigram\PPP\Personec_AG\CR\rpt
     }
-
+#>
 
 #------------------------------------------------#
 # Get Sql Query
@@ -539,3 +564,25 @@ if ($SqlUsers -eq $true)
             
         Out-File -FilePath $PSScriptRoot\SqlUsers.txt -Encoding Unicode -InputObject $sql_users
     }
+
+#------------------------------------------------#
+#DBABackup
+if ($DBAbackup -eq $true)
+    {
+        
+        if (-not(Get-Module -name dbatools)) 
+            {
+                Install-Module dbatools -Verbose -Force
+                Import-Module dbatools -Verbose -force
+            }
+
+        $cred = Get-Credential -Message 'Lösenordet till viwinstall behövs matas in här...' -UserName viwinstall
+        Add-Type -AssemblyName Microsoft.VisualBasic
+        $instans = [Microsoft.VisualBasic.Interaction]::InputBox("Vilken SQLinstans ska kollas?", "Skriv in sqlinstans", "localhost")
+        $backupplats = [Microsoft.VisualBasic.Interaction]::InputBox("Vart ska backuperna sparas?", "Skriv in annan sökväg vid behov", "d:\visma")
+
+        get-dbaDatabase -SqlInstance $instans -SqlCredential $cred | Select-Object -Property name,size -ExpandProperty name| Where-Object name -like '*$bigram*' | Out-GridView -PassThru -Title 'Välj de databaser du vill ha backup på (markera flera med att hålla ner CTRL' | foreach { Backup-DbaDatabase -SqlCredential $cred -SqlInstance $instans -Database $_ -CopyOnly -FilePath $backupplats -Verbose }
+
+
+    }
+
