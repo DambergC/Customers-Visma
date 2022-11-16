@@ -55,7 +55,9 @@
     [Parameter(Mandatory=$false)]
     [Switch]$DBAbackup,
     [Parameter(Mandatory=$false)]
-    [Switch]$SqlUsers
+    [Switch]$SqlUsers,
+    [Parameter(Mandatory=$false)]
+    [Switch]$QRRead
     )
 
 
@@ -586,3 +588,49 @@ if ($DBAbackup -eq $true)
 
     }
 
+if ($QRRead -eq $true)
+    {
+        $sql_users = "USE [master]
+        GO
+        CREATE LOGIN ["+$BIGRAM+"_QRRead] WITH PASSWORD=N'Squabble-Ungloved-Cargo0', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+        GO
+        USE ["+$BIGRAM+"_Neptune] -- Neptune
+        GO
+        CREATE USER "+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]
+        GO
+        ALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]
+        GO
+        USE "+$BIGRAM+"_PFH] -- Personec Förhandling
+        GO
+        CREATE USER "+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]
+        GO
+        GRANT EXEC TO "+$BIGRAM+"_QRRead]
+        GO
+        ALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]
+        GO
+        USE "+$BIGRAM+"_PPP] -- Personec P
+        GO
+        CREATE USER "+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]
+        GO
+        GRANT EXEC TO "+$BIGRAM+"_QRRead]
+        GO
+        ALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]
+        GO
+        USE "+$BIGRAM+"_PUD] -- Personec Utdata
+        GO
+        CREATE USER "+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]
+        GO
+        GRANT EXEC TO "+$BIGRAM+"_QRRead]
+        GO
+        ALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]
+        GO
+
+        USE "+$BIGRAM+"_PAG] -- Personec Anställningsguide
+        GO
+        CREATE USER "+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]
+        GO
+        ALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]
+        GO"
+            
+        Out-File -FilePath $PSScriptRoot\QRRead.txt -Encoding Unicode -InputObject $sql_users
+    }
