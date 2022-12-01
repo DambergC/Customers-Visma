@@ -617,7 +617,7 @@ if ($QRRead -eq $true)
         "`rGO" +
         "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
         "`rGO" +
-        "`rGRANT EXEC TO "+$BIGRAM+"_QRRead]" +
+        "`rGRANT EXEC TO ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
         "`rALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]" +
         "`rGO" +
