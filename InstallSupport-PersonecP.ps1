@@ -59,10 +59,10 @@
     $db_script_path = "D:\Visma"    
 
     #Long DB Version
-    $long_db_version = 22040
+    $long_db_version = 22100
 
     #Short DB Version
-    $short_db_version = 2240
+    $short_db_version = 22100
 
     # Todays date (used with backupfolder and Pre-Check txt file
     $Today = (get-date -Format yyyyMMdd)
