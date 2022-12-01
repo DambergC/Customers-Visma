@@ -609,37 +609,37 @@ if ($QRRead -eq $true)
         "`rGO" +
         "`rUSE ["+$BIGRAM+"_Neptune] -- Neptune" +
         "`rGO" +
-        "`rCREATE USER "+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
         "`rGO" +
         "`rALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]" +
         "`rGO" +
-        "`rUSE "+$BIGRAM+"_PFH] -- Personec Förhandling" +
+        "`rUSE ["+$BIGRAM+"_PFH] -- Personec Förhandling" +
         "`rGO" +
-        "`rCREATE USER "+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
         "`rGO" +
         "`rGRANT EXEC TO "+$BIGRAM+"_QRRead]" +
         "`rGO" +
         "`rALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]" +
         "`rGO" +
-        "`rUSE "+$BIGRAM+"_PPP] -- Personec P" +
+        "`rUSE ["+$BIGRAM+"_PPP] -- Personec P" +
         "`rGO" +
-        "`rCREATE USER "+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
         "`rGO" +
-        "`rGRANT EXEC TO "+$BIGRAM+"_QRRead]" +
-        "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]" +
-        "`rGO" +
-        "`rUSE "+$BIGRAM+"_PUD] -- Personec Utdata" +
-        "`rGO" +
-        "`rCREATE USER "+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
-        "`rGO" +
-        "`rGRANT EXEC TO "+$BIGRAM+"_QRRead]" +
+        "`rGRANT EXEC TO ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
         "`rALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]" +
         "`rGO" +
-        "`rUSE "+$BIGRAM+"_PAG] -- Personec Anställningsguide" +
+        "`rUSE ["+$BIGRAM+"_PUD] -- Personec Utdata" +
         "`rGO" +
-        "`rCREATE USER "+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
+        "`rGO" +
+        "`rGRANT EXEC TO ["+$BIGRAM+"_QRRead]" +
+        "`rGO" +
+        "`rALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]" +
+        "`rGO" +
+        "`n`rUSE ["+$BIGRAM+"_PAG] -- Personec Anställningsguide" +
+        "`rGO" +
+        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
         "`rGO" +
         "`rALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]" +
         "`rGO"
