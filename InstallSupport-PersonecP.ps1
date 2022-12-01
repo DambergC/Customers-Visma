@@ -55,7 +55,7 @@
     [Parameter(Mandatory=$false)]
     [Switch]$DBAbackup,
     [Parameter(Mandatory=$false)]
-    [Switch]$Sql_Import,
+    [Switch]$Sql_Import_From_Old_DB,
     [Parameter(Mandatory=$false)]
     [Switch]$QRRead,
     [Parameter(Mandatory=$false)]
@@ -560,7 +560,7 @@ if ($SqlQuery -eq $true)
         
 #------------------------------------------------#
 #SQL Query for importing accounts
-if ($Sql_Import -eq $true)
+if ($Sql_Import_From_Old_DB -eq $true)
     {
         $sql_users = "##Personic P" +
         "`rsp_change_users_login report" +
