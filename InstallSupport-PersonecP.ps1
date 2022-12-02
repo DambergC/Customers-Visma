@@ -59,7 +59,7 @@
     [Parameter(Mandatory=$false)]
     [Switch]$QRRead,
     [Parameter(Mandatory=$false)]
-    [Switch]$Fix_AppP
+    [Switch]$Fix_AppPool
     )
 
 
@@ -609,39 +609,39 @@ if ($QRRead -eq $true)
         "`rGO" +
         "`rUSE ["+$BIGRAM+"_Neptune] -- Neptune" +
         "`rGO" +
-        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]" +
+        "`rALTER ROLE [db_datareader] ADD MEMBER ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
         "`rUSE ["+$BIGRAM+"_PFH] -- Personec Förhandling" +
         "`rGO" +
-        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
         "`rGRANT EXEC TO ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]" +
+        "`rALTER ROLE [db_datareader] ADD MEMBER ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
         "`rUSE ["+$BIGRAM+"_PPP] -- Personec P" +
         "`rGO" +
-        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
         "`rGRANT EXEC TO ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]" +
+        "`rALTER ROLE [db_datareader] ADD MEMBER ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
         "`rUSE ["+$BIGRAM+"_PUD] -- Personec Utdata" +
         "`rGO" +
-        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
         "`rGRANT EXEC TO ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]" +
+        "`rALTER ROLE [db_datareader] ADD MEMBER ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
         "`n`rUSE ["+$BIGRAM+"_PAG] -- Personec Anställningsguide" +
         "`rGO" +
-        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN "+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN ["+$BIGRAM+"_QRRead]" +
         "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER "+$BIGRAM+"_QRRead]" +
+        "`rALTER ROLE [db_datareader] ADD MEMBER ["+$BIGRAM+"_QRRead]" +
         "`rGO"
 
         $SQL_queries += $QRRead_users
@@ -650,7 +650,7 @@ if ($QRRead -eq $true)
     }
 #------------------------------------------------#
 #Fix App pool
-if ($Fix_AppP -eq $true)
+if ($Fix_AppPool -eq $true)
      {
         Import-Module WebAdministration
         Set-ItemProperty IIS:\AppPools\$BIGRAM" Arbetsledare AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
@@ -663,4 +663,5 @@ if ($Fix_AppP -eq $true)
         Set-ItemProperty IIS:\AppPools\$BIGRAM" PoliticallyElected AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
         Set-ItemProperty IIS:\AppPools\$BIGRAM" Utdata AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
         Set-ItemProperty IIS:\AppPools\$BIGRAM" puf_ia AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\"BUROVK IntegrationApi AppPool" -name processModel  -value @{userName=$BIGRAM + "_Sec";password=$Sec_PW;identitytype=3}
     }
