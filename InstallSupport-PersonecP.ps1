@@ -653,15 +653,15 @@ if ($QRRead -eq $true)
 if ($Fix_AppPool -eq $true)
      {
         Import-Module WebAdministration
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" Arbetsledare AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" Arbetstagare AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" PPP PService  Web Service AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" PReportTool AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" Schedule AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" Forhandling_AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" PFHServices AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" PoliticallyElected AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" Utdata AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" puf_ia AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\"BUROVK IntegrationApi AppPool" -name processModel  -value @{userName=$BIGRAM + "_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\$BIGRAM+" Arbetsledare AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\$BIGRAM+" Arbetstagare AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\$BIGRAM+" PPP PService  Web Service AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\$BIGRAM+" PReportTool AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\$BIGRAM+" Schedule AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\$BIGRAM+" Forhandling_AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\$BIGRAM+" PFHServices AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\$BIGRAM+" PoliticallyElected AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\$BIGRAM+" Utdata AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\$BIGRAM+" puf_ia AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\$BIGRAM+" IntegrationApi AppPool" -name processModel  -value @{userName=$BIGRAM + "_Sec";password=$Sec_PW;identitytype=3}
     }
