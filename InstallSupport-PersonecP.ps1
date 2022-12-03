@@ -438,7 +438,7 @@ if ($ShutdownServices -eq $true)
     {
         # Stop WWW site Bigram
         Stop-IISSite -Name $bigram -Verbose -Confirm:$false
-        #Write-Log -Level INFO -Message "Stopped website for $bigram"
+        #Write-Log -Level INFO -Message "Stopped website for " + $bigram 
 
         foreach ($Service in $Services)
         {
@@ -512,7 +512,7 @@ Get-ChildItem -Path $Folder1Path -Recurse | Where-Object {
 if ($SqlQuery -eq $true)
     {
         $query = "##Personic P" +
-        "`rUSE $bigram"+"_PPP" +
+        "`rUSE " + $bigram + "_PPP" +
         "`rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997" +
         "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPu$short_db_version.sql" +
         
@@ -527,7 +527,7 @@ if ($SqlQuery -eq $true)
         "`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc" +
         "`r#------------------------------------------------#" +
         "`n`r#Personic U" +
-        "`rUSE $bigram" + "_PUD" +
+        "`rUSE " + $bigram  + "_PUD" +
         "`rSELECT * FROM dbo.PU_VERSIONSINFO" +
         "`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUu$short_db_version.sql" +
         
@@ -540,7 +540,7 @@ if ($SqlQuery -eq $true)
         "`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc" +
         "`r#------------------------------------------------#" +
         "`n`r##Personic PFH" +
-        "`rUSE $bigram" + "_PFH" +
+        "`rUSE " + $bigram  + "_PFH" +
         "`rSELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997" +
         "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFu$short_db_version.sql" +
         
@@ -567,13 +567,13 @@ if ($Sql_Import_From_Old_DB -eq $true)
         "`rsp_change_users_login update_one,rspdbuser,rspdbuser" +
         "`rsp_change_users_login update_one,psutotint,psutotint" +
         "`rsp_change_users_login update_one,eko,eko " +
-        "`rsp_change_users_login update_one,"+$BIGRAM+"_DashboardUser,"+$BIGRAM+"_DashboardUser" +
-        "`rsp_change_users_login update_one,"+$BIGRAM+"_MenuUser,"+$BIGRAM+"_MenuUser" +
-        "`rsp_change_users_login update_one,"+$BIGRAM+"_SecurityUser,"+$BIGRAM+"_SecurityUser" +
-        "`rsp_change_users_login update_one,"+$BIGRAM+"_NeptuneAdmin,"+ $BIGRAM+"_NeptuneAdmin" +
-        "`rsp_change_users_login update_one,"+$BIGRAM+"_NeptuneUser,"+$BIGRAM+"_NeptuneUser"
+        "`rsp_change_users_login update_one," + $bigram + "_DashboardUser," + $bigram + "_DashboardUser" +
+        "`rsp_change_users_login update_one," + $bigram + "_MenuUser," + $bigram + "_MenuUser" +
+        "`rsp_change_users_login update_one," + $bigram + "_SecurityUser," + $bigram + "_SecurityUser" +
+        "`rsp_change_users_login update_one," + $bigram + "_NeptuneAdmin,"+ $bigram+"_NeptuneAdmin" +
+        "`rsp_change_users_login update_one," + $bigram + "_NeptuneUser," + $bigram + "_NeptuneUser"
             
-        $SQL_queries += $Sql_Import
+        $sql_users  += $Sql_Import
         $time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
         $SQL_queries | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
     }
@@ -605,43 +605,43 @@ if ($QRRead -eq $true)
     {
         $QRRead_users = "USE [master]" +
         "`rGO" +
-        "`rCREATE LOGIN ["+$BIGRAM+"_QRRead] WITH PASSWORD=N'Squabble-Ungloved-Cargo0', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF" +
+        "`rCREATE LOGIN [" + $bigram + "_QRRead] WITH PASSWORD=N'Squabble-Ungloved-Cargo0', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF" +
         "`rGO" +
-        "`rUSE ["+$BIGRAM+"_Neptune] -- Neptune" +
+        "`rUSE [" + $bigram + "_Neptune] -- Neptune" +
         "`rGO" +
-        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN ["+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER [" + $bigram + "_QRRead] FOR LOGIN [" + $bigram + "_QRRead]" +
         "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER ["+$BIGRAM+"_QRRead]" +
+        "`rALTER ROLE [db_datareader] ADD MEMBER [" + $bigram + "_QRRead]" +
         "`rGO" +
-        "`rUSE ["+$BIGRAM+"_PFH] -- Personec Förhandling" +
+        "`rUSE [" + $bigram + "_PFH] -- Personec Förhandling" +
         "`rGO" +
-        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN ["+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER [" + $bigram + "_QRRead] FOR LOGIN [" + $bigram + "_QRRead]" +
         "`rGO" +
-        "`rGRANT EXEC TO ["+$BIGRAM+"_QRRead]" +
+        "`rGRANT EXEC TO [" + $bigram + "_QRRead]" +
         "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER ["+$BIGRAM+"_QRRead]" +
+        "`rALTER ROLE [db_datareader] ADD MEMBER [" + $bigram + "_QRRead]" +
         "`rGO" +
-        "`rUSE ["+$BIGRAM+"_PPP] -- Personec P" +
+        "`rUSE [" + $bigram + "_PPP] -- Personec P" +
         "`rGO" +
-        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN ["+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER [" + $bigram + "_QRRead] FOR LOGIN [" + $bigram + "_QRRead]" +
         "`rGO" +
-        "`rGRANT EXEC TO ["+$BIGRAM+"_QRRead]" +
+        "`rGRANT EXEC TO [" + $bigram + "_QRRead]" +
         "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER ["+$BIGRAM+"_QRRead]" +
+        "`rALTER ROLE [db_datareader] ADD MEMBER [" + $bigram + "_QRRead]" +
         "`rGO" +
-        "`rUSE ["+$BIGRAM+"_PUD] -- Personec Utdata" +
+        "`rUSE [" + $bigram + "_PUD] -- Personec Utdata" +
         "`rGO" +
-        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN ["+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER [" + $bigram + "_QRRead] FOR LOGIN [" + $bigram + "_QRRead]" +
         "`rGO" +
-        "`rGRANT EXEC TO ["+$BIGRAM+"_QRRead]" +
+        "`rGRANT EXEC TO [" + $bigram + "_QRRead]" +
         "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER ["+$BIGRAM+"_QRRead]" +
+        "`rALTER ROLE [db_datareader] ADD MEMBER [" + $bigram + "_QRRead]" +
         "`rGO" +
-        "`n`rUSE ["+$BIGRAM+"_PAG] -- Personec Anställningsguide" +
+        "`n`rUSE [" + $bigram + "_PAG] -- Personec Anställningsguide" +
         "`rGO" +
-        "`rCREATE USER ["+$BIGRAM+"_QRRead] FOR LOGIN ["+$BIGRAM+"_QRRead]" +
+        "`rCREATE USER [" + $bigram + "_QRRead] FOR LOGIN [" + $bigram + "_QRRead]" +
         "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER ["+$BIGRAM+"_QRRead]" +
+        "`rALTER ROLE [db_datareader] ADD MEMBER [" + $bigram + "_QRRead]" +
         "`rGO"
 
         $SQL_queries += $QRRead_users
@@ -653,15 +653,15 @@ if ($QRRead -eq $true)
 if ($Fix_AppPool -eq $true)
      {
         Import-Module WebAdministration
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" Arbetsledare AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" Arbetstagare AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" PPP PService  Web Service AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" PReportTool AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" Schedule AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" Forhandling_AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" PFHServices AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" PoliticallyElected AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" Utdata AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" puf_ia AppPool" -name processModel  -value @{userName=$BIGRAM +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\$BIGRAM" IntegrationApi AppPool" -name processModel  -value @{userName=$BIGRAM + "_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\" + $bigram  Arbetsledare AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\" + $bigram  Arbetstagare AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\" + $bigram  PPP PService  Web Service AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\" + $bigram  PReportTool AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\" + $bigram  Schedule AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\" + $bigram  Forhandling_AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\" + $bigram  PFHServices AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\" + $bigram  PoliticallyElected AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\" + $bigram  Utdata AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\" + $bigram  puf_ia AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\" + $bigram  IntegrationApi AppPool" -name processModel  -value @{userName=$bigram + "_Sec";password=$Sec_PW;identitytype=3}
     }
