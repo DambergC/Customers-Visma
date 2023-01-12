@@ -86,8 +86,8 @@
     $time = (get-date -Format HH:MM:ss)
     
     # Services to check
-    $services = "Ciceron Server Manager","PersonecPBatchManager","Personec P utdata export Import Service","RSPFlexService","W3SVC","World Wide Web Publishing Service"
-    
+    $services = "Ciceron Server Manager","PersonecPBatchManager$bigram","PersonecPUtdataExportImportService$bigram","RSPFlexService$bigram","W3SVC","World Wide Web Publishing Service"
+
     # Array to save data
     $data = @()
 
@@ -514,14 +514,14 @@ if ($SqlQuery -eq $true)
         $query = "##Personic P" +
         "`rUSE " + $bigram + "_PPP" +
         "`rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997" +
-        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPu$short_db_version.sql" +
+        "`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPu$short_db_version.sql" +
         
-        "`n`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPview.sql" +
-        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPproc.sql" +
-        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPtriggers.sql" +
-        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPgra.sql" +
-        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\msDBUPDATERIGHTSP.sql" +
-        "`r:r  $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\PPPds_Feltexter.sql" +
+        "`n`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPview.sql" +
+        "`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPproc.sql" +
+        "`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPtriggers.sql" +
+        "`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPgra.sql" +
+        "`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\msDBUPDATERIGHTSP.sql" +
+        "`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\PPPds_Feltexter.sql" +
         
         "`n`rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997" +
         "`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc" +
@@ -529,12 +529,12 @@ if ($SqlQuery -eq $true)
         "`n`r#Personic U" +
         "`rUSE " + $bigram  + "_PUD" +
         "`rSELECT * FROM dbo.PU_VERSIONSINFO" +
-        "`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUu$short_db_version.sql" +
+        "`r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUu$short_db_version.sql" +
         
-        "`n`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUproc.sql" +
-        "`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUview.sql" +
-        "`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUgra.sql" +
-        "`r:r  $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\msdbupdaterightsU.sql" +
+        "`n`r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUproc.sql" +
+        "`r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUview.sql" +
+        "`r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUgra.sql" +
+        "`r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\msdbupdaterightsU.sql" +
         
         "`n`rSELECT * FROM dbo.PU_VERSIONSINFO" +
         "`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc" +
