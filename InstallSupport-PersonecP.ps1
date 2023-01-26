@@ -395,18 +395,13 @@ else
         
         foreach($appPool in $appPools)
         {
-            if($appPool.ProcessModel.identityType -eq "SpecificUser")
-                {
-                #Write-Host $appPool.Name -ForegroundColor Green -NoNewline
-                #Write-Host " -"$appPool.ProcessModel.UserName"="$appPool.ProcessModel.Password
-                #Write-Host " -"$appPool.ProcessModel.UserName
-
+          
                 [void]$appPoolResultat.add([PSCustomObject]@{
                 Name = $appPool.name
                 User = $appPool.ProcessModel.UserName
                 #Password = $appPool.ProcessModel.Password
                 })
-                }
+                
         }
         $time | Out-File "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
         $appPoolResultat |out-file "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
