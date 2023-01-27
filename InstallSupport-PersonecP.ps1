@@ -75,10 +75,10 @@
     $db_script_path = "D:\Visma"    
 
     #Long DB Version
-    $long_db_version = 22100
+    $long_db_version = 22120
 
     #Short DB Version
-    $short_db_version = 22100
+    $short_db_version = 22120
 
     $Sec_PW = "Visma2016!"
 
