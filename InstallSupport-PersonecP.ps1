@@ -25,7 +25,8 @@
    Framtagning av värden som du behöver senare
 .EXAMPLE
    InstallSupport-PersonecP.ps1 -ShutdownServices
-		
+.VERSION
+2023-02-03 Utökat att ta ut alla ApplikationsPooler
 							  
 .NOTES
    Filename: Pre-InstallPersonec_P.ps1
