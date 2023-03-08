@@ -57,7 +57,7 @@
     [Parameter(Mandatory=$false)]
     [Switch]$Sql_Import_From_Old_DB,
     [Parameter(Mandatory=$false)]
-    [Switch]$QRRead,
+    [Switch]$QRUser,
     [Parameter(Mandatory=$false)]
     [Switch]$Fix_AppPool
     )
@@ -78,7 +78,11 @@
     #Short DB Version
     $short_db_version = 22100
 
+    #Password for BIGRAM_Sec account
     $Sec_PW = "Visma2016!"
+
+    #Password when for BIGRAM_QRRead when creating the query
+    $QRReadPW = "Visma2016!"
 
     # Todays date (used with backupfolder and Pre-Check txt file
     $Today = (get-date -Format yyyyMMdd)
@@ -95,8 +99,32 @@
     $SQL_queries = @()
 
     $logfile = "$PSScriptRoot\$today\Pre-InstallPersonec_P_$today.log"
-
-
+#------------------------------------------------#
+#variables for database or database user to be cleaner in the string
+    #QRRead user
+    $QRRead = $bigram + "_QRRead"
+    #PPP DB
+    $DB_PPP = $bigram + "_PPP"
+    #PFH DB
+    $DB_PFH = $bigram + "_PFH"
+    #PUD DB
+    $DB_PUD = $bigram + "_PUD"
+    #PAG DB
+    $DB_PAG = $bigram + "_PAG"
+    #Neptune DB
+    $DB_Neptune = $bigram + "Neptune"
+    #Sec user for IIS
+    $Sec_User = $bigram + "_Sec"
+    #DashboardUser
+    $DBUser_DU = $bigram + "_DashboardUser"
+    #MenuUser
+    $DBUser_MU = $bigram + "_MenuUser"
+    #SecurityUser
+    $DBUser_SU = $bigram + "_SecurityUser"
+    #NeptuneAdmin
+    $DBUser_NA = $bigram + "_NeptuneAdmin"
+    #NeptuneUser
+    $DBUser_NU = $bigram + "_NeptuneUser"
 #------------------------------------------------#
 # Functions in script
    
@@ -506,47 +534,43 @@ Get-ChildItem -Path $Folder1Path -Recurse | Where-Object {
 # Get Sql Query
 if ($SqlQuery -eq $true)
     {
-        $query = "##Personic P" +
-        "`rUSE " + $bigram + "_PPP" +
-        "`rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997" +
-        "`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPu$short_db_version.sql" +
-        
-        "`n`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPview.sql" +
-        "`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPproc.sql" +
-        "`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPtriggers.sql" +
-        "`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPgra.sql" +
-        "`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\msDBUPDATERIGHTSP.sql" +
-        "`r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\PPPds_Feltexter.sql" +
-        
-        "`n`rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997" +
-        "`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc" +
-        "`r#------------------------------------------------#" +
-        "`n`r#Personic U" +
-        "`rUSE " + $bigram  + "_PUD" +
-        "`rSELECT * FROM dbo.PU_VERSIONSINFO" +
-        "`r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUu$short_db_version.sql" +
-        
-        "`n`r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUproc.sql" +
-        "`r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUview.sql" +
-        "`r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUgra.sql" +
-        "`r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\msdbupdaterightsU.sql" +
-        
-        "`n`rSELECT * FROM dbo.PU_VERSIONSINFO" +
-        "`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc" +
-        "`r#------------------------------------------------#" +
-        "`n`r##Personic PFH" +
-        "`rUSE " + $bigram  + "_PFH" +
-        "`rSELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997" +
-        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFu$short_db_version.sql" +
-        
-        "`n`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFproc.sql" +
-        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFview.sql" +
-        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFgra.sql" +
-        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\msDBUPDATERIGHTSF.sql" +
-        "`r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\PFHds_Feltexter.sql" +
-        
-        "`n`rSELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997" +
-        "`rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc"
+        $query =@"
+        `r##Personic P
+        `rUSE $DB_PPP
+        `rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
+        `r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPu$short_db_version.sql
+        `r`n:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPview.sql
+        `r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPproc.sql
+        `r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPtriggers.sql
+        `r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPgra.sql
+        `r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\msDBUPDATERIGHTSP.sql
+        `r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\PPPds_Feltexter.sql
+        `rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
+        `rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
+        `r#------------------------------------------------#
+        `r#Personic U
+        `rUSE $DB_PUD
+        `rSELECT * FROM dbo.PU_VERSIONSINFO
+        `r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUu$short_db_version.sql
+        `r`n:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUproc.sql
+        `r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUview.sql
+        `r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUgra.sql
+        `r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\msdbupdaterightsU.sql
+        `rSELECT * FROM dbo.PU_VERSIONSINFO
+        `rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
+        `r#------------------------------------------------#
+        `r##Personic PFH
+        `rUSE $DB_PFH
+        `rSELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
+        `r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFu$short_db_version.sql
+        `r`n:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFproc.sql
+        `r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFview.sql
+        `r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFgra.sql
+        `r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\msDBUPDATERIGHTSF.sql
+        `r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\PFHds_Feltexter.sql
+        `rSELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
+        `rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc 
+"@
 
         $SQL_queries += $query
         $time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
@@ -557,17 +581,18 @@ if ($SqlQuery -eq $true)
 #SQL Query for importing accounts
 if ($Sql_Import_From_Old_DB -eq $true)
     {
-        $sql_users = "##Personic P" +
-        "`rsp_change_users_login report" +
-        "`rsp_change_users_login update_one,rspdbuser,rspdbuser" +
-        "`rsp_change_users_login update_one,psutotint,psutotint" +
-        "`rsp_change_users_login update_one,eko,eko " +
-        "`rsp_change_users_login update_one," + $bigram + "_DashboardUser," + $bigram + "_DashboardUser" +
-        "`rsp_change_users_login update_one," + $bigram + "_MenuUser," + $bigram + "_MenuUser" +
-        "`rsp_change_users_login update_one," + $bigram + "_SecurityUser," + $bigram + "_SecurityUser" +
-        "`rsp_change_users_login update_one," + $bigram + "_NeptuneAdmin,"+ $bigram+"_NeptuneAdmin" +
-        "`rsp_change_users_login update_one," + $bigram + "_NeptuneUser," + $bigram + "_NeptuneUser"
-            
+        $sql_users = @"
+        `r##Personic P
+        `rsp_change_users_login report
+        `rsp_change_users_login update_one,rspdbuser,rspdbuser
+        `rsp_change_users_login update_one,psutotint,psutotint
+        `rsp_change_users_login update_one,eko,eko
+        `rsp_change_users_login update_one,$DBUser_DU,$DBUser_DU
+        `rsp_change_users_login update_one,$DBUser_MU,$DBUser_MU
+        `rsp_change_users_login update_one,$DBUser_SU,$DBUser_SU
+        `rsp_change_users_login update_one,$DBUser_NA,$DBUser_NA
+        `rsp_change_users_login update_one,$DBUser_NU,$DBUser_NU
+"@            
         $sql_users  += $Sql_Import
         $time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
         $SQL_queries | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
@@ -596,49 +621,50 @@ if ($DBAbackup -eq $true)
 
 #------------------------------------------------#
 #QRRead query
-if ($QRRead -eq $true)
-    {
-        $QRRead_users = "USE [master]" +
-        "`rGO" +
-        "`rCREATE LOGIN [" + $bigram + "_QRRead] WITH PASSWORD=N'Squabble-Ungloved-Cargo0', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF" +
-        "`rGO" +
-        "`rUSE [" + $bigram + "_Neptune] -- Neptune" +
-        "`rGO" +
-        "`rCREATE USER [" + $bigram + "_QRRead] FOR LOGIN [" + $bigram + "_QRRead]" +
-        "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER [" + $bigram + "_QRRead]" +
-        "`rGO" +
-        "`rUSE [" + $bigram + "_PFH] -- Personec Förhandling" +
-        "`rGO" +
-        "`rCREATE USER [" + $bigram + "_QRRead] FOR LOGIN [" + $bigram + "_QRRead]" +
-        "`rGO" +
-        "`rGRANT EXEC TO [" + $bigram + "_QRRead]" +
-        "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER [" + $bigram + "_QRRead]" +
-        "`rGO" +
-        "`rUSE [" + $bigram + "_PPP] -- Personec P" +
-        "`rGO" +
-        "`rCREATE USER [" + $bigram + "_QRRead] FOR LOGIN [" + $bigram + "_QRRead]" +
-        "`rGO" +
-        "`rGRANT EXEC TO [" + $bigram + "_QRRead]" +
-        "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER [" + $bigram + "_QRRead]" +
-        "`rGO" +
-        "`rUSE [" + $bigram + "_PUD] -- Personec Utdata" +
-        "`rGO" +
-        "`rCREATE USER [" + $bigram + "_QRRead] FOR LOGIN [" + $bigram + "_QRRead]" +
-        "`rGO" +
-        "`rGRANT EXEC TO [" + $bigram + "_QRRead]" +
-        "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER [" + $bigram + "_QRRead]" +
-        "`rGO" +
-        "`n`rUSE [" + $bigram + "_PAG] -- Personec Anställningsguide" +
-        "`rGO" +
-        "`rCREATE USER [" + $bigram + "_QRRead] FOR LOGIN [" + $bigram + "_QRRead]" +
-        "`rGO" +
-        "`rALTER ROLE [db_datareader] ADD MEMBER [" + $bigram + "_QRRead]" +
-        "`rGO"
-
+if ($QRUser -eq $true)
+    
+        $QRRead_users = @"
+        `rUSE [master]
+        `rGO
+        `rCREATE LOGIN [$QRRead] WITH PASSWORD=N'$QRReadPW', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+        `rGO
+        `rUSE [$DB_Neptune] -- Neptune
+        `rGO
+        `rCREATE USER [$QRRead] FOR LOGIN [$QRRead]
+        `rGO
+        `rALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
+        `rGO
+        `rUSE [$DB_PFH] -- Personec Förhandling
+        `rGO
+        `rCREATE USER [$QRRead] FOR LOGIN [$QRRead]
+        `rGO
+        `rGRANT EXEC TO [$QRRead]
+        `rGO
+        `rALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
+        `rGO
+        `rUSE [$DB_PPP] -- Personec P
+        `rGO
+        `rCREATE USER [$QRRead] FOR LOGIN [$QRRead]
+        `rGO
+        `rGRANT EXEC TO [$QRRead]
+        `rGO
+        `rALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
+        `rGO
+        `rUSE [$DB_PUD] -- Personec Utdata
+        `rGO
+        `rCREATE USER [$QRRead] FOR LOGIN [$QRRead]
+        `rGO
+        `rGRANT EXEC TO [$QRRead]
+        `rGO
+        `rALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
+        `rGO
+        `n`rUSE [$DB_PAG] -- Personec Anställningsguide
+        `rGO
+        `rCREATE USER [$QRRead] FOR LOGIN [$QRRead]
+        `rGO
+        `rALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
+        `rGO
+"@
         $SQL_queries += $QRRead_users
         $time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
         $SQL_queries | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
@@ -648,15 +674,15 @@ if ($QRRead -eq $true)
 if ($Fix_AppPool -eq $true)
      {
         Import-Module WebAdministration
-        Set-ItemProperty IIS:\AppPools\"$bigram Arbetsledare AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\"$bigram Arbetstagare AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\"$bigram PPP PService  Web Service AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\"$bigram PReportTool AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\"$bigram Schedule AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\"$bigram Forhandling_AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\"$bigram PFHServices AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\"$bigram PoliticallyElected AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\"$bigram Utdata AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\"$bigram puf_ia AppPool" -name processModel  -value @{userName=$bigram +"_Sec";password=$Sec_PW;identitytype=3}
-        Set-ItemProperty IIS:\AppPools\"$bigram IntegrationApi AppPool" -name processModel  -value @{userName=$bigram + "_Sec";password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\"$bigram Arbetsledare AppPool" -name processModel  -value @{userName=$Sec_User;password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\"$bigram Arbetstagare AppPool" -name processModel  -value @{userName=$Sec_User;password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\"$bigram PPP PService  Web Service AppPool" -name processModel  -value @{userName=$Sec_User;password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\"$bigram PReportTool AppPool" -name processModel  -value @{userName=$Sec_User;password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\"$bigram Schedule AppPool" -name processModel  -value @{userName=$Sec_User;password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\"$bigram Forhandling_AppPool" -name processModel  -value @{userName=$Sec_User;password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\"$bigram PFHServices AppPool" -name processModel  -value @{userName=$Sec_User;password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\"$bigram PoliticallyElected AppPool" -name processModel  -value @{userName=$Sec_User;password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\"$bigram Utdata AppPool" -name processModel  -value @{userName=$Sec_User;password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\"$bigram puf_ia AppPool" -name processModel  -value @{userName=$Sec_User;password=$Sec_PW;identitytype=3}
+        Set-ItemProperty IIS:\AppPools\"$bigram IntegrationApi AppPool" -name processModel  -value @{userName=$Sec_User;password=$Sec_PW;identitytype=3}
     }
