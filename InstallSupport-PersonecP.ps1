@@ -100,7 +100,7 @@
 
     $logfile = "$PSScriptRoot\$today\Pre-InstallPersonec_P_$today.log"
 #------------------------------------------------#
-#variables for database or database user to be cleaner in the string
+#variables for database or database user to be cleaner in the string, NO NEED TO CHANGE THESE!
     #QRRead user
     $QRRead = $bigram + "_QRRead"
     #PPP DB
