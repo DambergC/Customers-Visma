@@ -622,7 +622,7 @@ if ($DBAbackup -eq $true)
 #------------------------------------------------#
 #QRRead query
 if ($QRUser -eq $true)
-    
+    {
         $QRRead_users = @"
         `rUSE [master]
         `rGO
