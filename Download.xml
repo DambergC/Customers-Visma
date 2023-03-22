@@ -13,7 +13,7 @@
 <FileName>msoledbsql.msi</FileName>
 </item>
 <item>
-<Name>OLE DB 18 for SQL2</Name>
+<Name>OLE DB 18 for SQL3</Name>
 <Version>18.6.5</Version>
 <Downloadlink>https://go.microsoft.com/fwlink/?linkid=2218891</Downloadlink>
 <FileName>msoledbsql.msi</FileName>
