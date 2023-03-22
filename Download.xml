@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config version="1.0">
+<item>
+<Name>Notepad++</Name>
+<Version>8.5</Version>
+<Downloadlink>https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.5/npp.8.5.Installer.x64.exe</Downloadlink>
+<FileName>npp.8.5.Installer.x64.exe</FileName>
+</item>
+<item>
+<Name>OLE DB 18 for SQL</Name>
+<Version>18.6.5</Version>
+<Downloadlink>https://go.microsoft.com/fwlink/?linkid=2218891</Downloadlink>
+<FileName>msoledbsql.msi</FileName>
+</item>
+</config>
