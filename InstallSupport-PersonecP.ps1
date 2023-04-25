@@ -33,7 +33,8 @@
    Modified date: 2023-02-24
    Version 1.0 - First release
    Version 1.1 - Updated step inventory to extract appool settings
-   Version 1.2 - Buggfixar   
+   Version 1.2 - Buggfix  
+   Version 1.3 - Long and shortversion updated
 #>
 
 #------------------------------------------------#
@@ -73,10 +74,10 @@
     $db_script_path = "D:\Visma"    
 
     #Long DB Version
-    $long_db_version = 22120
+    $long_db_version = 23040
 
     #Short DB Version
-    $short_db_version = 22120
+    $short_db_version = 23040
 
     #Password for BIGRAM_Sec account
     $Sec_PW = "Visma2016!"
