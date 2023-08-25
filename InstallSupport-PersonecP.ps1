@@ -61,47 +61,66 @@ Param (
 	[Parameter(Mandatory = $false)]
 	[Switch]$Sql_Import_From_Old_DB,
 	[Parameter(Mandatory = $false)]
-	[Switch]$QRUser,
-	[Parameter(Mandatory = $false)]
-	[Switch]$Fix_AppPool
+	[Switch]$QRUser
 )
+
+$test = 'TEST'
 
 if ($XML -eq $true)
 {
 	
-	#skapa xml-dokument
-	$xmlWriter = New-Object System.XMl.XmlTextWriter("$PSScriptRoot\ScriptConfig.XML", $null)
-	$xmlWriter.Formatting = 'Indented'
-	$xmlWriter.Indentation = 1
-	$XmlWriter.IndentChar = "`t"
+	$XMLexist = (test-path -Path "$PSScriptRoot\ScriptConfig.XML")
 	
-	$xmlWriter.WriteStartDocument()
+	if ($XMLexist -eq $false)
+	{
+		
 	
-	$xmlWriter.WriteStartElement("Configuration") # Configuration Startnode
+		
+		Add-Type -AssemblyName Microsoft.VisualBasic
+		$bigramtoXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter BIGRAM",  "Enter customer bigram","BIGRAM")
+		
+		#skapa xml-dokument
+		$xmlWriter = New-Object System.XMl.XmlTextWriter("$PSScriptRoot\ScriptConfig.XML", $null)
+		$xmlWriter.Formatting = 'Indented'
+		$xmlWriter.Indentation = 1
+		$XmlWriter.IndentChar = "`t"
+		
+		$xmlWriter.WriteStartDocument()
+		
+		$xmlWriter.WriteStartElement("Configuration") # Configuration Startnode
+		
+		$xmlWriter.WriteElementString("CustomerBigram", "$BigramToXML")
+		$xmlWriter.WriteElementString("DBscriptPath", "D:\Visma")
+		$xmlWriter.WriteElementString("LongVersion", "00000")
+		$xmlWriter.WriteElementString("ShortVersion", "00000")
+		$xmlWriter.WriteEndElement() # Configuration endnode
+		$xmlWriter.Flush()
+		$xmlWriter.Close()
+	}
 	
-	$xmlWriter.WriteElementString("CustomerBigram", "BIGRAM")
-	$xmlWriter.WriteElementString("LongVersion", "00000")
-	$xmlWriter.WriteElementString("ShortVersion", "00000")
-	$xmlWriter.WriteEndElement() # Configuration endnode
-	$xmlWriter.Flush()
-	$xmlWriter.Close()
+	else
+	{
+		
+		Add-Type -AssemblyName PresentationCore, PresentationFramework
+		$ButtonType = [System.Windows.MessageBoxButton]::Ok
+		$MessageIcon = [System.Windows.MessageBoxImage]::Information
+		$MessageBody = "There is already a xml-file called Scriptconfig.xml?"
+		$MessageTitle = "XML exist"
+		
+		$Result = [System.Windows.MessageBox]::Show($MessageBody, $MessageTitle, $ButtonType, $MessageIcon)
+		
+	}
 	
 }
 
-
 #region Variables & arrays
+[XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML"
 
-#$bigram = read-host 'Bigram?'
-$bigram = 'VISMA'
 
-#DB script path (Parent directory where you find "Install/HRM")
-$db_script_path = "D:\Visma"
-
-#Long DB Version
-$long_db_version = 22100
-
-#Short DB Version
-$short_db_version = 22100
+$BigramXML = $xmlfile.configuration.customerbigram
+$dbscriptpathXML = $xmlfile.configuration.dbscriptpath
+$longversionXML = $xmlfile.configuration.longversion
+$shortverionXML = $xmlfile.configuration.shortversion
 
 #Password for BIGRAM_Sec account
 $Sec_PW = "Visma2016!"
@@ -111,11 +130,10 @@ $QRReadPW = "Visma2016!"
 
 # Todays date (used with backupfolder and Pre-Check txt file
 $Today = (get-date -Format yyyyMMdd)
-
-$time = (get-date -Format HH:MM:ss)
+$Time = (get-date -Format HH:MM:ss)
 
 # Services to check
-$services = "Ciceron Server Manager", "PersonecPBatchManager$bigram", "PersonecPUtdataExportImportService$bigram", "RSPFlexService$bigram", "W3SVC", "World Wide Web Publishing Service"
+$services = "Ciceron Server Manager", "PersonecPBatchManager$BigramXMLXML", "PersonecPUtdataExportImportService$BigramXMLXML", "RSPFlexService$BigramXMLXML", "W3SVC", "World Wide Web Publishing Service"
 
 # Array to save data
 $data = @()
@@ -130,33 +148,31 @@ $logfile = "$PSScriptRoot\$today\Pre-InstallPersonec_P_$today.log"
 #region variables for database or database user to be cleaner in the string, NO NEED TO CHANGE THESE!
 
 #QRRead user
-$QRRead = $bigram + "_QRRead"
+$QRRead = $BigramXML + "_QRRead"
 #PPP DB
-$DB_PPP = $bigram + "_PPP"
+$DB_PPP = $BigramXML + "_PPP"
 #PFH DB
-$DB_PFH = $bigram + "_PFH"
+$DB_PFH = $BigramXML + "_PFH"
 #PUD DB
-$DB_PUD = $bigram + "_PUD"
+$DB_PUD = $BigramXML + "_PUD"
 #PAG DB
-$DB_PAG = $bigram + "_PAG"
+$DB_PAG = $BigramXML + "_PAG"
 #Neptune DB
-$DB_Neptune = $bigram + "Neptune"
+$DB_Neptune = $BigramXML + "Neptune"
 #Sec user for IIS
-$Sec_User = $bigram + "_Sec"
+$Sec_User = $BigramXML + "_Sec"
 #DashboardUser
-$DBUser_DU = $bigram + "_DashboardUser"
+$DBUser_DU = $BigramXML + "_DashboardUser"
 #MenuUser
-$DBUser_MU = $bigram + "_MenuUser"
+$DBUser_MU = $BigramXML + "_MenuUser"
 #SecurityUser
-$DBUser_SU = $bigram + "_SecurityUser"
+$DBUser_SU = $BigramXML + "_SecurityUser"
 #NeptuneAdmin
-$DBUser_NA = $bigram + "_NeptuneAdmin"
+$DBUser_NA = $BigramXML + "_NeptuneAdmin"
 #NeptuneUser
-$DBUser_NU = $bigram + "_NeptuneUser"
+$DBUser_NU = $BigramXML + "_NeptuneUser"
 
 #endregion
-
-#region Functions in script
 
 # Function to write to logfile
 Function Write-Log
@@ -218,19 +234,21 @@ function Get-IniFile
 	return $ini
 }
 
-#endregion 
 
 #region Service and web.config
 
-$folder = (test-path -Path "D:\visma\Install\Backup\$Today\")
 
-if ($folder -eq $false)
-{
-	New-Item -Path "d:\visma\install\backup\" -ItemType Directory -Name $Today
-}
 
 if ($InventorySystem -eq $true)
 {
+	
+	$folder = (test-path -Path "D:\visma\Install\Backup\$Today\")
+	
+	if ($folder -eq $false)
+	{
+		New-Item -Path "d:\visma\install\backup\" -ItemType Directory -Name $Today
+	}
+	
 	# Check and document services
 	foreach ($Service in $Services)
 	{
@@ -240,11 +258,11 @@ if ($InventorySystem -eq $true)
 	}
 	
 	# Send data to file about services
-	$time | Out-File "$PSScriptRoot\$today\Services_$Today.txt" -Append
-	$data | Out-File "$PSScriptRoot\$today\Services_$Today.txt" -Append
+	$time | Out-File "$PSScriptRoot\$today\Services_$Today_$time.txt" -Append
+	$data | Out-File "$PSScriptRoot\$today\Services_$Today_$time.txt" -Append
 	
 	# Check dotnet version installed and send to file
-	$dotnet = Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name version -EA 0 | Where { $_.PSChildName -Match '^(?!S)\p{L}' } | Select PSChildName, version | Sort-Object version -Descending | Out-File $PSScriptRoot\$today\DotNet_$today.txt -Append
+	#$dotnet = Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name version -EA 0 | Where { $_.PSChildName -Match '^(?!S)\p{L}' } | Select PSChildName, version | Sort-Object version -Descending | Out-File $PSScriptRoot\$today\DotNet_$today.txt -Append
 	
 	# get installed software
 	
@@ -252,8 +270,8 @@ if ($InventorySystem -eq $true)
 								  'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*',
 								  'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
 								  'HKCU:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction Ignore | Where-Object publisher -eq 'Visma' | Select-Object -Property DisplayName, DisplayVersion, Publisher | Sort-Object -Property DisplayName
-	$time | Out-File "$PSScriptRoot\$today\InstalledSoftware_$Today.txt" -Append
-	$installed | Out-File "$PSScriptRoot\$today\InstalledSoftware_$Today.txt" -Append
+	$time | Out-File "$PSScriptRoot\$today\InstalledSoftware_$Today_$time.txt" -Append
+	$installed | Out-File "$PSScriptRoot\$today\InstalledSoftware_$Today_$time.txt" -Append
 	
 	
 }
@@ -265,11 +283,11 @@ if ($InventoryConfig -eq $true)
 	
 	#region UserSSo check
 	
-	$UseSSOBackup = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$bigram\$bigram\Login\Web.config")
+	$UseSSOBackup = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$BigramXML\$BigramXML\Login\Web.config")
 	
 	if ($UseSSOBackup -eq $true)
 	{
-		[XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\$bigram\Login\Web.config" -ErrorAction SilentlyContinue
+		[XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\$BigramXML\Login\Web.config" -ErrorAction SilentlyContinue
 		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT1 = 'SINGLESIGNON' | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT2 = 'UseSSO' | Out-File "$PSScriptRoot\$today\data.txt" -Append
@@ -286,11 +304,11 @@ if ($InventoryConfig -eq $true)
 	#region förhandling check
 	
 	
-	$forhandling = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$bigram\pfh\services\Web.config")
+	$forhandling = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$BigramXML\pfh\services\Web.config")
 	
 	if ($forhandling -eq $true)
 	{
-		[XML]$forhandlingsettings = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\pfh\services\Web.config" -ErrorAction SilentlyContinue
+		[XML]$forhandlingsettings = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\pfh\services\Web.config" -ErrorAction SilentlyContinue
 		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT1 = 'FÖRHANDLING' | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT2 = 'PotEditable' | Out-File "$PSScriptRoot\$today\data.txt" -Append
@@ -307,11 +325,11 @@ if ($InventoryConfig -eq $true)
 	
 	#region Befolkning
 	
-	$befolkningBackupAG = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_AG\web.config")
+	$befolkningBackupAG = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$BigramXML\PPP\Personec_AG\web.config")
 	
 	if ($befolkningBackupAG -eq $true)
 	{
-		[XML]$UseBEfolkAG = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PPP\Personec_AG\web.config" -ErrorAction SilentlyContinue
+		[XML]$UseBEfolkAG = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\PPP\Personec_AG\web.config" -ErrorAction SilentlyContinue
 		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT1 = 'BEFOLKNINGSREGISTER AG-web.config' | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT2 = 'BefolkningsregisterConfigFileName' | Out-File "$PSScriptRoot\$today\data.txt" -Append
@@ -329,11 +347,11 @@ if ($InventoryConfig -eq $true)
 	
 	#region PStid.ini
 	
-	$pathPStid = (Test-Path "$PSScriptRoot\$today\programs\$bigram\ppp\Personec_p\pstid.ini")
+	$pathPStid = (Test-Path "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid.ini")
 	
 	if ($pathPStid -eq $true)
 	{
-		$pstid = Get-IniFile "$PSScriptRoot\$today\programs\$bigram\ppp\Personec_p\pstid.ini"
+		$pstid = Get-IniFile "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid.ini"
 		$NeptuneUser = $PSTID.styr.NeptuneUser
 		$NeptunePwd = $PSTID.styr.neptunepassword
 		
@@ -355,11 +373,11 @@ if ($InventoryConfig -eq $true)
 	
 	#region Egna rapporter check
 	
-	$ReportsBackupPPP = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt")
+	$ReportsBackupPPP = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt")
 	
 	if ($ReportsBackupPPP -eq $true)
 	{
-		$rapport = Get-ChildItem -Recurse "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt"
+		$rapport = Get-ChildItem -Recurse "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt"
 		$time | Out-File "$PSScriptRoot\$today\ReportsPPP_$Today.txt" -Append
 		$rapport | out-file "$PSScriptRoot\$today\reportsPPP_$Today.txt" -Append
 	}
@@ -368,11 +386,11 @@ if ($InventoryConfig -eq $true)
 		write-host "No reports for PPP in backup"
 	}
 	
-	$ReportsBackupAG = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_AG\CR\rpt")
+	$ReportsBackupAG = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt")
 	
 	if ($ReportsBackupAG -eq $true)
 	{
-		$rapport = Get-ChildItem -Recurse "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_AG\CR\rpt"
+		$rapport = Get-ChildItem -Recurse "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt"
 		$time | Out-File "$PSScriptRoot\$today\ReportsAG_$Today.txt" -Append
 		$rapport | out-file "$PSScriptRoot\$today\reportsAG_$Today.txt" -Append
 	}
@@ -385,11 +403,11 @@ if ($InventoryConfig -eq $true)
 	
 	#region Batch check
 	
-	$BatchBackup = (Test-Path "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config")
+	$BatchBackup = (Test-Path "$PSScriptRoot\$today\Programs\$BigramXML\PPP\Personec_P\batch.config")
 	
 	if ($BatchBackup -eq $true)
 	{
-		[xml]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$bigram\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
+		[xml]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$BigramXML\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
 		
 		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT1 = 'BATCHUSER-cHECK' | Out-File "$PSScriptRoot\$today\data.txt" -Append
@@ -408,11 +426,11 @@ if ($InventoryConfig -eq $true)
 	#endregion
 	
 	#region PIA Webconfig check
-	$PiaBackup = (Test-Path "$PSScriptRoot\$today\wwwroot\$bigram\PIA\PUF_IA Module\web.config")
+	$PiaBackup = (Test-Path "$PSScriptRoot\$today\wwwroot\$BigramXML\PIA\PUF_IA Module\web.config")
 	
 	if ($PiaBackup -eq $true)
 	{
-		[XML]$PIA = Get-Content "$PSScriptRoot\$today\Wwwroot\$bigram\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
+		[XML]$PIA = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
 		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT1 = 'PIA CHECK' | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT2 = 'PPP Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
@@ -489,8 +507,8 @@ if ($Backup -eq $true)
 if ($ShutdownServices -eq $true)
 {
 	# Stop WWW site Bigram
-	Stop-IISSite -Name $bigram -Verbose -Confirm:$false
-	#Write-Log -Level INFO -Message "Stopped website for " + $bigram 
+	Stop-IISSite -Name $BigramXML -Verbose -Confirm:$false
+	#Write-Log -Level INFO -Message "Stopped website for " + $BigramXML 
 	
 	foreach ($Service in $Services)
 	{
@@ -506,7 +524,7 @@ if ($ShutdownServices -eq $true)
 if ($CopyReports -eq $true)
     {
 # Personec P web
-    $Folder1path = "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt"
+    $Folder1path = "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt"
     $Folder2path = "D:\Visma\Wwwroot\VISMA\ppp\Personec_P_web\Lon\cr\rpt"
  
 $ErrorActionPreference = "Stop";
@@ -527,7 +545,7 @@ Get-ChildItem -Path $Folder1Path -Recurse | Where-Object {
 }
 
 # Personec AG
-    $Folder1path = "$PSScriptRoot\$Today\Wwwroot\$bigram\PPP\Personec_AG\CR\rpt"
+    $Folder1path = "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt"
     $Folder2path = "D:\Visma\Wwwroot\VISMA\PPP\Personec_AG\CR\rpt"
  
 $ErrorActionPreference = "Stop";
@@ -552,10 +570,10 @@ Get-ChildItem -Path $Folder1Path -Recurse | Where-Object {
 # Move Template folders
 <#if ($FlyttaMallar -eq $true)
     {
-        Remove-Item -Path "D:\Visma\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt\*"
-        Remove-Item -Path "D:\Visma\wwwroot\$bigram\PPP\Personec_AG\CR\rpt\*"
-        Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt\* D:\Visma\wwwroot\$bigram\PPP\Personec_P_web\Lon\cr\rpt
-        Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$bigram\PPP\Personec_AG\CR\rpt\* D:\Visma\wwwroot\$bigram\PPP\Personec_AG\CR\rpt
+        Remove-Item -Path "D:\Visma\wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt\*"
+        Remove-Item -Path "D:\Visma\wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt\*"
+        Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt\* D:\Visma\wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt
+        Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt\* D:\Visma\wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt
     }
 #>
 
@@ -643,7 +661,7 @@ if ($DBAbackup -eq $true)
 	$instans = [Microsoft.VisualBasic.Interaction]::InputBox("Vilken SQLinstans ska kollas?", "Skriv in sqlinstans", "localhost")
 	$backupplats = [Microsoft.VisualBasic.Interaction]::InputBox("Vart ska backuperna sparas?", "Skriv in annan sökväg vid behov", "d:\visma")
 	
-	get-dbaDatabase -SqlInstance $instans -SqlCredential $cred | Select-Object -Property name, size -ExpandProperty name | Where-Object name -like '*$bigram*' | Out-GridView -PassThru -Title 'Välj de databaser du vill ha backup på (markera flera med att hålla ner CTRL' | foreach { Backup-DbaDatabase -SqlCredential $cred -SqlInstance $instans -Database $_ -CopyOnly -FilePath $backupplats -Verbose }
+	get-dbaDatabase -SqlInstance $instans -SqlCredential $cred | Select-Object -Property name, size -ExpandProperty name | Where-Object name -like '*$BigramXML*' | Out-GridView -PassThru -Title 'Välj de databaser du vill ha backup på (markera flera med att hålla ner CTRL' | foreach { Backup-DbaDatabase -SqlCredential $cred -SqlInstance $instans -Database $_ -CopyOnly -FilePath $backupplats -Verbose }
 	
 	
 }
@@ -699,19 +717,4 @@ if ($QRUser -eq $true)
 	$SQL_queries | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
 }
 #------------------------------------------------#
-#Fix App pool
-if ($Fix_AppPool -eq $true)
-{
-	Import-Module WebAdministration
-	Set-ItemProperty IIS:\AppPools\"$bigram Arbetsledare AppPool" -name processModel -value @{ userName = $Sec_User; password = $Sec_PW; identitytype = 3 }
-	Set-ItemProperty IIS:\AppPools\"$bigram Arbetstagare AppPool" -name processModel -value @{ userName = $Sec_User; password = $Sec_PW; identitytype = 3 }
-	Set-ItemProperty IIS:\AppPools\"$bigram PPP PService  Web Service AppPool" -name processModel -value @{ userName = $Sec_User; password = $Sec_PW; identitytype = 3 }
-	Set-ItemProperty IIS:\AppPools\"$bigram PReportTool AppPool" -name processModel -value @{ userName = $Sec_User; password = $Sec_PW; identitytype = 3 }
-	Set-ItemProperty IIS:\AppPools\"$bigram Schedule AppPool" -name processModel -value @{ userName = $Sec_User; password = $Sec_PW; identitytype = 3 }
-	Set-ItemProperty IIS:\AppPools\"$bigram Forhandling_AppPool" -name processModel -value @{ userName = $Sec_User; password = $Sec_PW; identitytype = 3 }
-	Set-ItemProperty IIS:\AppPools\"$bigram PFHServices AppPool" -name processModel -value @{ userName = $Sec_User; password = $Sec_PW; identitytype = 3 }
-	Set-ItemProperty IIS:\AppPools\"$bigram PoliticallyElected AppPool" -name processModel -value @{ userName = $Sec_User; password = $Sec_PW; identitytype = 3 }
-	Set-ItemProperty IIS:\AppPools\"$bigram Utdata AppPool" -name processModel -value @{ userName = $Sec_User; password = $Sec_PW; identitytype = 3 }
-	Set-ItemProperty IIS:\AppPools\"$bigram puf_ia AppPool" -name processModel -value @{ userName = $Sec_User; password = $Sec_PW; identitytype = 3 }
-	Set-ItemProperty IIS:\AppPools\"$bigram IntegrationApi AppPool" -name processModel -value @{ userName = $Sec_User; password = $Sec_PW; identitytype = 3 }
-}
+
