@@ -629,30 +629,11 @@ if ($InventoryConfig -eq $true)
 if ($Backup -eq $true)
 {
 	
-	Add-Type -AssemblyName PresentationCore, PresentationFramework
-	$ButtonType = [System.Windows.MessageBoxButton]::YesNo
-	$MessageIcon = [System.Windows.MessageBoxImage]::Information
-	$MessageBody = "Have you decrypt the files thru public installer?"
-	$MessageTitle = "Decrypt files..."
-	
-	$Result = [System.Windows.MessageBox]::Show($MessageBody, $MessageTitle, $ButtonType, $MessageIcon)
-	
-	if ($Result -eq 'yes')
-	{
 		
 		Copy-ItemWithProgress D:\Visma\Wwwroot\ D:\Visma\Install\backup\$Today\wwwroot\ /e /xf *.log, *.svclog
 		Copy-ItemWithProgress D:\Visma\Programs\ D:\Visma\Install\backup\$Today\programs\ /e /xf *.log
+
 	}
-	
-	else
-	{
-		exit
-	}
-	
-	
-	
-	
-}
 
 
 #------------------------------------------------#
@@ -816,4 +797,3 @@ if ($QRUser -eq $true)
 	$SQL_queries | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
 }
 #------------------------------------------------#
-
