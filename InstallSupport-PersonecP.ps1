@@ -73,11 +73,8 @@ if ($XML -eq $true)
 	
 	if ($XMLexist -eq $false)
 	{
-		
-	
-		
 		Add-Type -AssemblyName Microsoft.VisualBasic
-		$bigramtoXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter BIGRAM",  "Enter customer bigram","BIGRAM")
+		$bigramtoXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter BIGRAM", "Enter customer bigram", "BIGRAM")
 		
 		#skapa xml-dokument
 		$xmlWriter = New-Object System.XMl.XmlTextWriter("$PSScriptRoot\ScriptConfig.XML", $null)
@@ -175,6 +172,9 @@ $DBUser_NU = $BigramXML + "_NeptuneUser"
 #endregion
 
 # Function to write to logfile
+
+
+
 Function Write-Log
 {
 	[CmdletBinding()]
@@ -191,6 +191,99 @@ Function Write-Log
 	"$Stamp $Level $Message" | Out-File -Encoding utf8 $logfile -Append
 }
 
+<#
+.SYNOPSIS
+RoboCopy with PowerShell progress.
+
+.DESCRIPTION
+Performs file copy with RoboCopy. Output from RoboCopy is captured,
+parsed, and returned as Powershell native status and progress.
+
+.PARAMETER RobocopyArgs
+List of arguments passed directly to Robocopy.
+Must not conflict with defaults: /ndl /TEE /Bytes /NC /nfl /Log
+
+.OUTPUTS
+Returns an object with the status of final copy.
+REMINDER: Any error level below 8 can be considered a success by RoboCopy.
+
+.EXAMPLE
+C:\PS> .\Copy-ItemWithProgress c:\Src d:\Dest
+
+Copy the contents of the c:\Src directory to a directory d:\Dest
+Without the /e or /mir switch, only files from the root of c:\src are copied.
+
+.EXAMPLE
+C:\PS> .\Copy-ItemWithProgress '"c:\Src Files"' d:\Dest /mir /xf *.log -Verbose
+
+Copy the contents of the 'c:\Name with Space' directory to a directory d:\Dest
+/mir and /XF parameters are passed to robocopy, and script is run verbose
+
+.LINK
+https://keithga.wordpress.com/2014/06/23/copy-itemwithprogress
+
+.NOTES
+By Keith S. Garner (KeithGa@KeithGa.com) - 6/23/2014
+With inspiration by Trevor Sullivan @pcgeek86
+
+#>
+
+Function Copy-ItemWithProgress
+{
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory = $true, ValueFromRemainingArguments = $true)]
+		[string[]]$RobocopyArgs
+	)
+	
+	$ScanLog = [IO.Path]::GetTempFileName()
+	$RoboLog = [IO.Path]::GetTempFileName()
+	$ScanArgs = $RobocopyArgs + "/ndl /TEE /bytes /Log:$ScanLog /nfl /L".Split(" ")
+	$RoboArgs = $RobocopyArgs + "/ndl /TEE /bytes /Log:$RoboLog /NC".Split(" ")
+	
+	# Launch Robocopy Processes
+	write-verbose ("Robocopy Scan:`n" + ($ScanArgs -join " "))
+	write-verbose ("Robocopy Full:`n" + ($RoboArgs -join " "))
+	$ScanRun = start-process robocopy -PassThru -WindowStyle Hidden -ArgumentList $ScanArgs
+	$RoboRun = start-process robocopy -PassThru -WindowStyle Hidden -ArgumentList $RoboArgs
+	
+	# Parse Robocopy "Scan" pass
+	$ScanRun.WaitForExit()
+	$LogData = get-content $ScanLog
+	if ($ScanRun.ExitCode -ge 8)
+	{
+		$LogData | out-string | Write-Error
+		throw "Robocopy $($ScanRun.ExitCode)"
+	}
+	$FileSize = [regex]::Match($LogData[-4], ".+:\s+(\d+)\s+(\d+)").Groups[2].Value
+	write-verbose ("Robocopy Bytes: $FileSize `n" + ($LogData -join "`n"))
+	
+	# Monitor Full RoboCopy
+	while (!$RoboRun.HasExited)
+	{
+		$LogData = get-content $RoboLog
+		$Files = $LogData -match "^\s*(\d+)\s+(\S+)"
+		if ($Files -ne $Null)
+		{
+			$copied = ($Files[0 .. ($Files.Length - 2)] | %{ $_.Split("`t")[-2] } | Measure -sum).Sum
+			if ($LogData[-1] -match "(100|\d?\d\.\d)\%")
+			{
+				write-progress Copy -ParentID $RoboRun.ID -percentComplete $LogData[-1].Trim("% `t") $LogData[-1]
+				$Copied += $Files[-1].Split("`t")[-2] /100 * ($LogData[-1].Trim("% `t"))
+			}
+			else
+			{
+				write-progress Copy -ParentID $RoboRun.ID -Complete
+			}
+			write-progress ROBOCOPY -ID $RoboRun.ID -PercentComplete ($Copied/$FileSize * 100) $Files[-1].Split("`t")[-1]
+		}
+	}
+	
+	# Parse full RoboCopy pass results, and cleanup
+	(get-content $RoboLog)[-11 .. -2] | out-string | Write-Verbose
+	[PSCustomObject]@{ ExitCode = $RoboRun.ExitCode }
+	remove-item $RoboLog, $ScanLog
+}
 
 function Get-IniFile
 {
@@ -496,8 +589,30 @@ if ($InventoryConfig -eq $true)
 # Copy to backup
 if ($Backup -eq $true)
 {
-	robocopy D:\Visma\Wwwroot\ D:\Visma\Install\backup\$Today\wwwroot\ /e /xf *.log, *.svclog
-	robocopy D:\Visma\Programs\ D:\Visma\Install\backup\$Today\programs\ /e /xf *.log
+	
+	Add-Type -AssemblyName PresentationCore, PresentationFramework
+	$ButtonType = [System.Windows.MessageBoxButton]::YesNo
+	$MessageIcon = [System.Windows.MessageBoxImage]::Information
+	$MessageBody = "Have you decrypt the files thru public installer?"
+	$MessageTitle = "Decrypt files..."
+	
+	$Result = [System.Windows.MessageBox]::Show($MessageBody, $MessageTitle, $ButtonType, $MessageIcon)
+	
+	if ($Result -eq 'yes')
+	{
+		
+		Copy-ItemWithProgress D:\Visma\Wwwroot\ D:\Visma\Install\backup\$Today\wwwroot\ /e /xf *.log, *.svclog
+		Copy-ItemWithProgress D:\Visma\Programs\ D:\Visma\Install\backup\$Today\programs\ /e /xf *.log
+	}
+	
+	else
+	{
+		exit
+	}
+	
+	
+	
+	
 }
 
 
@@ -519,102 +634,47 @@ if ($ShutdownServices -eq $true)
 	
 }
 
-#------------------------------------------------#
-<# Copy customermade reports
-if ($CopyReports -eq $true)
-    {
-# Personec P web
-    $Folder1path = "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt"
-    $Folder2path = "D:\Visma\Wwwroot\VISMA\ppp\Personec_P_web\Lon\cr\rpt"
- 
-$ErrorActionPreference = "Stop";
-Set-StrictMode -Version 'Latest'
 
-Get-ChildItem -Path $Folder1Path -Recurse | Where-Object {
-
-    [string] $toDiff = $_.FullName.Replace($Folder1path, $Folder2path)
-    # Determine what's in 2, but not 1
-    [bool] $isDiff = (Test-Path -Path $toDiff) -eq $false
-    
-    if ($isDiff) {
-        # Create destination path that contains folder structure
-        $dest = $_.FullName.Replace($Folder1path, $Folder2path)
-        Copy-Item -Path $_.FullName -Destination $dest -Verbose -Force
-        #write-log -Level INFO -Message "Copy $_. to $dest"
-    }
-}
-
-# Personec AG
-    $Folder1path = "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt"
-    $Folder2path = "D:\Visma\Wwwroot\VISMA\PPP\Personec_AG\CR\rpt"
- 
-$ErrorActionPreference = "Stop";
-Set-StrictMode -Version 'Latest'
-
-Get-ChildItem -Path $Folder1Path -Recurse | Where-Object {
-
-    [string] $toDiff = $_.FullName.Replace($Folder1path, $Folder2path)
-    # Determine what's in 2, but not 1
-    [bool] $isDiff = (Test-Path -Path $toDiff) -eq $false
-    
-    if ($isDiff) {
-        # Create destination path that contains folder structure
-        $dest = $_.FullName.Replace($Folder1path, $Folder2path)
-        Copy-Item -Path $_.FullName -Destination $dest -Verbose -Force
-        #write-log -Level INFO -Message "Copy $_. to $dest"
-    }
-}
-}
-#>
-#------------------------------------------------#
-# Move Template folders
-<#if ($FlyttaMallar -eq $true)
-    {
-        Remove-Item -Path "D:\Visma\wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt\*"
-        Remove-Item -Path "D:\Visma\wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt\*"
-        Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt\* D:\Visma\wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt
-        Robocopy D:\Visma\Install\Backup\$Today\wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt\* D:\Visma\wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt
-    }
-#>
 
 #------------------------------------------------#
 # Get Sql Query
 if ($SqlQuery -eq $true)
 {
+	
 	$query = @"
         `r##Personic P
         `rUSE $DB_PPP
         `rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
-        `r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPu$short_db_version.sql
-        `r`n:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPview.sql
-        `r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPproc.sql
-        `r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPtriggers.sql
-        `r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\mRSPgra.sql
-        `r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\msDBUPDATERIGHTSP.sql
-        `r:r $db_script_path\Install\HRM\PPP\DatabaseServer\Script\SW\$long_db_version\PPPds_Feltexter.sql
+        `r:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPu$shortverionXML.sql
+        `r`n:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPview.sql
+        `r:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPproc.sql
+        `r:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPtriggers.sql
+        `r:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPgra.sql
+        `r:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\msDBUPDATERIGHTSP.sql
+        `r:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\PPPds_Feltexter.sql
         `rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
         `rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
         `r#------------------------------------------------#
         `r#Personic U
         `rUSE $DB_PUD
         `rSELECT * FROM dbo.PU_VERSIONSINFO
-        `r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUu$short_db_version.sql
-        `r`n:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUproc.sql
-        `r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUview.sql
-        `r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\mPSUgra.sql
-        `r:r $db_script_path\Install\HRM\PUD\DatabaseServer\Script\SW\$long_db_version\msdbupdaterightsU.sql
+        `r:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUu$shortverionXML.sql
+        `r`n:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUproc.sql
+        `r:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUview.sql
+        `r:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUgra.sql
+        `r:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\msdbupdaterightsU.sql
         `rSELECT * FROM dbo.PU_VERSIONSINFO
         `rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
         `r#------------------------------------------------#
         `r##Personic PFH
         `rUSE $DB_PFH
         `rSELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
-        `r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFu$short_db_version.sql
-        `r`n:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFproc.sql
-        `r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFview.sql
-        `r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\mPSFgra.sql
-        `r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\msDBUPDATERIGHTSF.sql
-        `r:r $db_script_path\Install\HRM\PFH\DatabaseServer\Script\SW\$long_db_version\PFHds_Feltexter.sql
+        `r:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFu$short_db_version.sql
+        `r`n:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFproc.sql
+        `r:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFview.sql
+        `r:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFgra.sql
+        `r:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\msDBUPDATERIGHTSF.sql
+        `r:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\PFHds_Feltexter.sql
         `rSELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
         `rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc 
 "@
@@ -629,7 +689,7 @@ if ($SqlQuery -eq $true)
 if ($Sql_Import_From_Old_DB -eq $true)
 {
 	$sql_users = @"
-        `r##Personic P
+        `r##Personec P
         `rsp_change_users_login report
         `rsp_change_users_login update_one,rspdbuser,rspdbuser
         `rsp_change_users_login update_one,psutotint,psutotint
