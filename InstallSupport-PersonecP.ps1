@@ -3,23 +3,15 @@
    Detta skript kan du änvända för att underlätta vid uppgradering av Personec P
 .DESCRIPTION
    Funktioner i skripet
-   - Backup av filstrukturen
-   - Ta fram vissa värden från web.config som du behöver vid uppgraderingen
-   - Kontroll av system
-    - DotNet 4.8
-    - Crystal Reports version
-    - Vilka tjänster som rullar samt med vilka konton som kör dom
-    - Vilka konton som applikationspoolerna körs med
-    - SQLquery framtagning av textfil för att underlätta när du ska köra sql-skript i SQLCMD
-    - Databasbackup
-    - Serverinventering för att underlätta dokumentation för onprem kunder
-    - Stopp av tjänster
+	- XML - Creates XML-file with default value
+	- Backup - filebackup excl. logfiles 
+	
 .EXAMPLE
    InstallSupport-PersonecP.ps1 -backup
    Backup av filstruktur 
 .EXAMPLE
    InstallSupport-PersonecP.ps1 -InventorySystem
-   DotNet, Crystal reports, tjänster och applikationspooler
+
 .EXAMPLE
    InstallSupport-PersonecP.ps1 -InventoryConfig
    Framtagning av värden som du behöver senare
@@ -47,6 +39,8 @@ Param (
 	[Parameter(Mandatory = $false)]
 	[Switch]$Backup,
 	[Parameter(Mandatory = $false)]
+	[Switch]$Password,
+	[Parameter(Mandatory = $false)]
 	[Switch]$InventoryConfig,
 	[Parameter(Mandatory = $false)]
 	[Switch]$InventorySystem,
@@ -65,6 +59,9 @@ Param (
 )
 
 $test = 'TEST'
+
+
+
 
 if ($XML -eq $true)
 {
@@ -171,9 +168,36 @@ $DBUser_NU = $BigramXML + "_NeptuneUser"
 
 #endregion
 
-# Function to write to logfile
+# Function 
+
+function Generate-RandomPassword
+{
+	param (
+		[Parameter(Mandatory)]
+		[int]$length
+	)
+	
+	$charSet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.ToCharArray()
+	
+	$rng = New-Object System.Security.Cryptography.RNGCryptoServiceProvider
+	$bytes = New-Object byte[]($length)
+	
+	$rng.GetBytes($bytes)
+	
+	$result = New-Object char[]($length)
+	
+	for ($i = 0; $i -lt $length; $i++)
+	{
+		$result[$i] = $charSet[$bytes[$i] % $charSet.Length]
+	}
+	
+	return -join $result
+}
+
+#Generate-RandomPassword 10
 
 
+#Read more: https://www.sharepointdiary.com/2020/04/powershell-generate-random-password.html#ixzz8Bgs4333S
 
 Function Write-Log
 {
@@ -330,7 +354,22 @@ function Get-IniFile
 
 #region Service and web.config
 
-
+if ($Password -eq $true)
+{
+	
+	$passwordGenerate = Generate-RandomPassword -length 15
+	
+	Set-Clipboard -Value $passwordGenerate
+	
+	Add-Type -AssemblyName PresentationCore, PresentationFramework
+	$ButtonType = [System.Windows.MessageBoxButton]::OK
+	$MessageIcon = [System.Windows.MessageBoxImage]::Information
+	$MessageBody = "The following password has been generated and sent to your clipboard, -->    $passwordGenerate  <--"
+	$MessageTitle = "Password generated!"
+	
+	$Result = [System.Windows.MessageBox]::Show($MessageBody, $MessageTitle, $ButtonType, $MessageIcon)
+	
+}
 
 if ($InventorySystem -eq $true)
 {
