@@ -1,6 +1,6 @@
 <#
 .Synopsis
-   Detta skript kan du Ã¤nvÃ¤nda fÃ¶r att underlÃ¤tta vid uppgradering av Personec P
+   Detta skript kan du änvända för att underlätta vid uppgradering av Personec P
 .DESCRIPTION
    Funktioner i skripet
 	- XML - Creates XML-file with default value
@@ -14,7 +14,7 @@
 
 .EXAMPLE
    InstallSupport-PersonecP.ps1 -InventoryConfig
-   Framtagning av vÃ¤rden som du behÃ¶ver senare
+   Framtagning av värden som du behöver senare
 .EXAMPLE
    InstallSupport-PersonecP.ps1 -ShutdownServices
 .NOTES
@@ -26,7 +26,7 @@
    Version 1.0 - First release
    Version 1.1 - Updated step inventory to extract appool settings
    Version 1.2 - Buggfixar
-   Version 2.0 - XML-fil fÃ¶r bigram samt borttagning av pwd
+   Version 2.0 - XML-fil för bigram samt borttagning av pwd
    
 #>
 
@@ -387,7 +387,7 @@ if ($InventoryConfig -eq $true)
 	}
 	#endregion
 	
-	#region fÃ¶rhandling check
+	#region förhandling check
 	
 	
 	$forhandling = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$BigramXML\pfh\services\Web.config")
@@ -396,7 +396,7 @@ if ($InventoryConfig -eq $true)
 	{
 		[XML]$forhandlingsettings = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\pfh\services\Web.config" -ErrorAction SilentlyContinue
 		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT1 = 'FÃ–RHANDLING' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+		$TEXT1 = 'FÖRHANDLING' | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT2 = 'PotEditable' | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$forhandlingsettings.configuration.appsettings.add.where{ $_.key -eq 'PotEditable' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
@@ -426,7 +426,7 @@ if ($InventoryConfig -eq $true)
 	}
 	else
 	{
-		write-host "No web.config for befolkning in backup fÃ¶r AG web.config"
+		write-host "No web.config for befolkning in backup för AG web.config"
 	}
 	
 	#endregion
@@ -615,7 +615,7 @@ if ($ShutdownServices -eq $true)
 if ($SqlQuery -eq $true)
 {
 	
-	$query = @"
+	 = @"
 ##Personic P
 USE $DB_PPP
 SELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
@@ -653,7 +653,7 @@ SELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
 SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc 
 "@
 	
-	$SQL_queries += $query
+
 	$time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
 	$SQL_queries | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
 }
@@ -663,6 +663,7 @@ SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
 if ($Sql_Import_From_Old_DB -eq $true)
 {
 	$sql_users = @"
+#------------------------------------------------#
 ##Personec P
 sp_change_users_login report
 sp_change_users_login update_one,rspdbuser,rspdbuser
@@ -674,9 +675,9 @@ sp_change_users_login update_one,$DBUser_SU,$DBUser_SU
 sp_change_users_login update_one,$DBUser_NA,$DBUser_NA
 sp_change_users_login update_one,$DBUser_NU,$DBUser_NU
 "@
-	$sql_users += $Sql_Import
+
 	$time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
-	$SQL_queries | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
+	$sql_users | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
 }
 
 #------------------------------------------------#
@@ -690,12 +691,12 @@ if ($DBAbackup -eq $true)
 		Import-Module dbatools -Verbose -force
 	}
 	
-	$cred = Get-Credential -Message 'LÃ¶senordet till viwinstall behÃ¶vs matas in hÃ¤r...' -UserName viwinstall
+	$cred = Get-Credential -Message 'Lösenordet till viwinstall behövs matas in här...' -UserName viwinstall
 	Add-Type -AssemblyName Microsoft.VisualBasic
 	$instans = [Microsoft.VisualBasic.Interaction]::InputBox("Vilken SQLinstans ska kollas?", "Skriv in sqlinstans", "localhost")
-	$backupplats = [Microsoft.VisualBasic.Interaction]::InputBox("Vart ska backuperna sparas?", "Skriv in annan sÃ¶kvÃ¤g vid behov", "d:\visma")
+	$backupplats = [Microsoft.VisualBasic.Interaction]::InputBox("Vart ska backuperna sparas?", "Skriv in annan sökväg vid behov", "d:\visma")
 	
-	get-dbaDatabase -SqlInstance $instans -SqlCredential $cred | Select-Object -Property name, size -ExpandProperty name | Where-Object name -like '*$BigramXML*' | Out-GridView -PassThru -Title 'VÃ¤lj de databaser du vill ha backup pÃ¥ (markera flera med att hÃ¥lla ner CTRL' | foreach { Backup-DbaDatabase -SqlCredential $cred -SqlInstance $instans -Database $_ -CopyOnly -FilePath $backupplats -Verbose }
+	get-dbaDatabase -SqlInstance $instans -SqlCredential $cred | Select-Object -Property name, size -ExpandProperty name | Where-Object name -like '*$BigramXML*' | Out-GridView -PassThru -Title 'Välj de databaser du vill ha backup på (markera flera med att hålla ner CTRL' | foreach { Backup-DbaDatabase -SqlCredential $cred -SqlInstance $instans -Database $_ -CopyOnly -FilePath $backupplats -Verbose }
 	
 	
 }
@@ -705,17 +706,20 @@ if ($DBAbackup -eq $true)
 if ($QRUser -eq $true)
 {
 	$QRRead_users = @"
+#------------------------------------------------#
 USE [master]
 GO
 CREATE LOGIN [$QRRead] WITH PASSWORD=N'$QRReadPW', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
 GO
+
 USE [$DB_Neptune] -- Neptune
 GO
 CREATE USER [$QRRead] FOR LOGIN [$QRRead]
 GO
 ALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
 GO
-USE [$DB_PFH] -- Personec FÃ¶rhandling
+
+USE [$DB_PFH] -- Personec Förhandling
 GO
 CREATE USER [$QRRead] FOR LOGIN [$QRRead]
 GO
@@ -723,6 +727,7 @@ GRANT EXEC TO [$QRRead]
 GO
 ALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
 GO
+
 USE [$DB_PPP] -- Personec P
 GO
 CREATE USER [$QRRead] FOR LOGIN [$QRRead]
@@ -731,6 +736,7 @@ GRANT EXEC TO [$QRRead]
 GO
 ALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
 GO
+
 USE [$DB_PUD] -- Personec Utdata
 GO
 CREATE USER [$QRRead] FOR LOGIN [$QRRead]
@@ -739,15 +745,17 @@ GRANT EXEC TO [$QRRead]
 GO
 ALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
 GO
-`nUSE [$DB_PAG] -- Personec AnstÃ¤llningsguide
+
+USE [$DB_PAG] -- Personec Anställningsguide
 GO
 CREATE USER [$QRRead] FOR LOGIN [$QRRead]
 GO
 ALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
 GO
 "@
-	$SQL_queries += $QRRead_users
+
+
 	$time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
-	$SQL_queries | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
+	$QRRead_users | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
 }
 #------------------------------------------------#
