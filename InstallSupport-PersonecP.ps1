@@ -58,16 +58,10 @@ Param (
 	[Switch]$QRUser
 )
 
-$test = 'TEST'
-
-
-
-
+# Check if XML-file exist, if not... create default
 if ($XML -eq $true)
 {
-	
 	$XMLexist = (test-path -Path "$PSScriptRoot\ScriptConfig.XML")
-	
 	if ($XMLexist -eq $false)
 	{
 		Add-Type -AssemblyName Microsoft.VisualBasic
@@ -85,13 +79,12 @@ if ($XML -eq $true)
 		
 		$xmlWriter.WriteElementString("CustomerBigram", "$BigramToXML")
 		$xmlWriter.WriteElementString("DBscriptPath", "D:\Visma")
-		$xmlWriter.WriteElementString("LongVersion", "00000")
-		$xmlWriter.WriteElementString("ShortVersion", "00000")
+		$xmlWriter.WriteElementString("LongVersion", "23040")
+		$xmlWriter.WriteElementString("ShortVersion", "23040")
 		$xmlWriter.WriteEndElement() # Configuration endnode
 		$xmlWriter.Flush()
 		$xmlWriter.Close()
 	}
-	
 	else
 	{
 		
@@ -590,11 +583,11 @@ if ($InventoryConfig -eq $true)
 if ($Backup -eq $true)
 {
 	
-		
-		Copy-ItemWithProgress D:\Visma\Wwwroot\ D:\Visma\Install\backup\$Today\wwwroot\ /e /xf *.log, *.svclog
-		Copy-ItemWithProgress D:\Visma\Programs\ D:\Visma\Install\backup\$Today\programs\ /e /xf *.log
-
-	}
+	
+	Copy-ItemWithProgress D:\Visma\Wwwroot\ D:\Visma\Install\backup\$Today\wwwroot\ /e /xf *.log, *.svclog
+	Copy-ItemWithProgress D:\Visma\Programs\ D:\Visma\Install\backup\$Today\programs\ /e /xf *.log
+	
+}
 
 
 #------------------------------------------------#
@@ -623,41 +616,41 @@ if ($SqlQuery -eq $true)
 {
 	
 	$query = @"
-        `r##Personic P
-        `rUSE $DB_PPP
-        `rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
-        `r:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPu$shortverionXML.sql
-        `r`n:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPview.sql
-        `r:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPproc.sql
-        `r:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPtriggers.sql
-        `r:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPgra.sql
-        `r:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\msDBUPDATERIGHTSP.sql
-        `r:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\PPPds_Feltexter.sql
-        `rSELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
-        `rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
-        `r#------------------------------------------------#
-        `r#Personic U
-        `rUSE $DB_PUD
-        `rSELECT * FROM dbo.PU_VERSIONSINFO
-        `r:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUu$shortverionXML.sql
-        `r`n:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUproc.sql
-        `r:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUview.sql
-        `r:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUgra.sql
-        `r:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\msdbupdaterightsU.sql
-        `rSELECT * FROM dbo.PU_VERSIONSINFO
-        `rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
-        `r#------------------------------------------------#
-        `r##Personic PFH
-        `rUSE $DB_PFH
-        `rSELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
-        `r:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFu$short_db_version.sql
-        `r`n:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFproc.sql
-        `r:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFview.sql
-        `r:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFgra.sql
-        `r:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\msDBUPDATERIGHTSF.sql
-        `r:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\PFHds_Feltexter.sql
-        `rSELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
-        `rSELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc 
+##Personic P
+USE $DB_PPP
+SELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPu$shortverionXML.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPview.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPproc.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPtriggers.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPgra.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\msDBUPDATERIGHTSP.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\PPPds_Feltexter.sql
+SELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
+SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
+#------------------------------------------------#
+#Personic U
+USE $DB_PUD
+rSELECT * FROM dbo.PU_VERSIONSINFO
+:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUu$shortverionXML.sql
+:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUproc.sql
+:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUview.sql
+:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUgra.sql
+:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\msdbupdaterightsU.sql
+SELECT * FROM dbo.PU_VERSIONSINFO
+SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
+#------------------------------------------------#
+##Personic PFH
+USE $DB_PFH
+SELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFu$short_db_version.sql
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFproc.sql
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFview.sql
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFgra.sql
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\msDBUPDATERIGHTSF.sql
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\PFHds_Feltexter.sql
+SELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
+SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc 
 "@
 	
 	$SQL_queries += $query
@@ -670,16 +663,16 @@ if ($SqlQuery -eq $true)
 if ($Sql_Import_From_Old_DB -eq $true)
 {
 	$sql_users = @"
-        `r##Personec P
-        `rsp_change_users_login report
-        `rsp_change_users_login update_one,rspdbuser,rspdbuser
-        `rsp_change_users_login update_one,psutotint,psutotint
-        `rsp_change_users_login update_one,eko,eko
-        `rsp_change_users_login update_one,$DBUser_DU,$DBUser_DU
-        `rsp_change_users_login update_one,$DBUser_MU,$DBUser_MU
-        `rsp_change_users_login update_one,$DBUser_SU,$DBUser_SU
-        `rsp_change_users_login update_one,$DBUser_NA,$DBUser_NA
-        `rsp_change_users_login update_one,$DBUser_NU,$DBUser_NU
+##Personec P
+sp_change_users_login report
+sp_change_users_login update_one,rspdbuser,rspdbuser
+sp_change_users_login update_one,psutotint,psutotint
+sp_change_users_login update_one,eko,eko
+sp_change_users_login update_one,$DBUser_DU,$DBUser_DU
+sp_change_users_login update_one,$DBUser_MU,$DBUser_MU
+sp_change_users_login update_one,$DBUser_SU,$DBUser_SU
+sp_change_users_login update_one,$DBUser_NA,$DBUser_NA
+sp_change_users_login update_one,$DBUser_NU,$DBUser_NU
 "@
 	$sql_users += $Sql_Import
 	$time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
@@ -712,46 +705,46 @@ if ($DBAbackup -eq $true)
 if ($QRUser -eq $true)
 {
 	$QRRead_users = @"
-        `rUSE [master]
-        `rGO
-        `rCREATE LOGIN [$QRRead] WITH PASSWORD=N'$QRReadPW', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
-        `rGO
-        `rUSE [$DB_Neptune] -- Neptune
-        `rGO
-        `rCREATE USER [$QRRead] FOR LOGIN [$QRRead]
-        `rGO
-        `rALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
-        `rGO
-        `rUSE [$DB_PFH] -- Personec Förhandling
-        `rGO
-        `rCREATE USER [$QRRead] FOR LOGIN [$QRRead]
-        `rGO
-        `rGRANT EXEC TO [$QRRead]
-        `rGO
-        `rALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
-        `rGO
-        `rUSE [$DB_PPP] -- Personec P
-        `rGO
-        `rCREATE USER [$QRRead] FOR LOGIN [$QRRead]
-        `rGO
-        `rGRANT EXEC TO [$QRRead]
-        `rGO
-        `rALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
-        `rGO
-        `rUSE [$DB_PUD] -- Personec Utdata
-        `rGO
-        `rCREATE USER [$QRRead] FOR LOGIN [$QRRead]
-        `rGO
-        `rGRANT EXEC TO [$QRRead]
-        `rGO
-        `rALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
-        `rGO
-        `n`rUSE [$DB_PAG] -- Personec Anställningsguide
-        `rGO
-        `rCREATE USER [$QRRead] FOR LOGIN [$QRRead]
-        `rGO
-        `rALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
-        `rGO
+USE [master]
+GO
+CREATE LOGIN [$QRRead] WITH PASSWORD=N'$QRReadPW', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+GO
+USE [$DB_Neptune] -- Neptune
+GO
+CREATE USER [$QRRead] FOR LOGIN [$QRRead]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
+GO
+USE [$DB_PFH] -- Personec Förhandling
+GO
+CREATE USER [$QRRead] FOR LOGIN [$QRRead]
+GO
+GRANT EXEC TO [$QRRead]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
+GO
+USE [$DB_PPP] -- Personec P
+GO
+CREATE USER [$QRRead] FOR LOGIN [$QRRead]
+GO
+GRANT EXEC TO [$QRRead]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
+GO
+USE [$DB_PUD] -- Personec Utdata
+GO
+CREATE USER [$QRRead] FOR LOGIN [$QRRead]
+GO
+GRANT EXEC TO [$QRRead]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
+GO
+`nUSE [$DB_PAG] -- Personec Anställningsguide
+GO
+CREATE USER [$QRRead] FOR LOGIN [$QRRead]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
+GO
 "@
 	$SQL_queries += $QRRead_users
 	$time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
