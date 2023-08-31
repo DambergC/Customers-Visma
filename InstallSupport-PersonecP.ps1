@@ -215,43 +215,6 @@ Function Write-Log
 	"$Stamp $Level $Message" | Out-File -Encoding utf8 $logfile -Append
 }
 
-<#
-.SYNOPSIS
-RoboCopy with PowerShell progress.
-
-.DESCRIPTION
-Performs file copy with RoboCopy. Output from RoboCopy is captured,
-parsed, and returned as Powershell native status and progress.
-
-.PARAMETER RobocopyArgs
-List of arguments passed directly to Robocopy.
-Must not conflict with defaults: /ndl /TEE /Bytes /NC /nfl /Log
-
-.OUTPUTS
-Returns an object with the status of final copy.
-REMINDER: Any error level below 8 can be considered a success by RoboCopy.
-
-.EXAMPLE
-C:\PS> .\Copy-ItemWithProgress c:\Src d:\Dest
-
-Copy the contents of the c:\Src directory to a directory d:\Dest
-Without the /e or /mir switch, only files from the root of c:\src are copied.
-
-.EXAMPLE
-C:\PS> .\Copy-ItemWithProgress '"c:\Src Files"' d:\Dest /mir /xf *.log -Verbose
-
-Copy the contents of the 'c:\Name with Space' directory to a directory d:\Dest
-/mir and /XF parameters are passed to robocopy, and script is run verbose
-
-.LINK
-https://keithga.wordpress.com/2014/06/23/copy-itemwithprogress
-
-.NOTES
-By Keith S. Garner (KeithGa@KeithGa.com) - 6/23/2014
-With inspiration by Trevor Sullivan @pcgeek86
-
-#>
-
 Function Copy-ItemWithProgress
 {
 	[CmdletBinding()]
@@ -352,11 +315,10 @@ function Get-IniFile
 }
 
 
-#region Service and web.config
+#region todo things...
 
 if ($Password -eq $true)
 {
-	
 	$passwordGenerate = Generate-RandomPassword -length 15
 	
 	Set-Clipboard -Value $passwordGenerate
@@ -368,7 +330,6 @@ if ($Password -eq $true)
 	$MessageTitle = "Password generated!"
 	
 	$Result = [System.Windows.MessageBox]::Show($MessageBody, $MessageTitle, $ButtonType, $MessageIcon)
-	
 }
 
 if ($InventorySystem -eq $true)
