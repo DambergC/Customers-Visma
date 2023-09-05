@@ -120,7 +120,7 @@ $Today = (get-date -Format yyyyMMdd)
 $Time = (get-date -Format HH:MM:ss)
 
 # Services to check
-$services = "Ciceron Server Manager", "PersonecPBatchManager$BigramXMLXML", "PersonecPUtdataExportImportService$BigramXMLXML", "RSPFlexService$BigramXMLXML", "W3SVC", "World Wide Web Publishing Service"
+$services = "Ciceron Server Manager", "PersonecPBatchManager$BigramXML", "PersonecPUtdataExportImportService$BigramXML", "RSPFlexService$BigramXML", "W3SVC", "World Wide Web Publishing Service"
 
 # Array to save data
 $data = @()
