@@ -187,9 +187,6 @@ function Generate-RandomPassword
 	return -join $result
 }
 
-#Generate-RandomPassword 10
-
-
 #Read more: https://www.sharepointdiary.com/2020/04/powershell-generate-random-password.html#ixzz8Bgs4333S
 
 Function Write-Log
@@ -327,7 +324,7 @@ if ($Password -eq $true)
 
 if ($InventorySystem -eq $true)
 {
-	
+	# Check if backupfolder exist
 	$folder = (test-path -Path "D:\visma\Install\Backup\$Today\")
 	
 	if ($folder -eq $false)
@@ -335,7 +332,7 @@ if ($InventorySystem -eq $true)
 		New-Item -Path "d:\visma\install\backup\" -ItemType Directory -Name $Today
 	}
 	
-	# Check and document services
+	# Inventory services and status
 	foreach ($Service in $Services)
 	{
 		$InfoOnService = Get-WmiObject Win32_Service | where Name -eq $Service | Select-Object name, startname, state, Startmode -ErrorAction SilentlyContinue
@@ -344,8 +341,8 @@ if ($InventorySystem -eq $true)
 	}
 	
 	# Send data to file about services
-	$time | Out-File "$PSScriptRoot\$today\Services_$Today_$time.txt" -Append
-	$data | Out-File "$PSScriptRoot\$today\Services_$Today_$time.txt" -Append
+	$time | Out-File "$PSScriptRoot\$today\Services_$Today.txt" -Append
+	$data | Out-File "$PSScriptRoot\$today\Services_$Today.txt" -Append
 	
 	# Check dotnet version installed and send to file
 	#$dotnet = Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name version -EA 0 | Where { $_.PSChildName -Match '^(?!S)\p{L}' } | Select PSChildName, version | Sort-Object version -Descending | Out-File $PSScriptRoot\$today\DotNet_$today.txt -Append
@@ -356,8 +353,39 @@ if ($InventorySystem -eq $true)
 								  'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*',
 								  'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
 								  'HKCU:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction Ignore | Where-Object publisher -eq 'Visma' | Select-Object -Property DisplayName, DisplayVersion, Publisher | Sort-Object -Property DisplayName
-	$time | Out-File "$PSScriptRoot\$today\InstalledSoftware_$Today_$time.txt" -Append
-	$installed | Out-File "$PSScriptRoot\$today\InstalledSoftware_$Today_$time.txt" -Append
+	$time | Out-File "$PSScriptRoot\$today\InstalledSoftware_$today.txt" -Append
+	$installed | Out-File "$PSScriptRoot\$today\InstalledSoftware_$today.txt" -Append
+	
+	
+	#region AppPool check
+	
+	try
+	{
+		$appPools = Get-WebConfiguration -Filter '/system.applicationHost/applicationPools/add'
+		$appPoolResultat = [System.Collections.ArrayList]::new()
+		
+		foreach ($appPool in $appPools)
+		{
+			
+			[void]$appPoolResultat.add([PSCustomObject]@{
+					Name = $appPool.name
+					User = $appPool.ProcessModel.UserName
+					#Password = $appPool.ProcessModel.Password
+				})
+			
+		}
+		$time | Out-File "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
+		$appPoolResultat | out-file "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
+		
+	}
+	
+	catch
+	{
+		write-host "no app-pool"
+	}
+	
+	#endregion
+	
 	
 	
 }
@@ -544,34 +572,7 @@ if ($InventoryConfig -eq $true)
 	}
 	#endregion
 	
-	#region AppPool check
-	
-	try
-	{
-		$appPools = Get-WebConfiguration -Filter '/system.applicationHost/applicationPools/add'
-		$appPoolResultat = [System.Collections.ArrayList]::new()
-		
-		foreach ($appPool in $appPools)
-		{
-			
-			[void]$appPoolResultat.add([PSCustomObject]@{
-					Name = $appPool.name
-					User = $appPool.ProcessModel.UserName
-					#Password = $appPool.ProcessModel.Password
-				})
-			
-		}
-		$time | Out-File "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
-		$appPoolResultat | out-file "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
-		
-	}
-	
-	catch
-	{
-		write-host "no app-pool"
-	}
-	
-	#endregion
+
 	
 }
 
@@ -615,7 +616,7 @@ if ($ShutdownServices -eq $true)
 if ($SqlQuery -eq $true)
 {
 	
-	 = @"
+	= @"
 ##Personic P
 USE $DB_PPP
 SELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
@@ -653,7 +654,7 @@ SELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
 SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc 
 "@
 	
-
+	
 	$time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
 	$SQL_queries | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
 }
@@ -675,7 +676,7 @@ sp_change_users_login update_one,$DBUser_SU,$DBUser_SU
 sp_change_users_login update_one,$DBUser_NA,$DBUser_NA
 sp_change_users_login update_one,$DBUser_NU,$DBUser_NU
 "@
-
+	
 	$time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
 	$sql_users | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
 }
@@ -753,8 +754,8 @@ GO
 ALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
 GO
 "@
-
-
+	
+	
 	$time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
 	$QRRead_users | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
 }
