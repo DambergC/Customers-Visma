@@ -41,7 +41,7 @@ Param (
 	[Parameter(Mandatory = $false)]
 	[Switch]$Password,
 	[Parameter(Mandatory = $false)]
-	[Switch]$InventoryConfig,
+	[Switch]$InventorySettings,
 	[Parameter(Mandatory = $false)]
 	[Switch]$InventorySystem,
 	[Parameter(Mandatory = $false)]
@@ -396,12 +396,13 @@ $installed = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVer
 	{
 		write-host "no app-pool"
 	}
-	
-	#endregion
 
-	
 }
-	#region InventorySettings
+#endregion
+
+#region InventorySettings
+
+$data3 = @()
 
 if ($InventorySettings -eq $true)
 {
@@ -410,11 +411,30 @@ if ($InventorySettings -eq $true)
 	
 	if ($UseSSOBackup -eq $true)
 	{
+
 		[XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\$BigramXML\Login\Web.config" -ErrorAction SilentlyContinue
+
+
+                                $object = New-Object -TypeName PSObject
+                                $object | Add-Member -MemberType NoteProperty -Name 'useSSO' -Value $usesso.configuration.appsettings.add.where{ $_.key -eq 'UseSSo' }.value
+                                
+                                $data3 += $object
+
+                                $data3
+
+    }
+
+}
+
+<#
+
+
+
+
 		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT1 = 'SINGLESIGNON' | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT2 = 'UseSSO' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$usesso.configuration.appsettings.add.where{ $_.key -eq 'UseSSo' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
+		 | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		
 	}
@@ -548,6 +568,9 @@ if ($InventorySettings -eq $true)
 	if ($PiaBackup -eq $true)
 	{
 		[XML]$PIA = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
+            
+
+
 		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT1 = 'PIA CHECK' | Out-File "$PSScriptRoot\$today\data.txt" -Append
 		$TEXT2 = 'PPP Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
@@ -579,6 +602,10 @@ if ($InventorySettings -eq $true)
 	
 
 }
+
+
+
+#>
 
 #endregion
 
