@@ -49,13 +49,9 @@ Param (
 	[Parameter(Mandatory = $false)]
 	[Switch]$CopyReports,
 	[Parameter(Mandatory = $false)]
-	[Switch]$SqlQuery,
+	[Switch]$SqlQueries,
 	[Parameter(Mandatory = $false)]
-	[Switch]$DBAbackup,
-	[Parameter(Mandatory = $false)]
-	[Switch]$Sql_Import_From_Old_DB,
-	[Parameter(Mandatory = $false)]
-	[Switch]$QRUser
+	[Switch]$DBAbackup
 )
 
 # Check if XML-file exist, if not... create default
@@ -305,7 +301,7 @@ function Get-IniFile
 }
 
 
-#region todo things...
+#region Passwordgenerator
 
 if ($Password -eq $true)
 {
@@ -322,6 +318,10 @@ if ($Password -eq $true)
 	$Result = [System.Windows.MessageBox]::Show($MessageBody, $MessageTitle, $ButtonType, $MessageIcon)
 }
 
+#endregion
+
+#region Inventorysystem
+
 if ($InventorySystem -eq $true)
 {
 	# Check if backupfolder exist
@@ -336,28 +336,41 @@ if ($InventorySystem -eq $true)
 	foreach ($Service in $Services)
 	{
 		$InfoOnService = Get-WmiObject Win32_Service | where Name -eq $Service | Select-Object name, startname, state, Startmode -ErrorAction SilentlyContinue
-		#Write-Log -Level INFO -Message "Checking status for $service "
-		$data += $InfoOnService
+
+                                $object = New-Object -TypeName PSObject
+                                $object | Add-Member -MemberType NoteProperty -Name 'Tjänst' -Value $InfoOnService.name
+                                $object | Add-Member -MemberType NoteProperty -Name 'Konto' -Value $InfoOnService.Startname
+                                $object | Add-Member -MemberType NoteProperty -Name 'Status' -Value $InfoOnService.state
+                                $object | Add-Member -MemberType NoteProperty -Name 'Startdatum' -Value $InfoOnService.startmode
+
+                                $data += $object
 	}
+
+	$data | Out-File "$PSScriptRoot\$today\Data_$Today.txt" -Append
 	
-	# Send data to file about services
-	$time | Out-File "$PSScriptRoot\$today\Services_$Today.txt" -Append
-	$data | Out-File "$PSScriptRoot\$today\Services_$Today.txt" -Append
+
+$data2 = @()
 	
-	# Check dotnet version installed and send to file
-	#$dotnet = Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name version -EA 0 | Where { $_.PSChildName -Match '^(?!S)\p{L}' } | Select PSChildName, version | Sort-Object version -Descending | Out-File $PSScriptRoot\$today\DotNet_$today.txt -Append
-	
-	# get installed software
-	
-	$installed = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
+$installed = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
 								  'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*',
 								  'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
 								  'HKCU:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction Ignore | Where-Object publisher -eq 'Visma' | Select-Object -Property DisplayName, DisplayVersion, Publisher | Sort-Object -Property DisplayName
-	$time | Out-File "$PSScriptRoot\$today\InstalledSoftware_$today.txt" -Append
-	$installed | Out-File "$PSScriptRoot\$today\InstalledSoftware_$today.txt" -Append
 	
-	
-	#region AppPool check
+    foreach ($inst in $installed)
+
+    {
+
+                                $object = New-Object -TypeName PSObject
+                                $object | Add-Member -MemberType NoteProperty -Name 'Applikation' -Value $inst.displayname
+                                $object | Add-Member -MemberType NoteProperty -Name 'Version' -Value $inst.displayversion
+                                $object | Add-Member -MemberType NoteProperty -Name 'Utgivare' -Value $inst.publisher
+
+                                $data2 += $object
+    
+    }
+
+    #$time | Out-File "$PSScriptRoot\$today\InstalledSoftware_$today.txt" -Append
+	$data2 | Out-File "$PSScriptRoot\$today\data_$today.txt" -Append
 	
 	try
 	{
@@ -374,8 +387,8 @@ if ($InventorySystem -eq $true)
 				})
 			
 		}
-		$time | Out-File "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
-		$appPoolResultat | out-file "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
+		#$time | Out-File "$PSScriptRoot\$today\ApplicationPoolIdentity_$Today.txt" -Append
+		$appPoolResultat | out-file "$PSScriptRoot\$today\data_$Today.txt" -Append
 		
 	}
 	
@@ -385,18 +398,14 @@ if ($InventorySystem -eq $true)
 	}
 	
 	#endregion
-	
-	
+
 	
 }
+	#region InventorySettings
 
-if ($InventoryConfig -eq $true)
+if ($InventorySettings -eq $true)
 {
-	
-	#endregion
-	
-	#region UserSSo check
-	
+
 	$UseSSOBackup = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$BigramXML\$BigramXML\Login\Web.config")
 	
 	if ($UseSSOBackup -eq $true)
@@ -413,10 +422,7 @@ if ($InventoryConfig -eq $true)
 	{
 		write-host "No web.config for UseSSO in backup"
 	}
-	#endregion
-	
-	#region förhandling check
-	
+
 	
 	$forhandling = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$BigramXML\pfh\services\Web.config")
 	
@@ -435,9 +441,6 @@ if ($InventoryConfig -eq $true)
 		write-host "No web.config for forhandling in backup"
 	}
 	
-	#endregion
-	
-	#region Befolkning
 	
 	$befolkningBackupAG = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$BigramXML\PPP\Personec_AG\web.config")
 	
@@ -456,37 +459,10 @@ if ($InventoryConfig -eq $true)
 	{
 		write-host "No web.config for befolkning in backup för AG web.config"
 	}
-	
-	#endregion
-	
-	#region PStid.ini
-	
-	$pathPStid = (Test-Path "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid.ini")
-	
-	if ($pathPStid -eq $true)
-	{
-		$pstid = Get-IniFile "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid.ini"
-		$NeptuneUser = $PSTID.styr.NeptuneUser
-		$NeptunePwd = $PSTID.styr.neptunepassword
-		
-		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT1 = 'PSTID' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'NeptuneUser' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$NeptuneUser | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'NeptunePassword' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$NeptunePwd | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		
-	}
-	else
-	{
-		write-host "No PSTID"
-	}
-	
-	#endregion
-	
-	#region Egna rapporter check
-	
+
+
+
+
 	$ReportsBackupPPP = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt")
 	
 	if ($ReportsBackupPPP -eq $true)
@@ -512,10 +488,37 @@ if ($InventoryConfig -eq $true)
 	{
 		write-host "No reports for AG in backup"
 	}
+
+
+#endregion
 	
-	#endregion
+	#region Inventory pwd
+
+# PSTID
 	
-	#region Batch check
+	$pathPStid = (Test-Path "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid.ini")
+	
+	if ($pathPStid -eq $true)
+	{
+		$pstid = Get-IniFile "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid.ini"
+		$NeptuneUser = $PSTID.styr.NeptuneUser
+		$NeptunePwd = $PSTID.styr.neptunepassword
+		
+		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
+		$TEXT1 = 'PSTID' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+		$TEXT2 = 'NeptuneUser' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+		$NeptuneUser | Out-File "$PSScriptRoot\$today\data.txt" -Append
+		$TEXT2 = 'NeptunePassword' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+		$NeptunePwd | Out-File "$PSScriptRoot\$today\data.txt" -Append
+		$TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+		
+	}
+	else
+	{
+		write-host "No PSTID"
+	}
+	
+# BATCH
 	
 	$BatchBackup = (Test-Path "$PSScriptRoot\$today\Programs\$BigramXML\PPP\Personec_P\batch.config")
 	
@@ -537,9 +540,9 @@ if ($InventoryConfig -eq $true)
 	{
 		write-host "No batch"
 	}
-	#endregion
-	
-	#region PIA Webconfig check
+
+# PIA
+
 	$PiaBackup = (Test-Path "$PSScriptRoot\$today\wwwroot\$BigramXML\PIA\PUF_IA Module\web.config")
 	
 	if ($PiaBackup -eq $true)
@@ -570,15 +573,17 @@ if ($InventoryConfig -eq $true)
 	{
 		WRITE-HOST "No web.config for PIA in backup"
 	}
-	#endregion
 	
 
+
 	
+
 }
 
+#endregion
 
-#------------------------------------------------#
-# Backup of folders
+#region backup
+
 
 # Copy to backup
 if ($Backup -eq $true)
@@ -591,6 +596,9 @@ if ($Backup -eq $true)
 }
 
 
+#endregion
+
+#region stop services
 #------------------------------------------------#
 # Stop services
 
@@ -598,25 +606,27 @@ if ($ShutdownServices -eq $true)
 {
 	# Stop WWW site Bigram
 	Stop-IISSite -Name $BigramXML -Verbose -Confirm:$false
-	#Write-Log -Level INFO -Message "Stopped website for " + $BigramXML 
 	
 	foreach ($Service in $Services)
 	{
 		Stop-Service -Name $Service -Force -ErrorAction SilentlyContinue -Verbose
-		#Write-Log -Level INFO -Message "Stopped $service if it was running"
+	
 		
 	}
 	
 }
+#endregion
 
+#region SQLQueries
 
-
-#------------------------------------------------#
-# Get Sql Query
-if ($SqlQuery -eq $true)
+if ($SqlQueries -eq $true)
 {
 	
-	= @"
+$SQL_queries = @"
+#------------------------------------------------#
+# SQL Query for update scripts
+#------------------------------------------------#
+
 ##Personic P
 USE $DB_PPP
 SELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
@@ -651,63 +661,16 @@ SELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
 :r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\msDBUPDATERIGHTSF.sql
 :r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\PFHds_Feltexter.sql
 SELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
-SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc 
+SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
+#------------------------------------------------# 
 "@
-	
-	
-	$time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
-	$SQL_queries | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
-}
 
-#------------------------------------------------#
-#SQL Query for importing accounts
-if ($Sql_Import_From_Old_DB -eq $true)
-{
-	$sql_users = @"
-#------------------------------------------------#
-##Personec P
-sp_change_users_login report
-sp_change_users_login update_one,rspdbuser,rspdbuser
-sp_change_users_login update_one,psutotint,psutotint
-sp_change_users_login update_one,eko,eko
-sp_change_users_login update_one,$DBUser_DU,$DBUser_DU
-sp_change_users_login update_one,$DBUser_MU,$DBUser_MU
-sp_change_users_login update_one,$DBUser_SU,$DBUser_SU
-sp_change_users_login update_one,$DBUser_NA,$DBUser_NA
-sp_change_users_login update_one,$DBUser_NU,$DBUser_NU
-"@
-	
-	$time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
-	$sql_users | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
-}
+$SQL_queries | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
 
-#------------------------------------------------#
-#DBABackup
-if ($DBAbackup -eq $true)
-{
-	
-	if (-not (Get-Module -name dbatools))
-	{
-		Install-Module dbatools -Verbose -Force
-		Import-Module dbatools -Verbose -force
-	}
-	
-	$cred = Get-Credential -Message 'Lösenordet till viwinstall behövs matas in här...' -UserName viwinstall
-	Add-Type -AssemblyName Microsoft.VisualBasic
-	$instans = [Microsoft.VisualBasic.Interaction]::InputBox("Vilken SQLinstans ska kollas?", "Skriv in sqlinstans", "localhost")
-	$backupplats = [Microsoft.VisualBasic.Interaction]::InputBox("Vart ska backuperna sparas?", "Skriv in annan sökväg vid behov", "d:\visma")
-	
-	get-dbaDatabase -SqlInstance $instans -SqlCredential $cred | Select-Object -Property name, size -ExpandProperty name | Where-Object name -like '*$BigramXML*' | Out-GridView -PassThru -Title 'Välj de databaser du vill ha backup på (markera flera med att hålla ner CTRL' | foreach { Backup-DbaDatabase -SqlCredential $cred -SqlInstance $instans -Database $_ -CopyOnly -FilePath $backupplats -Verbose }
-	
-	
-}
 
+$QRRead_users = @"
 #------------------------------------------------#
-#QRRead query
-if ($QRUser -eq $true)
-{
-	$QRRead_users = @"
-#------------------------------------------------#
+#SQL Query for QRread accounts
 USE [master]
 GO
 CREATE LOGIN [$QRRead] WITH PASSWORD=N'$QRReadPW', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
@@ -753,10 +716,56 @@ CREATE USER [$QRRead] FOR LOGIN [$QRRead]
 GO
 ALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
 GO
-"@
-	
-	
-	$time | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
-	$QRRead_users | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
-}
 #------------------------------------------------#
+"@
+
+$QRRead_users | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
+
+#------------------------------------------------#
+
+$sql_users = @"
+#------------------------------------------------#
+#SQL Query for importing accounts
+##Personec P
+sp_change_users_login report
+sp_change_users_login update_one,rspdbuser,rspdbuser
+sp_change_users_login update_one,psutotint,psutotint
+sp_change_users_login update_one,eko,eko
+sp_change_users_login update_one,$DBUser_DU,$DBUser_DU
+sp_change_users_login update_one,$DBUser_MU,$DBUser_MU
+sp_change_users_login update_one,$DBUser_SU,$DBUser_SU
+sp_change_users_login update_one,$DBUser_NA,$DBUser_NA
+sp_change_users_login update_one,$DBUser_NU,$DBUser_NU
+#------------------------------------------------#
+"@
+
+$sql_users | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
+
+}
+#endregion
+
+#region DBbackup
+
+
+#DBABackup
+if ($DBAbackup -eq $true)
+{
+	
+	if (-not (Get-Module -name dbatools))
+	{
+		Install-Module dbatools -Verbose -Force
+		Import-Module dbatools -Verbose -force
+	}
+	
+	$cred = Get-Credential -Message 'Lösenordet till viwinstall behövs matas in här...' -UserName viwinstall
+	Add-Type -AssemblyName Microsoft.VisualBasic
+	$instans = [Microsoft.VisualBasic.Interaction]::InputBox("Vilken SQLinstans ska kollas?", "Skriv in sqlinstans", "localhost")
+	$backupplats = [Microsoft.VisualBasic.Interaction]::InputBox("Vart ska backuperna sparas?", "Skriv in annan sökväg vid behov", "d:\visma")
+	
+	get-dbaDatabase -SqlInstance $instans -SqlCredential $cred | Select-Object -Property name, size -ExpandProperty name | Where-Object name -like '*$BigramXML*' | Out-GridView -PassThru -Title 'Välj de databaser du vill ha backup på (markera flera med att hålla ner CTRL' | foreach { Backup-DbaDatabase -SqlCredential $cred -SqlInstance $instans -Database $_ -CopyOnly -FilePath $backupplats -Verbose }
+	
+	
+}
+
+#endregion
+
