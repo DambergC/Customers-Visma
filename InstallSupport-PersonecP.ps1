@@ -1,39 +1,50 @@
 <#
-.Synopsis
-   Detta skript kan du änvända för att underlätta vid uppgradering av Personec P
-.DESCRIPTION
-   Funktioner i skripet
-	- XML - Creates XML-file with default value
-	- Backup - filebackup excl. logfiles 
+	.Synopsis
+		Detta skript kan du änvända för att underlätta vid uppgradering av Personec P
 	
-.EXAMPLE
-   InstallSupport-PersonecP.ps1 -backup
-   Backup av filstruktur 
-.EXAMPLE
-   InstallSupport-PersonecP.ps1 -InventorySystem
-
-.EXAMPLE
-   InstallSupport-PersonecP.ps1 -InventoryConfig
-   Framtagning av värden som du behöver senare
-.EXAMPLE
-   InstallSupport-PersonecP.ps1 -ShutdownServices
-.NOTES
-   Filename: Pre-InstallPersonec_P.ps1
-   Author: Christian Damberg
-   Website: https://www.damberg.org
-   Email: christian@damberg.org
-   Modified date: 2022-05-12
-   Version 1.0 - First release
-   Version 1.1 - Updated step inventory to extract appool settings
-   Version 1.2 - Buggfixar
-   Version 2.0 - XML-fil för bigram samt borttagning av pwd
-   
+	.DESCRIPTION
+		Script to support technician in the work to upgrade Personec P for the customer to make the customer happy by doing it right evey time
+	
+	.PARAMETER XML
+		To gererate XML file with settings about BIGRAM and versions
+	
+	.PARAMETER Backup
+		Backup file structure under d:\visma\programs and d:\visma\www
+	
+	.PARAMETER SqlQueries
+		Generate SQLqueries needed during installation and upgrades
+	
+	.PARAMETER InventorySystem
+		Inventory status of system to data_xxxxxx.txt
+	
+	.PARAMETER InventorySettings
+		Inventory settings from web.config files and register in data_xxxxxx.txt
+	
+	.PARAMETER InventoryPasswords
+		Exctact accounts and passwords from backup - only console
+	
+	.PARAMETER Password
+		Generate password
+	
+	.PARAMETER ShutdownServices
+		Stop services and site
+	
+	.PARAMETER DBAbackup
+		Backup of databases
+	
+	.NOTES
+		Filename: Pre-InstallPersonec_P.ps1
+		Author: Christian Damberg
+		Website: https://www.damberg.org
+		Email: christian@damberg.org
+		Modified date: 2022-05-12
+		Version 1.0 - First release
+		Version 1.1 - Updated step inventory to extract appool settings
+		Version 1.2 - Buggfixar
+		Version 2.0 - XML-fil för bigram samt borttagning av pwd
 #>
-
-#------------------------------------------------#
-# Parameters
-
-Param (
+param
+(
 	[Parameter(Mandatory = $false)]
 	[Switch]$XML,
 	[Parameter(Mandatory = $false)]
@@ -50,8 +61,6 @@ Param (
 	[Switch]$Password,
 	[Parameter(Mandatory = $false)]
 	[Switch]$ShutdownServices,
-	[Parameter(Mandatory = $false)]
-	[Switch]$CopyReports,
 	[Parameter(Mandatory = $false)]
 	[Switch]$DBAbackup
 )
@@ -87,7 +96,6 @@ if ($XML -eq $true)
 	}
 	else
 	{
-		
 		Add-Type -AssemblyName PresentationCore, PresentationFramework
 		$ButtonType = [System.Windows.MessageBoxButton]::Ok
 		$MessageIcon = [System.Windows.MessageBoxImage]::Information
@@ -105,34 +113,31 @@ if ($XML -eq $true)
 $XMLexist = (test-path -Path "$PSScriptRoot\ScriptConfig.XML")
 
 if ($XMLexist -eq $false)
-
-
 {
-
-    	Add-Type -AssemblyName PresentationCore, PresentationFramework
-		$ButtonType = [System.Windows.MessageBoxButton]::Ok
-		$MessageIcon = [System.Windows.MessageBoxImage]::Information
-		$MessageBody = "You need to create an xml-file... USE -xml "
-		$MessageTitle = "XML Missing..."
-        
-	    $Result = [System.Windows.MessageBox]::Show($MessageBody, $MessageTitle, $ButtonType, $MessageIcon)
-
-        exit
-
-
+	
+	Add-Type -AssemblyName PresentationCore, PresentationFramework
+	$ButtonType = [System.Windows.MessageBoxButton]::Ok
+	$MessageIcon = [System.Windows.MessageBoxImage]::Information
+	$MessageBody = "You need to create an xml-file... USE -xml "
+	$MessageTitle = "XML Missing..."
+	
+	$Result = [System.Windows.MessageBox]::Show($MessageBody, $MessageTitle, $ButtonType, $MessageIcon)
+	
+	exit
+	
+	
 }
 
 else
-
 {
-
-[XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML"
-
-$BigramXML = $xmlfile.configuration.customerbigram
-$dbscriptpathXML = $xmlfile.configuration.dbscriptpath
-$longversionXML = $xmlfile.configuration.longversion
-$shortverionXML = $xmlfile.configuration.shortversion
-
+	
+	[XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML"
+	
+	$BigramXML = $xmlfile.configuration.customerbigram
+	$dbscriptpathXML = $xmlfile.configuration.dbscriptpath
+	$longversionXML = $xmlfile.configuration.longversion
+	$shortverionXML = $xmlfile.configuration.shortversion
+	
 }
 
 
@@ -334,8 +339,8 @@ function Get-IniFile
 if ($Password -eq $true)
 {
 	
-    
-    $passwordGenerate = Generate-RandomPassword -length 15
+	
+	$passwordGenerate = Generate-RandomPassword -length 15
 	
 	Set-Clipboard -Value $passwordGenerate
 	
@@ -366,40 +371,39 @@ if ($InventorySystem -eq $true)
 	foreach ($Service in $Services)
 	{
 		$InfoOnService = Get-WmiObject Win32_Service | where Name -eq $Service | Select-Object name, startname, state, Startmode -ErrorAction SilentlyContinue
-
-                                $object = New-Object -TypeName PSObject
-                                $object | Add-Member -MemberType NoteProperty -Name 'Tjänst' -Value $InfoOnService.name
-                                $object | Add-Member -MemberType NoteProperty -Name 'Konto' -Value $InfoOnService.Startname
-                                $object | Add-Member -MemberType NoteProperty -Name 'Status' -Value $InfoOnService.state
-                                $object | Add-Member -MemberType NoteProperty -Name 'Startdatum' -Value $InfoOnService.startmode
-
-                                $data += $object
+		
+		$object = New-Object -TypeName PSObject
+		$object | Add-Member -MemberType NoteProperty -Name 'Tjänst' -Value $InfoOnService.name
+		$object | Add-Member -MemberType NoteProperty -Name 'Konto' -Value $InfoOnService.Startname
+		$object | Add-Member -MemberType NoteProperty -Name 'Status' -Value $InfoOnService.state
+		$object | Add-Member -MemberType NoteProperty -Name 'Startdatum' -Value $InfoOnService.startmode
+		
+		$data += $object
 	}
-
+	
 	$data | Out-File "$PSScriptRoot\$today\Data_$Today.txt" -Append
 	
-
-$data2 = @()
 	
-$installed = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
+	$data2 = @()
+	
+	$installed = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
 								  'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*',
 								  'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
 								  'HKCU:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction Ignore | Where-Object publisher -eq 'Visma' | Select-Object -Property DisplayName, DisplayVersion, Publisher | Sort-Object -Property DisplayName
 	
-    foreach ($inst in $installed)
-
-    {
-
-                                $object = New-Object -TypeName PSObject
-                                $object | Add-Member -MemberType NoteProperty -Name 'Applikation' -Value $inst.displayname
-                                $object | Add-Member -MemberType NoteProperty -Name 'Version' -Value $inst.displayversion
-                                $object | Add-Member -MemberType NoteProperty -Name 'Utgivare' -Value $inst.publisher
-
-                                $data2 += $object
-    
-    }
-
-    #$time | Out-File "$PSScriptRoot\$today\InstalledSoftware_$today.txt" -Append
+	foreach ($inst in $installed)
+	{
+		
+		$object = New-Object -TypeName PSObject
+		$object | Add-Member -MemberType NoteProperty -Name 'Applikation' -Value $inst.displayname
+		$object | Add-Member -MemberType NoteProperty -Name 'Version' -Value $inst.displayversion
+		$object | Add-Member -MemberType NoteProperty -Name 'Utgivare' -Value $inst.publisher
+		
+		$data2 += $object
+		
+	}
+	
+	#$time | Out-File "$PSScriptRoot\$today\InstalledSoftware_$today.txt" -Append
 	$data2 | Out-File "$PSScriptRoot\$today\data_$today.txt" -Append
 	
 	try
@@ -426,7 +430,7 @@ $installed = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVer
 	{
 		write-host "no app-pool"
 	}
-
+	
 }
 #endregion
 
@@ -437,119 +441,119 @@ $data3 = @()
 
 if ($InventorySettings -eq $true)
 {
-
+	
 	$UseSSOBackup = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$BigramXML\$BigramXML\Login\Web.config")
 	
 	if ($UseSSOBackup -eq $true)
 	{
-
+		
 		[XML]$UseSSO = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\$BigramXML\Login\Web.config" -ErrorAction SilentlyContinue
-
-
-                                $object = New-Object -TypeName PSObject
-                                $object | Add-Member -MemberType NoteProperty -Name 'useSSO' -Value $usesso.configuration.appsettings.add.where{ $_.key -eq 'UseSSo' }.value
-                                
-                                $data3 += $object
-                                $data3 | Out-File "$PSScriptRoot\$today\data_$Today.txt" -Append
-
-    }
-    	
+		
+		
+		$object = New-Object -TypeName PSObject
+		$object | Add-Member -MemberType NoteProperty -Name 'useSSO' -Value $usesso.configuration.appsettings.add.where{ $_.key -eq 'UseSSo' }.value
+		
+		$data3 += $object
+		$data3 | Out-File "$PSScriptRoot\$today\data_$Today.txt" -Append
+		
+	}
+	
 	Else
 	{
 		write-host "No web.config for UseSSO in backup"
 	}
-
-
-$data4 = @()
-
-
+	
+	
+	$data4 = @()
+	
+	
 	$befolkningBackupAG = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$BigramXML\PPP\Personec_AG\web.config")
 	
 	if ($befolkningBackupAG -eq $true)
 	{
 		[XML]$UseBEfolkAG = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\PPP\Personec_AG\web.config" -ErrorAction SilentlyContinue
-
-                                $object = New-Object -TypeName PSObject
-                                $object | Add-Member -MemberType NoteProperty -Name 'BefolkningsregisterConfigFileName' -Value $UseBEfolkAG.configuration.appsettings.add.where{ $_.key -eq 'BefolkningsregisterConfigFileName' }.value
-                                $object | Add-Member -MemberType NoteProperty -Name 'BefolkningsregisterConfigName' -Value $UseBEfolkAG.configuration.appsettings.add.where{ $_.key -eq 'BefolkningsregisterConfigName' }.value
-
-                                $data4 += $object
-                                $data4 | Out-File "$PSScriptRoot\$today\data_$Today.txt" -Append
-
-
+		
+		$object = New-Object -TypeName PSObject
+		$object | Add-Member -MemberType NoteProperty -Name 'BefolkningsregisterConfigFileName' -Value $UseBEfolkAG.configuration.appsettings.add.where{ $_.key -eq 'BefolkningsregisterConfigFileName' }.value
+		$object | Add-Member -MemberType NoteProperty -Name 'BefolkningsregisterConfigName' -Value $UseBEfolkAG.configuration.appsettings.add.where{ $_.key -eq 'BefolkningsregisterConfigName' }.value
+		
+		$data4 += $object
+		$data4 | Out-File "$PSScriptRoot\$today\data_$Today.txt" -Append
+		
+		
 	}
 	else
 	{
 		write-host "No web.config for befolkning in backup för AG web.config"
 	}
-
-
-
-$ReportsBackupPPP = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt")
+	
+	
+	
+	$ReportsBackupPPP = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt")
 	
 	if ($ReportsBackupPPP -eq $true)
 	{
 		$rapport = Get-ChildItem -Recurse "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt"
-
+		
 		$rapport | out-file "$PSScriptRoot\$today\data_$Today.txt" -Append
 	}
 	else
 	{
 		write-host "No reports for PPP in backup"
 	}
-
-
+	
+	
 	
 	$ReportsBackupAG = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt")
 	
 	if ($ReportsBackupAG -eq $true)
 	{
 		$rapport = Get-ChildItem -Recurse "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt"
-
+		
 		$rapport | out-file "$PSScriptRoot\$today\data_$Today.txt" -Append
 	}
 	else
 	{
 		write-host "No reports for AG in backup"
 	}
-
+	
 }
 
 
 if ($InventoryPasswords -eq $true)
 {
-
-$data5 = @()
-
-#Region Passwords
-
-		$pstid = Get-IniFile "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid.ini" -ErrorAction SilentlyContinue
-        [xml]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$BigramXML\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
-        [XML]$PIA = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
-		
-                                $object = New-Object -TypeName PSObject
-                                $object | Add-Member -MemberType NoteProperty -Name 'NeptuneUser' -Value $PSTID.styr.NeptuneUser
-                                $object | Add-Member -MemberType NoteProperty -Name 'NeptunePassword' -Value $PSTID.styr.NeptuneUser
-                                $object | Add-Member -MemberType NoteProperty -Name 'Batchuser' -Value $Batch.configuration.appsettings.add.where{ $_.key -eq 'sysuser' }.value
-                                $object | Add-Member -MemberType NoteProperty -Name 'BatchPassword' -Value $Batch.configuration.appsettings.add.where{ $_.key -eq 'SysPassword' }.value
-                                
-                                $object | Add-Member -MemberType NoteProperty -Name 'PPP Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'P.Database.User' }.value
-                                $object | Add-Member -MemberType NoteProperty -Name 'PPP Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'P.Database.Password' }.valuer
-                                
-                                $object | Add-Member -MemberType NoteProperty -Name 'PUD Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'U.Database.User' }.value
-                                $object | Add-Member -MemberType NoteProperty -Name 'PUD Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'U.Database.Password' }.value
-                                
-                                $object | Add-Member -MemberType NoteProperty -Name 'PFH Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'F.Database.User' }.value
-                                $object | Add-Member -MemberType NoteProperty -Name 'PFH Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'F.Database.Password' }.value
-                                
-                                $object | Add-Member -MemberType NoteProperty -Name 'Service Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'ServiceUser.Login' }.value
-                                $object | Add-Member -MemberType NoteProperty -Name 'Service Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'serviceUser.Secret' }.value
-                                $data5 += $object
-     
-
-
-     
-$data5 | format-list
+	
+	$data5 = @()
+	
+	#Region Passwords
+	
+	$pstid = Get-IniFile "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid.ini" -ErrorAction SilentlyContinue
+	[xml]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$BigramXML\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
+	[XML]$PIA = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
+	
+	$object = New-Object -TypeName PSObject
+	$object | Add-Member -MemberType NoteProperty -Name 'NeptuneUser' -Value $PSTID.styr.NeptuneUser
+	$object | Add-Member -MemberType NoteProperty -Name 'NeptunePassword' -Value $PSTID.styr.NeptuneUser
+	$object | Add-Member -MemberType NoteProperty -Name 'Batchuser' -Value $Batch.configuration.appsettings.add.where{ $_.key -eq 'sysuser' }.value
+	$object | Add-Member -MemberType NoteProperty -Name 'BatchPassword' -Value $Batch.configuration.appsettings.add.where{ $_.key -eq 'SysPassword' }.value
+	
+	$object | Add-Member -MemberType NoteProperty -Name 'PPP Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'P.Database.User' }.value
+	$object | Add-Member -MemberType NoteProperty -Name 'PPP Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'P.Database.Password' }.valuer
+	
+	$object | Add-Member -MemberType NoteProperty -Name 'PUD Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'U.Database.User' }.value
+	$object | Add-Member -MemberType NoteProperty -Name 'PUD Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'U.Database.Password' }.value
+	
+	$object | Add-Member -MemberType NoteProperty -Name 'PFH Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'F.Database.User' }.value
+	$object | Add-Member -MemberType NoteProperty -Name 'PFH Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'F.Database.Password' }.value
+	
+	$object | Add-Member -MemberType NoteProperty -Name 'Service Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'ServiceUser.Login' }.value
+	$object | Add-Member -MemberType NoteProperty -Name 'Service Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'serviceUser.Secret' }.value
+	$data5 += $object
+	
+	
+	
+	
+	$data5 | format-list
 }
 
 
@@ -581,7 +585,7 @@ if ($ShutdownServices -eq $true)
 	foreach ($Service in $Services)
 	{
 		Stop-Service -Name $Service -Force -ErrorAction SilentlyContinue -Verbose
-	
+		
 		
 	}
 	
@@ -592,10 +596,10 @@ if ($ShutdownServices -eq $true)
 
 if ($SqlQueries -eq $true)
 {
-
-$QRReadPW = Generate-RandomPassword -length 15
 	
-$SQL_queries = @"
+	$QRReadPW = Generate-RandomPassword -length 15
+	
+	$SQL_queries = @"
 #------------------------------------------------#
 # SQL Query for update scripts
 #------------------------------------------------#
@@ -637,11 +641,11 @@ SELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
 SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
 #------------------------------------------------# 
 "@
-
-$SQL_queries | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
-
-
-$QRRead_users = @"
+	
+	$SQL_queries | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
+	
+	
+	$QRRead_users = @"
 #------------------------------------------------#
 #SQL Query for QRread accounts
 USE [master]
@@ -691,12 +695,12 @@ ALTER ROLE [db_datareader] ADD MEMBER [$QRRead]
 GO
 #------------------------------------------------#
 "@
-
-$QRRead_users | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
-
-#------------------------------------------------#
-
-$sql_users = @"
+	
+	$QRRead_users | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
+	
+	#------------------------------------------------#
+	
+	$sql_users = @"
 #------------------------------------------------#
 #SQL Query for importing accounts
 ##Personec P
@@ -711,9 +715,9 @@ sp_change_users_login update_one,$DBUser_NA,$DBUser_NA
 sp_change_users_login update_one,$DBUser_NU,$DBUser_NU
 #------------------------------------------------#
 "@
-
-$sql_users | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
-
+	
+	$sql_users | Out-File "$PSScriptRoot\$today\SQL_queries.txt" -Append
+	
 }
 #endregion
 
