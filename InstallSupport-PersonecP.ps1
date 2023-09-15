@@ -39,22 +39,24 @@ Param (
 	[Parameter(Mandatory = $false)]
 	[Switch]$Backup,
 	[Parameter(Mandatory = $false)]
-	[Switch]$Password,
-	[Parameter(Mandatory = $false)]
-	[Switch]$InventorySettings,
+	[Switch]$SqlQueries,
 	[Parameter(Mandatory = $false)]
 	[Switch]$InventorySystem,
 	[Parameter(Mandatory = $false)]
+	[Switch]$InventorySettings,
+	[Parameter(Mandatory = $false)]
 	[Switch]$InventoryPasswords,
+	[Parameter(Mandatory = $false)]
+	[Switch]$Password,
 	[Parameter(Mandatory = $false)]
 	[Switch]$ShutdownServices,
 	[Parameter(Mandatory = $false)]
 	[Switch]$CopyReports,
 	[Parameter(Mandatory = $false)]
-	[Switch]$SqlQueries,
-	[Parameter(Mandatory = $false)]
 	[Switch]$DBAbackup
 )
+
+
 
 # Check if XML-file exist, if not... create default
 if ($XML -eq $true)
@@ -99,6 +101,31 @@ if ($XML -eq $true)
 }
 
 #region Variables & arrays
+
+$XMLexist = (test-path -Path "$PSScriptRoot\ScriptConfig.XML")
+
+if ($XMLexist -eq $false)
+
+
+{
+
+    	Add-Type -AssemblyName PresentationCore, PresentationFramework
+		$ButtonType = [System.Windows.MessageBoxButton]::Ok
+		$MessageIcon = [System.Windows.MessageBoxImage]::Information
+		$MessageBody = "You need to create an xml-file... USE -xml "
+		$MessageTitle = "XML Missing..."
+        
+	    $Result = [System.Windows.MessageBox]::Show($MessageBody, $MessageTitle, $ButtonType, $MessageIcon)
+
+        exit
+
+
+}
+
+else
+
+{
+
 [XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML"
 
 $BigramXML = $xmlfile.configuration.customerbigram
@@ -106,11 +133,10 @@ $dbscriptpathXML = $xmlfile.configuration.dbscriptpath
 $longversionXML = $xmlfile.configuration.longversion
 $shortverionXML = $xmlfile.configuration.shortversion
 
-#Password for BIGRAM_Sec account
-$Sec_PW = "Visma2016!"
+}
 
-#Password when for BIGRAM_QRRead when creating the query
-$QRReadPW = "Visma2016!"
+
+
 
 # Todays date (used with backupfolder and Pre-Check txt file
 $Today = (get-date -Format yyyyMMdd)
@@ -307,7 +333,9 @@ function Get-IniFile
 
 if ($Password -eq $true)
 {
-	$passwordGenerate = Generate-RandomPassword -length 15
+	
+    
+    $passwordGenerate = Generate-RandomPassword -length 15
 	
 	Set-Clipboard -Value $passwordGenerate
 	
@@ -495,7 +523,7 @@ $data5 = @()
 
 #Region Passwords
 
-		$pstid = Get-IniFile "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid2.ini" -ErrorAction SilentlyContinue
+		$pstid = Get-IniFile "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid.ini" -ErrorAction SilentlyContinue
         [xml]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$BigramXML\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
         [XML]$PIA = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
 		
@@ -521,7 +549,7 @@ $data5 = @()
 
 
      
-$data5 | format-Table
+$data5 | format-list
 }
 
 
@@ -564,6 +592,8 @@ if ($ShutdownServices -eq $true)
 
 if ($SqlQueries -eq $true)
 {
+
+$QRReadPW = Generate-RandomPassword -length 15
 	
 $SQL_queries = @"
 #------------------------------------------------#
