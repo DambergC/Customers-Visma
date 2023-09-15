@@ -45,6 +45,8 @@ Param (
 	[Parameter(Mandatory = $false)]
 	[Switch]$InventorySystem,
 	[Parameter(Mandatory = $false)]
+	[Switch]$InventoryPasswords,
+	[Parameter(Mandatory = $false)]
 	[Switch]$ShutdownServices,
 	[Parameter(Mandatory = $false)]
 	[Switch]$CopyReports,
@@ -98,7 +100,6 @@ if ($XML -eq $true)
 
 #region Variables & arrays
 [XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML"
-
 
 $BigramXML = $xmlfile.configuration.customerbigram
 $dbscriptpathXML = $xmlfile.configuration.dbscriptpath
@@ -157,7 +158,7 @@ $DBUser_NU = $BigramXML + "_NeptuneUser"
 
 #endregion
 
-# Function 
+#region Function 
 
 function Generate-RandomPassword
 {
@@ -300,6 +301,7 @@ function Get-IniFile
 	return $ini
 }
 
+#endregion
 
 #region Passwordgenerator
 
@@ -404,6 +406,7 @@ $installed = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVer
 
 $data3 = @()
 
+
 if ($InventorySettings -eq $true)
 {
 
@@ -419,61 +422,33 @@ if ($InventorySettings -eq $true)
                                 $object | Add-Member -MemberType NoteProperty -Name 'useSSO' -Value $usesso.configuration.appsettings.add.where{ $_.key -eq 'UseSSo' }.value
                                 
                                 $data3 += $object
-
-                                $data3
+                                $data3 | Out-File "$PSScriptRoot\$today\data_$Today.txt" -Append
 
     }
-
-}
-
-<#
-
-
-
-
-		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT1 = 'SINGLESIGNON' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'UseSSO' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		 | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		
-	}
+    	
 	Else
 	{
 		write-host "No web.config for UseSSO in backup"
 	}
 
-	
-	$forhandling = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$BigramXML\pfh\services\Web.config")
-	
-	if ($forhandling -eq $true)
-	{
-		[XML]$forhandlingsettings = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\pfh\services\Web.config" -ErrorAction SilentlyContinue
-		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT1 = 'FÖRHANDLING' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'PotEditable' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$forhandlingsettings.configuration.appsettings.add.where{ $_.key -eq 'PotEditable' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		
-	}
-	Else
-	{
-		write-host "No web.config for forhandling in backup"
-	}
-	
-	
+
+$data4 = @()
+
+
 	$befolkningBackupAG = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$BigramXML\PPP\Personec_AG\web.config")
 	
 	if ($befolkningBackupAG -eq $true)
 	{
 		[XML]$UseBEfolkAG = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\PPP\Personec_AG\web.config" -ErrorAction SilentlyContinue
-		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT1 = 'BEFOLKNINGSREGISTER AG-web.config' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'BefolkningsregisterConfigFileName' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$UseBEfolkAG.configuration.appsettings.add.where{ $_.key -eq 'BefolkningsregisterConfigFileName' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'BefolkningsregisterConfigName' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$UseBEfolkAG.configuration.appsettings.add.where{ $_.key -eq 'BefolkningsregisterConfigName' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
+
+                                $object = New-Object -TypeName PSObject
+                                $object | Add-Member -MemberType NoteProperty -Name 'BefolkningsregisterConfigFileName' -Value $UseBEfolkAG.configuration.appsettings.add.where{ $_.key -eq 'BefolkningsregisterConfigFileName' }.value
+                                $object | Add-Member -MemberType NoteProperty -Name 'BefolkningsregisterConfigName' -Value $UseBEfolkAG.configuration.appsettings.add.where{ $_.key -eq 'BefolkningsregisterConfigName' }.value
+
+                                $data4 += $object
+                                $data4 | Out-File "$PSScriptRoot\$today\data_$Today.txt" -Append
+
+
 	}
 	else
 	{
@@ -482,132 +457,73 @@ if ($InventorySettings -eq $true)
 
 
 
-
-	$ReportsBackupPPP = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt")
+$ReportsBackupPPP = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt")
 	
 	if ($ReportsBackupPPP -eq $true)
 	{
 		$rapport = Get-ChildItem -Recurse "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_P_web\Lon\cr\rpt"
-		$time | Out-File "$PSScriptRoot\$today\ReportsPPP_$Today.txt" -Append
-		$rapport | out-file "$PSScriptRoot\$today\reportsPPP_$Today.txt" -Append
+
+		$rapport | out-file "$PSScriptRoot\$today\data_$Today.txt" -Append
 	}
 	else
 	{
 		write-host "No reports for PPP in backup"
 	}
+
+
 	
 	$ReportsBackupAG = (Test-Path "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt")
 	
 	if ($ReportsBackupAG -eq $true)
 	{
 		$rapport = Get-ChildItem -Recurse "$PSScriptRoot\$Today\Wwwroot\$BigramXML\PPP\Personec_AG\CR\rpt"
-		$time | Out-File "$PSScriptRoot\$today\ReportsAG_$Today.txt" -Append
-		$rapport | out-file "$PSScriptRoot\$today\reportsAG_$Today.txt" -Append
+
+		$rapport | out-file "$PSScriptRoot\$today\data_$Today.txt" -Append
 	}
 	else
 	{
 		write-host "No reports for AG in backup"
 	}
 
-
-#endregion
-	
-	#region Inventory pwd
-
-# PSTID
-	
-	$pathPStid = (Test-Path "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid.ini")
-	
-	if ($pathPStid -eq $true)
-	{
-		$pstid = Get-IniFile "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid.ini"
-		$NeptuneUser = $PSTID.styr.NeptuneUser
-		$NeptunePwd = $PSTID.styr.neptunepassword
-		
-		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT1 = 'PSTID' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'NeptuneUser' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$NeptuneUser | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'NeptunePassword' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$NeptunePwd | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		
-	}
-	else
-	{
-		write-host "No PSTID"
-	}
-	
-# BATCH
-	
-	$BatchBackup = (Test-Path "$PSScriptRoot\$today\Programs\$BigramXML\PPP\Personec_P\batch.config")
-	
-	if ($BatchBackup -eq $true)
-	{
-		[xml]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$BigramXML\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
-		
-		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT1 = 'BATCHUSER-cHECK' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$Batch.configuration.appsettings.add.where{ $_.key -eq 'sysuser' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$Batch.configuration.appsettings.add.where{ $_.key -eq 'SysPassword' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		
-		
-	}
-	Else
-	{
-		write-host "No batch"
-	}
-
-# PIA
-
-	$PiaBackup = (Test-Path "$PSScriptRoot\$today\wwwroot\$BigramXML\PIA\PUF_IA Module\web.config")
-	
-	if ($PiaBackup -eq $true)
-	{
-		[XML]$PIA = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
-            
-
-
-		$time | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT1 = 'PIA CHECK' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'PPP Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$PIA.configuration.appsettings.add.where{ $_.key -eq 'P.Database.User' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'PPP Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$PIA.configuration.appsettings.add.where{ $_.key -eq 'P.Database.Password' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'PUD Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$PIA.configuration.appsettings.add.where{ $_.key -eq 'U.Database.User' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'PUD Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$PIA.configuration.appsettings.add.where{ $_.key -eq 'U.Database.Password' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'PFH Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$PIA.configuration.appsettings.add.where{ $_.key -eq 'F.Database.User' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'PFH Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$PIA.configuration.appsettings.add.where{ $_.key -eq 'F.Database.Password' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'Service Username' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$PIA.configuration.appsettings.add.where{ $_.key -eq 'ServiceUser.Login' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT2 = 'Service Password' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$PIA.configuration.appsettings.add.where{ $_.key -eq 'ServiceUser.secret' }.value | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		$TEXT3 = '-----------------' | Out-File "$PSScriptRoot\$today\data.txt" -Append
-		
-	}
-	Else
-	{
-		WRITE-HOST "No web.config for PIA in backup"
-	}
-	
-
-
-	
-
 }
 
 
+if ($InventoryPasswords -eq $true)
+{
 
-#>
+$data5 = @()
 
-#endregion
+#Region Passwords
+
+		$pstid = Get-IniFile "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid2.ini" -ErrorAction SilentlyContinue
+        [xml]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$BigramXML\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
+        [XML]$PIA = Get-Content "$PSScriptRoot\$today\Wwwroot\$BigramXML\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
+		
+                                $object = New-Object -TypeName PSObject
+                                $object | Add-Member -MemberType NoteProperty -Name 'NeptuneUser' -Value $PSTID.styr.NeptuneUser
+                                $object | Add-Member -MemberType NoteProperty -Name 'NeptunePassword' -Value $PSTID.styr.NeptuneUser
+                                $object | Add-Member -MemberType NoteProperty -Name 'Batchuser' -Value $Batch.configuration.appsettings.add.where{ $_.key -eq 'sysuser' }.value
+                                $object | Add-Member -MemberType NoteProperty -Name 'BatchPassword' -Value $Batch.configuration.appsettings.add.where{ $_.key -eq 'SysPassword' }.value
+                                
+                                $object | Add-Member -MemberType NoteProperty -Name 'PPP Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'P.Database.User' }.value
+                                $object | Add-Member -MemberType NoteProperty -Name 'PPP Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'P.Database.Password' }.valuer
+                                
+                                $object | Add-Member -MemberType NoteProperty -Name 'PUD Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'U.Database.User' }.value
+                                $object | Add-Member -MemberType NoteProperty -Name 'PUD Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'U.Database.Password' }.value
+                                
+                                $object | Add-Member -MemberType NoteProperty -Name 'PFH Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'F.Database.User' }.value
+                                $object | Add-Member -MemberType NoteProperty -Name 'PFH Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'F.Database.Password' }.value
+                                
+                                $object | Add-Member -MemberType NoteProperty -Name 'Service Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'ServiceUser.Login' }.value
+                                $object | Add-Member -MemberType NoteProperty -Name 'Service Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'serviceUser.Secret' }.value
+                                $data5 += $object
+     
+
+
+     
+$data5 | format-Table
+}
+
 
 #region backup
 
