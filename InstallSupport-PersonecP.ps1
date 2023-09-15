@@ -4,7 +4,7 @@
 .DESCRIPTION
    Funktioner i skripet
 	- XML - Creates XML-file with default value
-	- Backup - filebackup excl. logfiles 
+	- Backup - filebackup excl. logfiles .
 	
 .EXAMPLE
    InstallSupport-PersonecP.ps1 -backup
