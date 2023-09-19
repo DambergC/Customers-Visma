@@ -79,8 +79,8 @@ if ($XML -eq $true)
 		
 		$xmlWriter.WriteElementString("CustomerBigram", "$BigramToXML")
 		$xmlWriter.WriteElementString("DBscriptPath", "D:\Visma")
-		$xmlWriter.WriteElementString("LongVersion", "23040")
-		$xmlWriter.WriteElementString("ShortVersion", "23040")
+		$xmlWriter.WriteElementString("LongVersion", "23100")
+		$xmlWriter.WriteElementString("ShortVersion", "23100")
 		$xmlWriter.WriteEndElement() # Configuration endnode
 		$xmlWriter.Flush()
 		$xmlWriter.Close()
