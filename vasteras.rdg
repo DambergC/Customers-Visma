@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RDCMan programVersion="2.90" schemaVersion="3">
+  <file>
+    <credentialsProfiles>
+      <credentialsProfile inherit="None">
+        <profileName scope="Local">VST\qwchda</profileName>
+        <userName>qwchda</userName>
+        <password>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAFH2WQ4VNQUq08r7konSTkAAAAAACAAAAAAADZgAAwAAAABAAAADrpNuy++8/aRP6jIMUBWnGAAAAAASAAACgAAAAEAAAAIIvLcBTtQ/XZ/Vzc6V6Yj4YAAAA45M/Yw4qAENNgibnUvVH7/alqKAFRsGtFAAAAOS3LIqM1MvAregnQQZxJso/gxZR</password>
+        <domain>VST</domain>
+      </credentialsProfile>
+    </credentialsProfiles>
+    <properties>
+      <expanded>True</expanded>
+      <name>vasteras</name>
+    </properties>
+    <logonCredentials inherit="None">
+      <profileName scope="File">VST\qwchda</profileName>
+    </logonCredentials>
+    <displaySettings inherit="None">
+      <liveThumbnailUpdates>True</liveThumbnailUpdates>
+      <allowThumbnailSessionInteraction>False</allowThumbnailSessionInteraction>
+      <showDisconnectedThumbnails>True</showDisconnectedThumbnails>
+      <thumbnailScale>1</thumbnailScale>
+      <smartSizeDockedWindows>Scale</smartSizeDockedWindows>
+      <smartSizeUndockedWindows>Scale</smartSizeUndockedWindows>
+    </displaySettings>
+    <server>
+      <properties>
+        <displayName>VST00390S SQL</displayName>
+        <name>VST00390S</name>
+      </properties>
+    </server>
+    <server>
+      <properties>
+        <displayName>VST00391S APP</displayName>
+        <name>VST00391S</name>
+      </properties>
+    </server>
+    <server>
+      <properties>
+        <displayName>VST00392S WEB INT</displayName>
+        <name>VST00392S</name>
+      </properties>
+    </server>
+    <server>
+      <properties>
+        <displayName>VST00393S WEB EXT</displayName>
+        <name>VST00393S</name>
+      </properties>
+    </server>
+  </file>
+  <connected />
+  <favorites />
+  <recentlyUsed />
+</RDCMan>
