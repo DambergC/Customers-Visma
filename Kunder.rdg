@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RDCMan programVersion="2.90" schemaVersion="3">
+  <file>
+    <credentialsProfiles>
+      <credentialsProfile inherit="None">
+        <profileName scope="Local">harryda.se\ext-adm-chrdam</profileName>
+        <userName>ext-adm-chrdam</userName>
+        <password>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAASfVmVMOdKkeiIPKHY05xEgAAAAACAAAAAAAQZgAAAAEAACAAAADBNmLTfpvlkCW1W0LDFUHiH1X76GtBb/ppVbl4tvJWngAAAAAOgAAAAAIAACAAAAAl99FIjawJ1wkCFtZfjafnai7SWHSksU3Q9cZeG9yg9DAAAACYqGZ+IlIgGjp8NnvOh9nxGHuPYur0m48Lh49Wf+kLccp/S9eWqrVdrpwkUVlSidhAAAAAZaDKseoxIaNxBrAy38KhojFegLIShG50L1IO4ELrmmL2FDveNWsY1lMfC5Z7vhNNAY83r0VsjVFubuUEmzNmTQ==</password>
+        <domain>harryda.se</domain>
+      </credentialsProfile>
+      <credentialsProfile inherit="None">
+        <profileName scope="Local">kumla\kon_chrdam</profileName>
+        <userName>kumla\kon_chrdam</userName>
+        <password>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAASfVmVMOdKkeiIPKHY05xEgAAAAACAAAAAAAQZgAAAAEAACAAAACEm7PdecBC+NN7vzzj671Dv7o4LLjIs75ommppvl8TNwAAAAAOgAAAAAIAACAAAADzm3kG5k6Ov+uUmmsv3qS9d9MJVEBGhwRzVMruEGfnhjAAAAAlBksGI6/UU0YZaE3ERqRK21LPyiaXKJJ2Nf0RAbDQyG5Uil1Yiw80qij7ealJh2hAAAAAeQ9M9wAorSx8KBrk2smFjQ1+zy74mxWZ6oZANf2dMJBa24lU1cCDPBCtxX1gSXK1ggVm2FHKSRdogrH+lffMvA==</password>
+        <domain>kumla</domain>
+      </credentialsProfile>
+      <credentialsProfile inherit="None">
+        <profileName scope="Local">kumla.internal\kon_chrdam</profileName>
+        <userName>kumla.internal\kon_chrdam</userName>
+        <password>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAASfVmVMOdKkeiIPKHY05xEgAAAAACAAAAAAAQZgAAAAEAACAAAABL4zLa2IdjlCxX/kuWqmenfJi4Qwr9nqtOJIrEU0bXZQAAAAAOgAAAAAIAACAAAAC9MfT/JQhxkKTRM+HmGUsjhF3wNi5u5zgr8L3NVzs/xDAAAAC2dL4rNKyN+r3bQUjFlLeqdzJk4ri2/xHLFcRHfOf4Os6VWlxpCg46oe5WABkOv61AAAAAqeLhqqDj6qFUhbldkKlT55gpiHMPCLVmX5bOdJFsfejwT/is2bFel8ySep5CYaJOR4Ar0orLd9uWekXopXV9/Q==</password>
+        <domain>kumla.internal</domain>
+      </credentialsProfile>
+      <credentialsProfile inherit="None">
+        <profileName scope="Local">ADT\christiand</profileName>
+        <userName>ADT\christiand</userName>
+        <password>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAASfVmVMOdKkeiIPKHY05xEgAAAAACAAAAAAAQZgAAAAEAACAAAAA8lD9jp3HcE+zQOFLZP6Jh7ABcVBzZEYk45AE9NHY8XgAAAAAOgAAAAAIAACAAAACr/48uuIlqO9x4++wA1i6syuLpg7unyZI8zBDK4+FGVyAAAAC4rc4SoWJodyyb/ZVy4o1azDkkgoT6j/2fGGwRy5yOYkAAAABcTkR9F+gJGor2rzRKwtkc1E81xheBOdsgyviJY33LwvDqY/a1KK84KRUFC0YkE58qmY8Kma3AJXIvK6tnvspU</password>
+        <domain>ADT</domain>
+      </credentialsProfile>
+      <credentialsProfile inherit="None">
+        <profileName scope="Local">.\chrdam</profileName>
+        <userName>.\chrdam</userName>
+        <password>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAlM0m1P1p7ESiKJ/qPp9SqQAAAAACAAAAAAAQZgAAAAEAACAAAACUjnDFBHb7mPgfWReJoslLwJZwZEy8jCOZ162mHIvn6QAAAAAOgAAAAAIAACAAAADLMovXZACY0jTghjQDJxrcXMLTb5mxqeaGgbn7XD/WejAAAAAJIgy0KfEGJ/gn6xE6tuo3hdloCg351LZgvXYYaJOUBJTeFmQ4+FCyxod2HBN9H6dAAAAAt+RcXSvtf3vm98gbYRtvHB7o4azW473k0DcPcckM/UaMipKEFZQdULsqKejzmhE6jr8hmeoguGoukl+9JHmTQA==</password>
+        <domain>.</domain>
+      </credentialsProfile>
+      <credentialsProfile inherit="None">
+        <profileName scope="Local">Harryda</profileName>
+        <userName>res-ad\EXT-ADM-CHRDAM</userName>
+        <password>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAlM0m1P1p7ESiKJ/qPp9SqQAAAAACAAAAAAAQZgAAAAEAACAAAAAiNwHFQkYQIX7ajv57q4z8hCPpshWkg8L+taNZnjYoNQAAAAAOgAAAAAIAACAAAADSBdLP/jgeKNkMjWTNy9k/2lo0y6aRmvh+UvRRDIYzWiAAAADKFjBbIr0VJoqyQFTRL3Q8hk0F1khLKGvAkLuKY2BhO0AAAACnmX0DRdOkj/g4mdN5TfKPa7iI/JuNhQQ/Wje8WoNA02UV/eVnxQJ3g0NJ76bXGFO3uVqBq3nma28rgYxyIsD8</password>
+        <domain>res-ad</domain>
+      </credentialsProfile>
+      <credentialsProfile inherit="None">
+        <profileName scope="Local">ADMFALUN\cda21</profileName>
+        <userName>ADMFALUN\cda21</userName>
+        <password>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAlM0m1P1p7ESiKJ/qPp9SqQAAAAACAAAAAAAQZgAAAAEAACAAAACF3tIrQnh94DwZYIGNY04vHOb7df/KReD1M5kJyD/rSgAAAAAOgAAAAAIAACAAAABju4DnePP/V1N2IMHaPc2P7DNp2mmFPWXrlUutBBWoxCAAAAAfpe66MusAQoJigjbE0LxGdR8PuixnqkLhvfjgPJPbC0AAAADkd0jlU+10NorO+62DTA0cJkEqdvmu0e2d0j6F17zk2q8upguCz7ytHIuRVKU4aYqlR6Pd/E6rJAM8sXbRyiDb</password>
+        <domain>ADMFALUN</domain>
+      </credentialsProfile>
+    </credentialsProfiles>
+    <properties>
+      <expanded>True</expanded>
+      <name>Kunder</name>
+    </properties>
+    <group>
+      <properties>
+        <expanded>True</expanded>
+        <name>Falun Säter</name>
+      </properties>
+      <logonCredentials inherit="None">
+        <profileName scope="File">ADMFALUN\cda21</profileName>
+      </logonCredentials>
+      <remoteDesktop inherit="None">
+        <sameSizeAsClientArea>True</sameSizeAsClientArea>
+        <fullScreen>False</fullScreen>
+        <colorDepth>24</colorDepth>
+      </remoteDesktop>
+      <displaySettings inherit="None">
+        <liveThumbnailUpdates>True</liveThumbnailUpdates>
+        <allowThumbnailSessionInteraction>False</allowThumbnailSessionInteraction>
+        <showDisconnectedThumbnails>True</showDisconnectedThumbnails>
+        <thumbnailScale>1</thumbnailScale>
+        <smartSizeDockedWindows>Scale</smartSizeDockedWindows>
+        <smartSizeUndockedWindows>Scale</smartSizeUndockedWindows>
+      </displaySettings>
+      <server>
+        <properties>
+          <displayName>PROD FALUN APP PUF</displayName>
+          <name>172.20.32.21</name>
+        </properties>
+      </server>
+      <server>
+        <properties>
+          <displayName>PROD FALUN WEB PUF VIW</displayName>
+          <name>172.20.32.20</name>
+        </properties>
+      </server>
+      <server>
+        <properties>
+          <displayName>PROD SÄTER APP PUF</displayName>
+          <name>172.20.32.23</name>
+        </properties>
+      </server>
+      <server>
+        <properties>
+          <displayName>PROD SÄTER WEB PUF VIW</displayName>
+          <name>172.20.32.22</name>
+        </properties>
+      </server>
+      <server>
+        <properties>
+          <displayName>SQL ALLA</displayName>
+          <name>172.20.32.14</name>
+        </properties>
+      </server>
+      <server>
+        <properties>
+          <displayName>TEST FALUN WEB APP PUF VIW</displayName>
+          <name>172.20.32.13</name>
+        </properties>
+      </server>
+      <server>
+        <properties>
+          <displayName>TEST SÄTER WEB APP PUF VIW</displayName>
+          <name>172.20.32.15</name>
+        </properties>
+      </server>
+      <server>
+        <properties>
+          <displayName>UTBILDNING FALUN APP WEB PUF VIW</displayName>
+          <name>172.20.32.16</name>
+        </properties>
+      </server>
+    </group>
+    <group>
+      <properties>
+        <expanded>True</expanded>
+        <name>Härryda</name>
+      </properties>
+      <server>
+        <properties>
+          <displayName>10.127.1.6 Mgmt Server</displayName>
+          <name>10.127.1.6</name>
+        </properties>
+        <gatewaySettings inherit="None">
+          <enabled>False</enabled>
+          <hostName />
+          <logonMethod>Any</logonMethod>
+          <localBypass>True</localBypass>
+          <credSharing>True</credSharing>
+          <profileName scope="Local">Custom</profileName>
+          <userName />
+          <password />
+          <domain />
+        </gatewaySettings>
+        <remoteDesktop inherit="None">
+          <sameSizeAsClientArea>True</sameSizeAsClientArea>
+          <fullScreen>False</fullScreen>
+          <colorDepth>24</colorDepth>
+        </remoteDesktop>
+        <displaySettings inherit="None">
+          <thumbnailScale>1</thumbnailScale>
+          <smartSizeDockedWindows>Scale</smartSizeDockedWindows>
+          <smartSizeUndockedWindows>Scale</smartSizeUndockedWindows>
+        </displaySettings>
+      </server>
+    </group>
+    <group>
+      <properties>
+        <expanded>True</expanded>
+        <name>Kumla</name>
+      </properties>
+      <logonCredentials inherit="None">
+        <profileName scope="File">kumla\kon_chrdam</profileName>
+      </logonCredentials>
+      <remoteDesktop inherit="None">
+        <sameSizeAsClientArea>True</sameSizeAsClientArea>
+        <fullScreen>False</fullScreen>
+        <colorDepth>24</colorDepth>
+      </remoteDesktop>
+      <displaySettings inherit="None">
+        <liveThumbnailUpdates>True</liveThumbnailUpdates>
+        <allowThumbnailSessionInteraction>False</allowThumbnailSessionInteraction>
+        <showDisconnectedThumbnails>True</showDisconnectedThumbnails>
+        <thumbnailScale>1</thumbnailScale>
+        <smartSizeDockedWindows>Scale</smartSizeDockedWindows>
+        <smartSizeUndockedWindows>Scale</smartSizeUndockedWindows>
+      </displaySettings>
+      <server>
+        <properties>
+          <displayName>149 Web (KUMLAK/SYDNDF) SUF</displayName>
+          <name>kksrv149.kumla.internal</name>
+        </properties>
+        <logonCredentials inherit="None">
+          <profileName scope="File">kumla\kon_chrdam</profileName>
+        </logonCredentials>
+        <remoteDesktop inherit="None">
+          <sameSizeAsClientArea>True</sameSizeAsClientArea>
+          <fullScreen>False</fullScreen>
+          <colorDepth>24</colorDepth>
+        </remoteDesktop>
+      </server>
+      <server>
+        <properties>
+          <displayName>157 Web (KUMLAK/ASKNDK)</displayName>
+          <name>kksrv157.kumla.internal</name>
+        </properties>
+        <logonCredentials inherit="None">
+          <profileName scope="File">kumla\kon_chrdam</profileName>
+        </logonCredentials>
+      </server>
+      <server>
+        <properties>
+          <displayName>158 APP Web (LEKRGK)</displayName>
+          <name>kksrv158.kumla.internal</name>
+        </properties>
+      </server>
+      <server>
+        <properties>
+          <displayName>159 App Web (HALRGK)</displayName>
+          <name>kksrv159.kumla.internal</name>
+        </properties>
+      </server>
+      <server>
+        <properties>
+          <displayName>160 App Web (LAXAAK)</displayName>
+          <name>kksrv160.kumla.internal</name>
+        </properties>
+      </server>
+      <server>
+        <properties>
+          <displayName>App total kksrv156</displayName>
+          <name>kksrv156.kumla.internal</name>
+        </properties>
+        <logonCredentials inherit="None">
+          <profileName scope="Local">Custom</profileName>
+          <userName>kumla\kon_chrdam</userName>
+          <password>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAASfVmVMOdKkeiIPKHY05xEgAAAAACAAAAAAAQZgAAAAEAACAAAADG8LbCTV564iK1G55lu7LoBwg1bNhZmtubvJxB4+WbQgAAAAAOgAAAAAIAACAAAAB0g0eIPPzxNw65moo3IH7WHszlm95Jj1/GbO5qGw01hzAAAAAJbpr4POQ2j1Z187czy0ul6fKP3bVfriw3Zywtj5vOfDjmhXmsIQ4/IYjx6piARe1AAAAA01Hq2wmIy7VIb6DRxuq+tFggYKmkyXlVzUhooCip5I+PeC4bBshU9m6u87m/Dvwths18amausEDBzEwkcjakog==</password>
+          <domain>kumla</domain>
+        </logonCredentials>
+        <remoteDesktop inherit="None">
+          <sameSizeAsClientArea>True</sameSizeAsClientArea>
+          <fullScreen>False</fullScreen>
+          <colorDepth>24</colorDepth>
+        </remoteDesktop>
+        <displaySettings inherit="None">
+          <thumbnailScale>1</thumbnailScale>
+          <smartSizeDockedWindows>Scale</smartSizeDockedWindows>
+          <smartSizeUndockedWindows>Scale</smartSizeUndockedWindows>
+        </displaySettings>
+      </server>
+    </group>
+    <group>
+      <properties>
+        <expanded>True</expanded>
+        <name>Tomelilla</name>
+      </properties>
+      <server>
+        <properties>
+          <displayName>Appserver sql Mgmt</displayName>
+          <name>172.32.64.118</name>
+        </properties>
+        <logonCredentials inherit="None">
+          <profileName scope="File">ADT\christiand</profileName>
+        </logonCredentials>
+        <displaySettings inherit="None">
+          <thumbnailScale>1</thumbnailScale>
+          <smartSizeDockedWindows>Scale</smartSizeDockedWindows>
+          <smartSizeUndockedWindows>None</smartSizeUndockedWindows>
+        </displaySettings>
+      </server>
+      <server>
+        <properties>
+          <displayName>ViWserver</displayName>
+          <name>10.230.0.17</name>
+        </properties>
+        <displaySettings inherit="None">
+          <thumbnailScale>1</thumbnailScale>
+          <smartSizeDockedWindows>Scale</smartSizeDockedWindows>
+          <smartSizeUndockedWindows>None</smartSizeUndockedWindows>
+        </displaySettings>
+      </server>
+      <server>
+        <properties>
+          <displayName>Webserver Intern</displayName>
+          <name>172.32.64.119</name>
+        </properties>
+        <displaySettings inherit="None">
+          <thumbnailScale>1</thumbnailScale>
+          <smartSizeDockedWindows>Scale</smartSizeDockedWindows>
+          <smartSizeUndockedWindows>None</smartSizeUndockedWindows>
+        </displaySettings>
+      </server>
+    </group>
+    <group>
+      <properties>
+        <expanded>True</expanded>
+        <name>Visma</name>
+      </properties>
+      <logonCredentials inherit="None">
+        <profileName scope="File">.\chrdam</profileName>
+      </logonCredentials>
+      <server>
+        <properties>
+          <name>techkonsult01.northeurope.cloudapp.azure.com</name>
+        </properties>
+        <displaySettings inherit="None">
+          <thumbnailScale>1</thumbnailScale>
+          <smartSizeDockedWindows>Scale</smartSizeDockedWindows>
+          <smartSizeUndockedWindows>Scale</smartSizeUndockedWindows>
+        </displaySettings>
+      </server>
+    </group>
+  </file>
+  <connected />
+  <favorites>
+    <server>Kunder\Falun Säter\PROD FALUN APP PUF</server>
+  </favorites>
+  <recentlyUsed />
+</RDCMan>
