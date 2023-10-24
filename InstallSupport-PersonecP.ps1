@@ -1,39 +1,68 @@
 <#
-.Synopsis
-   Detta skript kan du änvända för att underlätta vid uppgradering av Personec P
-.DESCRIPTION
-   Funktioner i skripet
-	- XML - Creates XML-file with default value
-	- Backup - filebackup excl. logfiles .
+	.Synopsis
+		Script to support technician with Personec P
 	
-.EXAMPLE
-   InstallSupport-PersonecP.ps1 -backup
-   Backup av filstruktur 
-.EXAMPLE
-   InstallSupport-PersonecP.ps1 -InventorySystem
-
-.EXAMPLE
-   InstallSupport-PersonecP.ps1 -InventoryConfig
-   Framtagning av värden som du behöver senare
-.EXAMPLE
-   InstallSupport-PersonecP.ps1 -ShutdownServices
-.NOTES
-   Filename: Pre-InstallPersonec_P.ps1
-   Author: Christian Damberg
-   Website: https://www.damberg.org
-   Email: christian@damberg.org
-   Modified date: 2022-05-12
-   Version 1.0 - First release
-   Version 1.1 - Updated step inventory to extract appool settings
-   Version 1.2 - Buggfixar
-   Version 2.0 - XML-fil för bigram samt borttagning av pwd
-   
+	.DESCRIPTION
+		This Script supports the work with upgrading Peronec P and task connected to the product
+	
+	.PARAMETER XML
+		A description of the XML parameter.
+	
+	.PARAMETER Backup
+		A description of the Backup parameter.
+	
+	.PARAMETER SqlQueries
+		A description of the SqlQueries parameter.
+	
+	.PARAMETER InventorySystem
+		A description of the InventorySystem parameter.
+	
+	.PARAMETER InventorySettings
+		A description of the InventorySettings parameter.
+	
+	.PARAMETER InventoryPasswords
+		A description of the InventoryPasswords parameter.
+	
+	.PARAMETER Password
+		A description of the Password parameter.
+	
+	.PARAMETER ShutdownServices
+		A description of the ShutdownServices parameter.
+	
+	.PARAMETER CopyReports
+		A description of the CopyReports parameter.
+	
+	.PARAMETER DBAbackup
+		A description of the DBAbackup parameter.
+	
+	.EXAMPLE
+		InstallSupport-PersonecP.ps1 -backup
+		Backup av filstruktur
+	
+	.EXAMPLE
+		InstallSupport-PersonecP.ps1 -InventorySystem
+	
+	.EXAMPLE
+		InstallSupport-PersonecP.ps1 -InventoryConfig
+		Framtagning av värden som du behöver senare
+	
+	.EXAMPLE
+		InstallSupport-PersonecP.ps1 -ShutdownServices
+	
+	.NOTES
+		Filename: Pre-InstallPersonec_P.ps1
+		Author: Christian Damberg
+		Website: https://www.damberg.org
+		Email: christian@damberg.org
+		Modified date: 2023-10-24
+		Version 1.0 - First release
+		Version 1.1 - Updated step inventory to extract appool settings
+		Version 1.2 - Buggfixar
+		Version 2.0 - XML-fil and remove password
+		Version 2.1 - Removed Swedish
 #>
-
-#------------------------------------------------#
-# Parameters
-
-Param (
+param
+(
 	[Parameter(Mandatory = $false)]
 	[Switch]$XML,
 	[Parameter(Mandatory = $false)]
@@ -67,7 +96,7 @@ if ($XML -eq $true)
 		Add-Type -AssemblyName Microsoft.VisualBasic
 		$bigramtoXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter BIGRAM", "Enter customer bigram", "BIGRAM")
 		
-		#skapa xml-dokument
+		#Create XML
 		$xmlWriter = New-Object System.XMl.XmlTextWriter("$PSScriptRoot\ScriptConfig.XML", $null)
 		$xmlWriter.Formatting = 'Indented'
 		$xmlWriter.Indentation = 1
