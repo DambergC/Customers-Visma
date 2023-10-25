@@ -44,7 +44,7 @@
 	
 	.EXAMPLE
 		InstallSupport-PersonecP.ps1 -InventoryConfig
-		Framtagning av värden som du behöver senare
+		
 	
 	.EXAMPLE
 		InstallSupport-PersonecP.ps1 -ShutdownServices
