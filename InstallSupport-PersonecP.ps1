@@ -60,6 +60,7 @@
 		Version 1.2 - Buggfixar
 		Version 2.0 - XML-fil and remove password
 		Version 2.1 - Removed Swedish
+		Version 2.2 - Added scheduler and message broker services to check and stop
 #>
 param
 (
@@ -172,7 +173,7 @@ $Today = (get-date -Format yyyyMMdd)
 $Time = (get-date -Format HH:MM:ss)
 
 # Services to check
-$services = "Scheduler", "Ciceron Server Manager","NeptuneMB$BigramXML", "PersonecPBatchManager$BigramXML", "PersonecPUtdataExportImportService$BigramXML", "RSPFlexService$BigramXML", "W3SVC", "World Wide Web Publishing Service"
+$services = "Scheduler", "Ciceron Server Manager","NeptuneMB_$BigramXML", "PersonecPBatchManager$BigramXML", "PersonecPUtdataExportImportService$BigramXML", "RSPFlexService$BigramXML", "W3SVC", "World Wide Web Publishing Service"
 
 # Array to save data
 $data = @()
