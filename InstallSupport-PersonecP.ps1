@@ -60,7 +60,7 @@
 		Version 1.2 - Buggfixar
 		Version 2.0 - XML-fil and remove password
 		Version 2.1 - Removed Swedish
-		Version 2.2 - Added scheduler and message broker services to check and stop
+		Version 2.2 - Added scheduler and message broker services to check and stop.
 #>
 param
 (
