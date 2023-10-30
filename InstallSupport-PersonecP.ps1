@@ -161,7 +161,7 @@ else
 $BigramXML = $xmlfile.configuration.customerbigram
 $dbscriptpathXML = $xmlfile.configuration.dbscriptpath
 $longversionXML = $xmlfile.configuration.longversion
-$shortverionXML = $xmlfile.configuration.shortversion
+$shortversionXML = $xmlfile.configuration.shortversion
 
 }
 
@@ -633,7 +633,7 @@ $SQL_queries = @"
 ##Personic P
 USE $DB_PPP
 SELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
-:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPu$shortverionXML.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPu$shortversionXML.sql
 :r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPview.sql
 :r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPproc.sql
 :r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPtriggers.sql
@@ -646,7 +646,7 @@ SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
 #Personic U
 USE $DB_PUD
 rSELECT * FROM dbo.PU_VERSIONSINFO
-:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUu$shortverionXML.sql
+:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUu$shortversionXML.sql
 :r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUproc.sql
 :r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUview.sql
 :r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUgra.sql
@@ -657,7 +657,7 @@ SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
 ##Personic PFH
 USE $DB_PFH
 SELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
-:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFu$short_db_version.sql
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFu$shortversionXML.sql
 :r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFproc.sql
 :r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFview.sql
 :r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFgra.sql
