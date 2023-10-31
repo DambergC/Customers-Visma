@@ -30,3 +30,4 @@ function Set-PermissionCertificate
         Set-Acl -Path $keyFilePath -AclObject $acl
 
 }
+Set-PermissionCertificate
