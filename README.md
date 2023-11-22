@@ -1,5 +1,5 @@
 # Customers-Visma
 
-Skript som gör backup och inventera config-filer som behövs under installationen.
+Uppdaterad version kör backup av filer samt läser ut hur system och settings är innan vi uppgraderar miljön.
 
-OBS!!! Måste editeras
+
