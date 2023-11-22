@@ -61,6 +61,7 @@
 		Version 2.0 - XML-fil and remove password
 		Version 2.1 - Removed Swedish
 		Version 2.2 - Added scheduler and message broker services to check and stop.
+  		Version 2.3 - Added , Scheduler.txt* to exklude in backup
 #>
 param
 (
@@ -591,7 +592,7 @@ if ($Backup -eq $true)
 {
 	
 	
-	Copy-ItemWithProgress D:\Visma\Wwwroot\ D:\Visma\Install\backup\$Today\wwwroot\ /e /xf *.log, *.svclog -ErrorAction SilentlyContinue
+	Copy-ItemWithProgress D:\Visma\Wwwroot\ D:\Visma\Install\backup\$Today\wwwroot\ /e /xf *.log, *.svclog, Scheduler.txt* -ErrorAction SilentlyContinue
 	Copy-ItemWithProgress D:\Visma\Programs\ D:\Visma\Install\backup\$Today\programs\ /e /xf *.log -ErrorAction SilentlyContinue
 	
 }
