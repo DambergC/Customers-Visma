@@ -174,8 +174,8 @@ $Today = (get-date -Format yyyyMMdd)
 $Time = (get-date -Format HH:MM:ss)
 
 # Services to check
-$services = "Scheduler", "Ciceron Server Manager","NeptuneMB_$BigramXML", "PersonecPBatchManager$BigramXML", "PersonecPUtdataExportImportService$BigramXML", "RSPFlexService$BigramXML", "W3SVC", "World Wide Web Publishing Service"
-
+#$services = "Scheduler", "Ciceron Server Manager","NeptuneMB_$BigramXML", "PersonecPBatchManager$BigramXML", "PersonecPUtdataExportImportService$BigramXML", "RSPFlexService$BigramXML", "W3SVC", "World Wide Web Publishing Service"
+$services = "Scheduler", "Ciceron Server Manager", "NeptuneMB_$BigramXML", "PersonecPBatchManager$BigramXML", "PersonecPUtdataExportImportService$BigramXML", "RSPFlexService$BigramXML","
 # Array to save data
 $data = @()
 
@@ -608,11 +608,12 @@ if ($ShutdownServices -eq $true)
 {
 	# Stop WWW site Bigram
 	Stop-IISSite -Name $BigramXML -Verbose -Confirm:$false
+	Write-Host -ForegroundColor Yellow "The Site $bigramtoXML is stopped!"
 	
 	foreach ($Service in $Services)
 	{
 		Stop-Service -Name $Service -Force -ErrorAction SilentlyContinue -Verbose
-	
+		Write-Host -ForegroundColor Yellow "$Service is Stopped!"
 		
 	}
 	
