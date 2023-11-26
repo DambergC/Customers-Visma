@@ -366,7 +366,7 @@ if ($Password -eq $true)
 {
 	
     
-    $passwordGenerate = Generate-RandomPassword -length 15
+    $passwordGenerate = Generate-RandomPassword -length 12
 	
 	Set-Clipboard -Value $passwordGenerate
 	
