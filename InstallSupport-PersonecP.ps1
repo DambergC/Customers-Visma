@@ -175,7 +175,7 @@ $Time = (get-date -Format HH:MM:ss)
 
 # Services to check
 #$services = "Scheduler", "Ciceron Server Manager","NeptuneMB_$BigramXML", "PersonecPBatchManager$BigramXML", "PersonecPUtdataExportImportService$BigramXML", "RSPFlexService$BigramXML", "W3SVC", "World Wide Web Publishing Service"
-$services = "Scheduler", "Ciceron Server Manager", "NeptuneMB_$BigramXML", "PersonecPBatchManager$BigramXML", "PersonecPUtdataExportImportService$BigramXML", "RSPFlexService$BigramXML","
+$services = "Scheduler", "Ciceron Server Manager", "NeptuneMB_$BigramXML", "PersonecPBatchManager$BigramXML", "PersonecPUtdataExportImportService$BigramXML", "RSPFlexService$BigramXML"
 # Array to save data
 $data = @()
 
