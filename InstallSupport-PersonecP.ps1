@@ -643,6 +643,7 @@ GO
 :r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\mRSPgra.sql
 :r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\msDBUPDATERIGHTSP.sql
 :r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$longversionXML\PPPds_Feltexter.sql
+GO
 SELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
 SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
 #------------------------------------------------#
@@ -655,6 +656,7 @@ GO
 :r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUview.sql
 :r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\mPSUgra.sql
 :r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$longversionXML\msdbupdaterightsU.sql
+GO
 SELECT * FROM dbo.PU_VERSIONSINFO
 SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
 #------------------------------------------------#
@@ -668,6 +670,7 @@ GO
 :r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\mPSFgra.sql
 :r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\msDBUPDATERIGHTSF.sql
 :r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$longversionXML\PFHds_Feltexter.sql
+GO
 SELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
 SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
 #------------------------------------------------# 
