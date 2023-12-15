@@ -146,7 +146,14 @@ if ($XML -eq $true)
 
 $XMLexist = (test-path -Path "$PSScriptRoot\ScriptConfig.XML")
 
-$ConfigVersion = $xmlfile.configuration.configversion
+[XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML"
+
+$ConfigVersion = $xmlfile.configuration.ConfigVersion
+$BigramXML = $xmlfile.configuration.customerbigram
+$dbscriptpathXML = $xmlfile.configuration.dbscriptpath
+$PPPXML = $xmlfile.configuration.PPP
+$PUDXML = $xmlfile.configuration.PUD
+$PFHXML = $xmlfile.configuration.PFH
 
 
 if ($XMLexist -eq $true)
@@ -154,8 +161,14 @@ if ($XMLexist -eq $true)
 	
 	if ($ConfigVersion -ne $checkVersionConfig)
 	{
+		[XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML"
+		
+		$ConfigVersion = $xmlfile.configuration.ConfigVersion
 		$BigramXML = $xmlfile.configuration.customerbigram
-		$configversion = $xmlfile.configuration.configversion
+		$dbscriptpathXML = $xmlfile.configuration.dbscriptpath
+		$PPPXML = $xmlfile.configuration.PPP
+		$PUDXML = $xmlfile.configuration.PUD
+		$PFHXML = $xmlfile.configuration.PFH
 		
 		Add-Type -AssemblyName Microsoft.VisualBasic
 		$PPPXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PPP Version (SQL)", "VersionNumber PPP", "xxxxxx")
@@ -460,6 +473,18 @@ if ($Password -eq $true)
 
 if ($InventorySystem -eq $true)
 {
+	
+	[XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML"
+	
+	$ConfigVersion = $xmlfile.configuration.ConfigVersion
+	$BigramXML = $xmlfile.configuration.customerbigram
+	$dbscriptpathXML = $xmlfile.configuration.dbscriptpath
+	$PPPXML = $xmlfile.configuration.PPP
+	$PUDXML = $xmlfile.configuration.PUD
+	$PFHXML = $xmlfile.configuration.PFH
+	
+	
+	
 	# Check if backupfolder exist
 	$folder = (test-path -Path "D:\visma\Install\Backup\$Today\")
 	
@@ -543,6 +568,15 @@ $data3 = @()
 if ($InventorySettings -eq $true)
 {
 	
+	[XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML"
+	
+	$ConfigVersion = $xmlfile.configuration.ConfigVersion
+	$BigramXML = $xmlfile.configuration.customerbigram
+	$dbscriptpathXML = $xmlfile.configuration.dbscriptpath
+	$PPPXML = $xmlfile.configuration.PPP
+	$PUDXML = $xmlfile.configuration.PUD
+	$PFHXML = $xmlfile.configuration.PFH
+	
 	$UseSSOBackup = (Test-path -Path "$PSScriptRoot\$today\Wwwroot\$BigramXML\$BigramXML\Login\Web.config")
 	
 	if ($UseSSOBackup -eq $true)
@@ -623,6 +657,16 @@ if ($InventorySettings -eq $true)
 
 if ($InventoryPasswords -eq $true)
 {
+	
+	[XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML"
+	
+	$ConfigVersion = $xmlfile.configuration.ConfigVersion
+	$BigramXML = $xmlfile.configuration.customerbigram
+	$dbscriptpathXML = $xmlfile.configuration.dbscriptpath
+	$PPPXML = $xmlfile.configuration.PPP
+	$PUDXML = $xmlfile.configuration.PUD
+	$PFHXML = $xmlfile.configuration.PFH
+	
 	
 	$data5 = @()
 	
