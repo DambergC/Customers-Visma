@@ -771,7 +771,7 @@ if ($SqlQueries -eq $true)
 ##Personic P
 USE $DB_PPP
 SELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
-:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$PPPXML\mRSPu$shortversionXML.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$PPPXML\mRSPu$PPPXML.sql
 GO
 :r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$PPPXML\mRSPview.sql
 :r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$PPPXML\mRSPproc.sql
@@ -786,7 +786,7 @@ SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
 #Personic U
 USE $DB_PUD
 SELECT * FROM dbo.PU_VERSIONSINFO
-:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$PUDXML\mPSUu$shortversionXML.sql
+:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$PUDXML\mPSUu$PUDXML.sql
 GO
 :r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$PUDXML\mPSUproc.sql
 :r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$PUDXML\mPSUview.sql
@@ -799,7 +799,7 @@ SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
 ##Personic PFH
 USE $DB_PFH
 SELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
-:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$PFHXML\mPSFu$shortversionXML.sql
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$PFHXML\mPSFu$PFHXML.sql
 GO
 :r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$PFHXML\mPSFproc.sql
 :r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$PFHXML\mPSFview.sql
