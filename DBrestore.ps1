@@ -41,15 +41,13 @@ $databasesprod = $xml.Configuration.DatabasesProd.db
 
 $date = get-date -Format yyyyMMdd
 
-foreach ($databaseT in $databasestest)
-
+for($i = 0; $i -lt $databasestest.Length; $i++)
 {
-  
-    Write-host "Start restore of $databaseT from $backuppath$databaseT$date.bak" -ForegroundColor Green
-    #Backup-DbaDatabase -SqlInstance $SQLPROD -Database $database -Path $backuppath -Type Full -CopyOnly -Verify -TimeStampFormat yyyyMMdd
-    #Restore-DbaDatabase -SqlInstance $SQLTEST -DatabaseName $database -Path "$backuppath$database$date.bak"
-  
 
+    $dbprod = $databasesprod[$i]
+    $dbtest = $databasestest[$i]
+
+    Write-host "Start restore of $dbtest from $backuppath$dbprod$date.bak" -ForegroundColor Green
+    #Restore-DbaDatabase -SqlInstance $SQLTEST -DatabaseName $dbtest -Path "$backuppath$dbprod_$date.bak"
 }
-
 
