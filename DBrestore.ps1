@@ -18,6 +18,7 @@ $SQLPROD = 'Localhost'
 $SQLTEST = 'Localhost'
 
 
+
 $file = 'D:\DBRestore.XML'
 $xml = [XML](get-content $file)
 
@@ -41,13 +42,56 @@ $databasesprod = $xml.Configuration.DatabasesProd.db
 
 $date = get-date -Format yyyyMMdd
 
+#set singleuser
+
 for($i = 0; $i -lt $databasestest.Length; $i++)
 {
 
     $dbprod = $databasesprod[$i]
     $dbtest = $databasestest[$i]
 
-    Write-host "Start restore of $dbtest from $backuppath$dbprod$date.bak" -ForegroundColor Green
-    #Restore-DbaDatabase -SqlInstance $SQLTEST -DatabaseName $dbtest -Path "$backuppath$dbprod_$date.bak"
+    Set-DbaDbState -SqlInstance $SQLTEST -Database $dbtest -SingleUser
+    Write-host "Setting $SQLTEST in single user" -ForegroundColor Green
+
+}
+
+
+
+#restore
+
+$file = 'D:\DBRestore.XML'
+$xml = [XML](get-content $file)
+
+$databasestest = $xml.Configuration.DatabasesTest.db
+$databasesprod = $xml.Configuration.DatabasesProd.db
+$restorepathMDF = $xml.Configuration.RestorePathMDF
+$restorepathLOG = $xml.Configuration.RestorePathLOG
+ 
+
+for($i = 0; $i -lt $databasestest.Length; $i++)
+{
+    $Backupfilepath =@()
+    $dbprod = $databasesprod[$i]
+    $dbtest = $databasestest[$i]
+    $Backupfilepath = $backuppath
+    $Backupfilepath += $dbprod
+    $Backupfilepath += "_"
+    $Backupfilepath += $date
+    $Backupfilepath += ".bak"
+
+    $MDFfilepath =@()
+    $MDFfilepath = $restorepathMDF
+    #$MDFfilepath += $dbtest
+    #$MDFfilepath += ".mdf"
+
+    $LOGfilepath =@()
+    $LOGfilepath = $restorepathLOG
+    #$LOGfilepath += $dbtest
+    #$LOGfilepath += ".log"
+    
+    Write-host "Start restore of $dbtest from $Backupfilepath" -ForegroundColor Green
+    Write-host "$LOGfilepath $MDFfilepath" -ForegroundColor Green
+
+    Restore-DbaDatabase -SqlInstance $SQLTEST -DatabaseName $dbtest -Path $path -ReplaceDbNameInFile -DestinationLogDirectory $restorepathLOG -DestinationDataDirectory $restorepathMDF -Confirm -WithReplace
 }
 
