@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Configuration>
+	<ConfigVersion>1</ConfigVersion>
+	<DatabasesProd>
+		<db>VISMA_PAG</db>
+		<db>VISMA_PUD</db>
+		<db>VISMA_PPP</db>
+		<db>VISMA_PFH</db>
+	</DatabasesProd>
+	<DatabasesTest>
+		<db>VISMAT_PAG</db>
+		<db>VISMAT_PUD</db>
+		<db>VISMAT_PPP</db>
+		<db>VISMAT_PFH</db>
+	</DatabasesTest>
+	<RestorePathMDF>d:\data</RestorePathMDF>
+	<RestorePathLOG>d:\log</RestorePathLOG>	
+</Configuration>
