@@ -1,18 +1,32 @@
 <?xml version="1.0"?>
 <Configuration>
 	<ConfigVersion>1</ConfigVersion>
-	<DatabasesProd>
-		<db>VISMA_PAG</db>
-		<db>VISMA_PUD</db>
-		<db>VISMA_PPP</db>
-		<db>VISMA_PFH</db>
-	</DatabasesProd>
-	<DatabasesTest>
-		<db>VISMAT_PAG</db>
-		<db>VISMAT_PUD</db>
-		<db>VISMAT_PPP</db>
-		<db>VISMAT_PFH</db>
-	</DatabasesTest>
+	<Prod>
+	<Bigram>VISMA</Bigram>
+	<Sqlserver>localhost</Sqlserver>
+	<BackuppathUNC>\\localhost\d$\DBbackup\</BackuppathUNC>
+	<Databases>
+		<Db>VISMA_PAG</Db>
+		<Db>VISMA_PPP</Db>
+		<Db>VISMA_PUD</Db>
+		<Db>VISMA_PFH</Db>
+	</Databases>
+	</Prod>
+	<Test>
+	<Bigram>VISMAT</Bigram>
+	<Sqlserver>localhost</Sqlserver>
+	<Backuppath>D:\DBbackup\</Backuppath>
+	<Databases>
+		<Db>VISMAT_PAG</Db>
+		<Db>VISMAT_PPP</Db>
+		<Db>VISMAT_PUD</Db>
+		<Db>VISMAT_PFH</Db>
+	</Databases>
+	<RspDbuser>rspdbuser</RspDbuser>
+	<Psutotint>psutotint</Psutotint>
 	<RestorePathMDF>d:\data</RestorePathMDF>
-	<RestorePathLOG>d:\log</RestorePathLOG>	
+	<RestorePathLOG>d:\log</RestorePathLOG>
+	<Importcatalog>\\localhost\import</Importcatalog>
+	<Exportcatalog>\\localhost\export</Exportcatalog>
+	</Test>
 </Configuration>
