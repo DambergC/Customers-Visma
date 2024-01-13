@@ -116,7 +116,7 @@ write-host "Change import export catalogs" -ForegroundColor green
 Invoke-DbaQuery -SqlInstance $SQLTEST -Database $UsersDB -Query "update dbo.oa0p0008 set IMPKAT= '$importcatalog'" -Verbose
 Invoke-DbaQuery -SqlInstance $SQLTEST -Database $UsersDB -Query "update dbo.oa0p0008 set EXPKAT= '$exportcatalog'" -Verbose
 write-host "Add TEST to all companies" -ForegroundColor green
-Invoke-DbaQuery -SqlInstance $SQLTEST -Database $UsersDB -Query "update dbo.oa0p0054 SET IDTEXT = IDTEXT+' TEST' where typ=1" -Verbose
+Invoke-DbaQuery -SqlInstance $SQLTEST -Database $UsersDB -Query "update oa0p0054 SET IDTEXT = IDTEXT+' TEST' where len(strpos)=25 and LEN(IDTEXT)<24" -Verbose
 write-host "Remove all scheduled jobs" -ForegroundColor green
 Invoke-DbaQuery -SqlInstance $SQLTEST -Database $UsersDB -Query "update dbo.oa0p0024 set AUTOMATISK=0  where AUTOMATISK=1 and PERIODICITET>0" -Verbose
 
