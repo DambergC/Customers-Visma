@@ -4,7 +4,7 @@
 	<Prod>
 	<Bigram>VISMA</Bigram>
 	<Sqlserver>localhost</Sqlserver>
-	<BackuppathUNC>\\localhost\d$\DBbackup\</BackuppathUNC>
+	<BackuppathUNC>d:\dbbackup\</BackuppathUNC>
 	<Databases>
 		<Db>VISMA_PAG</Db>
 		<Db>VISMA_PPP</Db>
