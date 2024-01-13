@@ -65,14 +65,14 @@ for($i = 0; $i -lt $databasestest.Length; $i++)
     $dbprod = $databasesprod[$i]
     $dbtest = $databasestest[$i]
     $Backupfilepath =@()
-    $Backupfilepath = $backuppath
+    $Backupfilepath = $backuppathtest
     $Backupfilepath += $dbprod
     $Backupfilepath += "_"
     $Backupfilepath += $date
     $Backupfilepath += ".bak"
     
     Write-host "Start restore of $dbtest from $Backupfilepath" -ForegroundColor Green
-        
+
     Restore-DbaDatabase -SqlInstance $SQLTEST -DatabaseName $dbtest -Path $Backupfilepath -ReplaceDbNameInFile -DestinationLogDirectory $restorepathLOG -DestinationDataDirectory $restorepathMDF -WithReplace -Confirm:$true
     Rename-DbaDatabase -SqlInstance $SQLTEST -Database $dbtest -LogicalName $dbtest -Verbose
 
