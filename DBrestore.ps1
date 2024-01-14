@@ -18,8 +18,8 @@ $xml = [XML](get-content $file)
 
 $databasestest = $xml.Configuration.Test.Databases.Db
 $databasesprod = $xml.Configuration.Prod.Databases.db
-$restorepathMDF = $xml.Configuration.RestorePathMDF
-$restorepathLOG = $xml.Configuration.RestorePathLOG
+$restorepathMDF = $xml.Configuration.Test.RestorePathMDF
+$restorepathLOG = $xml.Configuration.Test.RestorePathLOG
 $bigramPROD = $xml.Configuration.Prod.Bigram
 $bigramTEST = $xml.Configuration.Test.Bigram
 $rspdbuser = $xml.Configuration.Test.Rspdbuser
