@@ -2,6 +2,19 @@
 # Declare Global Variables and Functions here
 #--------------------------------------------
 
+#region Add-RichTextBox
+# Function - Add Text to RichTextBox
+function Add-RichTextBox
+{
+	[CmdletBinding()]
+	param ($text)
+	#$richtextbox_output.Text += "`tCOMPUTERNAME: $ComputerName`n"
+	$richtextbox_output.Text += "$text`n"
+	$richtextbox_output.Text += "- - - - - - - - - - - - - - -`n"
+}
+#Set-Alias artb Add-RichTextBox -Description "Add content to the RichTextBox"
+#endregion
+
 
 #Sample function that provides the location of the script
 function Get-ScriptDirectory
@@ -33,3 +46,5 @@ function Get-ScriptDirectory
 
 
 
+# Name of xmlfile
+$xmlfile = "$ScriptDirectory\DBRestore.XML"
