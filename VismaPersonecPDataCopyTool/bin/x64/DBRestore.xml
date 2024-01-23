@@ -11,7 +11,7 @@
 	<Test>
 	<Bigram>VISMAT</Bigram>
 	<Sqlserver>localhost</Sqlserver>
-	<Backuppath>D:\DBbackup\</Backuppath>
+	<BackuppathUNC>D:\DBbackup\</BackuppathUNC>
 	<RspDbuser>rspdbuser</RspDbuser>
 	<Psutotint>psutotint</Psutotint>
 	<RestorePathMDF>d:\data</RestorePathMDF>
