@@ -1,27 +1,17 @@
 <?xml version="1.0"?>
 <Configuration>
 	<ConfigVersion>1</ConfigVersion>
+	<EnabledTest>0</EnabledTest>
+	<EnabledProd>0</EnabledProd>
 	<Prod>
 	<Bigram>VISMA</Bigram>
 	<Sqlserver>localhost</Sqlserver>
 	<BackuppathUNC>d:\dbbackup\</BackuppathUNC>
-	<Databases>
-		<Db>VISMA_PAG</Db>
-		<Db>VISMA_PPP</Db>
-		<Db>VISMA_PUD</Db>
-		<Db>VISMA_PFH</Db>
-	</Databases>
 	</Prod>
 	<Test>
 	<Bigram>VISMAT</Bigram>
 	<Sqlserver>localhost</Sqlserver>
 	<Backuppath>D:\DBbackup\</Backuppath>
-	<Databases>
-		<Db>VISMAT_PAG</Db>
-		<Db>VISMAT_PPP</Db>
-		<Db>VISMAT_PUD</Db>
-		<Db>VISMAT_PFH</Db>
-	</Databases>
 	<RspDbuser>rspdbuser</RspDbuser>
 	<Psutotint>psutotint</Psutotint>
 	<RestorePathMDF>d:\data</RestorePathMDF>
