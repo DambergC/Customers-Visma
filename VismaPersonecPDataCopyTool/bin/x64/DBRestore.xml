@@ -5,12 +5,12 @@
 	<EnabledProd>0</EnabledProd>
 	<Prod>
 	<Bigram>VISMA</Bigram>
-	<Sqlserver>localhost</Sqlserver>
+	<Sqlserver>cm01</Sqlserver>
 	<BackuppathUNC>d:\dbbackup\</BackuppathUNC>
 	</Prod>
 	<Test>
 	<Bigram>VISMAT</Bigram>
-	<Sqlserver>localhost</Sqlserver>
+	<Sqlserver>cm01</Sqlserver>
 	<BackuppathUNC>D:\DBbackup\</BackuppathUNC>
 	<RspDbuser>rspdbuser</RspDbuser>
 	<Psutotint>psutotint</Psutotint>

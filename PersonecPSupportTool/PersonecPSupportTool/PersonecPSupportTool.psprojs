@@ -1,10 +1,11 @@
 ﻿<ProjectState>
   <Version>1.0</Version>
-  <FileID>f4031c41-0ae1-484f-b184-c30326130e47</FileID>
+  <FileID>1a03d3b8-069e-480e-aabe-d5af916871a5</FileID>
   <OpenFolders />
   <OpenFiles>
+    <File>ChildForm.psf</File>
     <File>MainForm.psf</File>
-    <File>Startup.pss</File>
     <File>Globals.ps1</File>
+    <File>Startup.pss</File>
   </OpenFiles>
 </ProjectState>
