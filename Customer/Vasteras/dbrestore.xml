@@ -1,0 +1,28 @@
+﻿<?xml version="1.0"?>
+<Configuration>
+	<ConfigVersion>1</ConfigVersion>
+	<Prod>
+	<Bigram>VAEASS</Bigram>
+	<Databases>
+		<Db>VAEASS_PPP</Db>
+		<Db>VAEASS_PUD</Db>
+		<Db>VAEASS_PFH</Db>
+	</Databases>
+	</Prod>
+	<Test>
+	<Bigram>VAEASU</Bigram>
+	<Sqlserver>VST00636S</Sqlserver>
+	<Backuppath>H:\TASK0003620929\</Backuppath>
+	<Databases>
+		<Db>VAEASU_PPP</Db>
+		<Db>VAEASU_PUD</Db>
+		<Db>VAEASU_PFH</Db>
+	</Databases>
+	<RspDbuser>rspdbuser</RspDbuser>
+	<Psutotint>psutotint</Psutotint>
+	<RestorePathMDF>e:\SQL209\Data</RestorePathMDF>
+	<RestorePathLOG>f:\SQL209\Data</RestorePathLOG>
+	<Importcatalog>\\vst.local\employees\Secure\Personec\Integrationer\IntegrationerTest</Importcatalog>
+	<Exportcatalog>\\vst.local\employees\Secure\Personec\Integrationer\IntegrationerTest</Exportcatalog>
+	</Test>
+</Configuration>

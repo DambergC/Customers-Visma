@@ -87,7 +87,7 @@ param
 	[Switch]$DBAbackup
 )
 
-$checkVersionConfig = '1'
+$checkVersionConfig = '24.1'
 
 [XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML" -ErrorAction Ignore
 
