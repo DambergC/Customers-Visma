@@ -3,9 +3,9 @@
   <FileID>1a03d3b8-069e-480e-aabe-d5af916871a5</FileID>
   <OpenFolders />
   <OpenFiles>
-    <File>ChildForm.psf</File>
-    <File>MainForm.psf</File>
-    <File>Globals.ps1</File>
     <File>Startup.pss</File>
+    <File>Globals.ps1</File>
+    <File>MainForm.psf</File>
+    <File>ChildForm.psf</File>
   </OpenFiles>
 </ProjectState>
