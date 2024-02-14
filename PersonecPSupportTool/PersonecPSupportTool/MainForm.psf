@@ -945,7 +945,7 @@ $buttonApplicationSettings_Click={
 $buttonSelectBackupfolder_Click={
 	#TODO: Place custom script here
 	
-	$BackupFolderDialog.InitialDirectory = $ChildForm_InboxBackupFolder
+	$BackupFolderDialog.InitialDirectory = $ChildForm_InboxInstallFolder
 	
 	
 	
@@ -1070,7 +1070,7 @@ $buttonLoadConfig_Click={
 	
 	$backupFolders = (Get-ChildItem -Path E:\visma\install\backup -directory -Exclude 'Appsettings').BaseName
 	
-	$backupFolder.Items.Clear()
+	$BackupFolderListbox.Items.Clear()
 	foreach ($Backupfolder in $backupFolders)
 	{
 		Update-ListBox -ListBox $BackupFolderListbox -Items $Backupfolder -Append
@@ -1081,10 +1081,7 @@ $buttonLoadConfig_Click={
 	
 }
 
-$buttonSelect_Click={
-	#TODO: Place custom script here
-	
-}
+
 
 $BigramListbox_SelectedIndexChanged={
 	#TODO: Place custom script here
@@ -1099,6 +1096,6 @@ $BAckupFolderListbox_SelectedIndexChanged={
 	$SelectedBackupFolderTextbox.AppendText($BackupFolderListbox.SelectedItem)
 }
 ]]></Code>
-  <Mode>1</Mode>
+  <Mode>0</Mode>
   <Assemblies />
 </File>
