@@ -87,7 +87,7 @@ param
 	[Switch]$DBAbackup
 )
 
-$checkVersionConfig = '24.1'
+$checkVersionConfig = '24.2'
 
 [XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML" -ErrorAction Ignore
 
@@ -99,9 +99,9 @@ if ($XML -eq $true)
 	{
 		Add-Type -AssemblyName Microsoft.VisualBasic
 		$bigramtoXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter BIGRAM", "Enter customer bigram", "BIGRAM")
-		$PPPXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PPP Version (SQL)", "VersionNumber PPP", "xxxxxx")
-		$PFHXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PFH Version (SQL)", "VersionNumber PFH", "xxxxxx")
-		$PUDXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PUD Version (SQL)", "VersionNumber PUD", "xxxxxx")
+		$PPPXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PPP Version (SQL)", "VersionNumber PPP", "24020")
+		$PFHXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PFH Version (SQL)", "VersionNumber PFH", "23120")
+		$PUDXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PUD Version (SQL)", "VersionNumber PUD", "23100")
 		
 		#Create XML
 		$xmlWriter = New-Object System.XMl.XmlTextWriter("$PSScriptRoot\ScriptConfig.XML", $null)
