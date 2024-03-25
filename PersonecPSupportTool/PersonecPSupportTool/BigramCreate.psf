@@ -925,8 +925,8 @@ cphWomu/8My/fB8t9YWnEhYLHAA9OxNURXGOA1HSBrLTL3lwDiWqVVjekoScJexWIB/HCfKBk1tZ
 GDo1x90IGyXqsRyOGY0q3fOVMlVddJ6WYZZvu5Ig32dLQtbSFSRjzMq40T4j+8Xkf+MmO8vzo1Ow
 uSddqGZbwWf10cRqVzsKnbBa1z7LrC5J6D1uf+yYkZU2U8cLvaAhpz+3beBfMa6BhYoT7bRx1MKO
 gYUGKZkOHUfHjiysbu54Hz5qMx8xeuTdcDZfTC9Hy6kpQcd6Ry9rHYZ1JAPRqGHsb8AUxYYpitrx
-581kWbzcv9j3fXQ1n16u5GdlK42Aj7m0GLj6C8fjC4Ipu5NGskfg/r0c8JAv0oiwV/fdmjzkVreK
-/3FK6YvnkvR0s8HiPo9hobpM7znTxPsH5o9CH1wPAAA=</Form>
+581kWbzcv9j3fXQ1n16u5GdlK42Aj7m0GLj6C8fjC4Ipu5NGskfg/r0c8JAv0oiwV/fdmjzkVq+K
+/3FK6YvnkvR0s8HiPo9hobpM7znTxPsH5NaaHVwPAAA=</Form>
   <Code><![CDATA[
 $formCreateBigramFile_Load={
 	#TODO: Initialize Form Controls here
@@ -942,6 +942,8 @@ $buttonCreate_Click={
 	#$ReleaseVersion = $InboxReleaseVersion.text
 	
 	$BackupPath = $InboxInstallFolder.text
+	
+	
 	
 	New-Item -Path $BackupPath -Name "Appsettings" -ItemType "Directory"
 	
