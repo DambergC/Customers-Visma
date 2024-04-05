@@ -84,7 +84,7 @@ for($i = 0; $i -lt $databasestest.Length; $i++)
 
 }
 
-#Set database in simple mode and trucate only
+#Set database in simple mode and shrink database
 
 for($i = 0; $i -lt $databasestest.Length; $i++)
 {
