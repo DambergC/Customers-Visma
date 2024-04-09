@@ -56,7 +56,7 @@ for($i = 0; $i -lt $databasestest.Length; $i++)
 
    $dbtest = $databasestest[$i]
     Write-host "Drop $dbtest from $SQLTEST" -ForegroundColor Green
-    Remove-DbaDatabase -SqlInstance $SQLTEST -Database $dbtest -Confirm:$true -Verbose -SqlCredential $cred
+    Remove-DbaDatabase -SqlInstance $SQLTEST -Database $dbtest -Confirm:$false -Verbose -SqlCredential $cred
 
 }
 
@@ -78,13 +78,13 @@ for($i = 0; $i -lt $databasestest.Length; $i++)
     
     Write-host "Start restore of $dbtest from $Backupfilepath" -ForegroundColor Green
 
-    Restore-DbaDatabase -SqlInstance $SQLTEST -DatabaseName $dbtest -Path $Backupfilepath -ReplaceDbNameInFile -DestinationLogDirectory $restorepathLOG -DestinationDataDirectory $restorepathMDF -WithReplace -Confirm:$true -SqlCredential $cred
+    Restore-DbaDatabase -SqlInstance $SQLTEST -DatabaseName $dbtest -Path $Backupfilepath -ReplaceDbNameInFile -DestinationLogDirectory $restorepathLOG -DestinationDataDirectory $restorepathMDF -WithReplace -Confirm:$false -SqlCredential $cred
     Rename-DbaDatabase -SqlInstance $SQLTEST -Database $dbtest -LogicalName $dbtest -Verbose -SqlCredential $cred
 
 
 }
 
-#Set database in simple mode and shrink database
+#Set database in simple mode and trucate only
 
 for($i = 0; $i -lt $databasestest.Length; $i++)
 {
