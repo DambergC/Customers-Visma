@@ -4,7 +4,7 @@
 	<Prod>
 	<Bigram>VISMA</Bigram>
 	<Sqlserver>localhost</Sqlserver>
-	<BackuppathUNC>d:\dbbackup\</BackuppathUNC>
+	<BackuppathUNC>\\demomaster\test$</BackuppathUNC>
 	<Databases>
 		<Db>VISMA_PAG</Db>
 		<Db>VISMA_PPP</Db>
@@ -15,7 +15,7 @@
 	<Test>
 	<Bigram>VISMAT</Bigram>
 	<Sqlserver>localhost</Sqlserver>
-	<Backuppath>D:\DBbackup\</Backuppath>
+	<Backuppath>\\demomaster\test$</Backuppath>
 	<Databases>
 		<Db>VISMAT_PAG</Db>
 		<Db>VISMAT_PPP</Db>
