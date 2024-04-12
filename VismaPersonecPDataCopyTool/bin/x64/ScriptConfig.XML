@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<Configuration>
+	<EnableProd>0</EnableProd>
+	<EnableTest>1</EnableTest>
+	<Prod>
+		<Bigram>VISMA</Bigram>
+		<SqlServer>localhost</SqlServer>
+	</Prod>
+	<Test>
+		<Bigram>VISMAT</Bigram>
+		<SqlServer>localhostddd</SqlServer>
+	</Test>
+	<DBscriptPath>D:\Visma</DBscriptPath>
+	<LongVersion>23040</LongVersion>
+	<ShortVersion>23040</ShortVersion>
+</Configuration>

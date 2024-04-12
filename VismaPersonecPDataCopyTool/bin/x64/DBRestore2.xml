@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<Configuration>
+	<ConfigVersion>1</ConfigVersion>
+	<EnabledTest>0</EnabledTest>
+	<EnabledProd>0</EnabledProd>
+	<Prod>
+	<Bigram>VISMA</Bigram>
+	<Sqlserver>cm01</Sqlserver>
+	<BackuppathUNC>d:\dbbackup\</BackuppathUNC>
+	</Prod>
+	<Test>
+	<Bigram>VISMAT</Bigram>
+	<Sqlserver>cm01</Sqlserver>
+	<BackuppathUNC>D:\DBbackup\</BackuppathUNC>
+	<RspDbuser>rspdbuser</RspDbuser>
+	<Psutotint>psutotint</Psutotint>
+	<RestorePathMDF>d:\data</RestorePathMDF>
+	<RestorePathLOG>d:\log</RestorePathLOG>
+	<Importcatalog>\\localhost\import</Importcatalog>
+	<Exportcatalog>\\localhost\export</Exportcatalog>
+	</Test>
+</Configuration>
