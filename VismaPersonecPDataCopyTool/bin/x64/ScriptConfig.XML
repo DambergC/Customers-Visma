@@ -1,16 +1,23 @@
 <?xml version="1.0"?>
 <Configuration>
-	<EnableProd>0</EnableProd>
+	<EnableProd>1</EnableProd>
 	<EnableTest>1</EnableTest>
 	<Prod>
 		<Bigram>VISMA</Bigram>
-		<SqlServer>localhost</SqlServer>
+		<SqlServer>CM01</SqlServer>
+		<BackupPath>d:\backup\</BackupPath>
 	</Prod>
 	<Test>
 		<Bigram>VISMAT</Bigram>
-		<SqlServer>localhostddd</SqlServer>
+		<SqlServer>CM01</SqlServer>
+		<RestorePath>d:\restore\</RestorePath>
+		<RestorePathData>d:\data</RestorePathData>
+		<RestorePathLog>d:\log</RestorePathLog>
+		<ImportPath>\\localhost\import</ImportPath>
+		<ExportPath>\\localhost\export</ExportPath>
 	</Test>
-	<DBscriptPath>D:\Visma</DBscriptPath>
-	<LongVersion>23040</LongVersion>
-	<ShortVersion>23040</ShortVersion>
+	<PAG>0</PAG>
+	<PFH>1</PFH>
+	<PPP>1</PPP>
+	<PUD>0</PUD>
 </Configuration>
