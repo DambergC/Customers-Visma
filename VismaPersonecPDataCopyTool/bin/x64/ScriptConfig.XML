@@ -10,14 +10,16 @@
 	<Test>
 		<Bigram>VISMAT</Bigram>
 		<SqlServer>CM01</SqlServer>
-		<RestorePath>d:\restore\</RestorePath>
+		<RestorePath>D:\Restore\</RestorePath>
 		<RestorePathData>d:\data</RestorePathData>
 		<RestorePathLog>d:\log</RestorePathLog>
-		<ImportPath>\\localhost\import</ImportPath>
-		<ExportPath>\\localhost\export</ExportPath>
+		<ImportPath>\\server\import</ImportPath>
+		<ExportPath>\\server\export</ExportPath>
 	</Test>
-	<PAG>0</PAG>
-	<PFH>1</PFH>
-	<PPP>1</PPP>
-	<PUD>0</PUD>
+	<Databases>
+		<PAG>0</PAG>
+		<PPP>1</PPP>
+		<PUD>1</PUD>
+		<PFH>1</PFH>
+	</Databases>
 </Configuration>
