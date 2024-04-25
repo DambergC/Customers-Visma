@@ -87,7 +87,11 @@ param
 	[Switch]$DBAbackup
 )
 
-$checkVersionConfig = '24.2.1'
+$checkVersionConfig = '24.4.0'
+
+$PPPversionScript = '24400'
+$PUDversionScript = '24400'
+$PFHversionScript = '24400'
 
 [XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML" -ErrorAction Ignore
 
@@ -99,9 +103,10 @@ if ($XML -eq $true)
 	{
 		Add-Type -AssemblyName Microsoft.VisualBasic
 		$bigramtoXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter BIGRAM", "Enter customer bigram", "BIGRAM")
-		$PPPXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PPP Version (SQL)", "VersionNumber PPP", "24021")
-		$PFHXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PFH Version (SQL)", "VersionNumber PFH", "23120")
-		$PUDXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PUD Version (SQL)", "VersionNumber PUD", "23100")
+		$PPPXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PPP Version (SQL)", "VersionNumber PPP", $PPPversionScript)
+  		$PUDXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PUD Version (SQL)", "VersionNumber PUD", $PUDversionScript)
+		$PFHXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PFH Version (SQL)", "VersionNumber PFH", $PFHversionScript)
+
 		
 		#Create XML
 		$xmlWriter = New-Object System.XMl.XmlTextWriter("$PSScriptRoot\ScriptConfig.XML", $null)
@@ -117,8 +122,8 @@ if ($XML -eq $true)
 		$xmlWriter.WriteElementString("CustomerBigram", "$BigramToXML")
 		$xmlWriter.WriteElementString("DBscriptPath", "D:\Visma")
 		$xmlWriter.WriteElementString("PPP", "$PPPXML")
-		$xmlWriter.WriteElementString("PFH", "$PFHXML")
 		$xmlWriter.WriteElementString("PUD", "$PUDXML")
+  '		$xmlWriter.WriteElementString("PFH", "$PFHXML")
 		$xmlWriter.WriteEndElement() # Configuration endnode
 		$xmlWriter.Flush()
 		$xmlWriter.Close()
@@ -171,9 +176,9 @@ if ($XMLexist -eq $true)
 		$PFHXML = $xmlfile.configuration.PFH
 		
 		Add-Type -AssemblyName Microsoft.VisualBasic
-		$PPPXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PPP Version (SQL)", "VersionNumber PPP", "24021")
-		$PFHXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PFH Version (SQL)", "VersionNumber PFH", "23120")
-		$PUDXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PUD Version (SQL)", "VersionNumber PUD", "23100")
+		$PPPXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PPP Version (SQL)", "VersionNumber PPP", $PPPversionScript)
+  		$PUDXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PUD Version (SQL)", "VersionNumber PUD", $PUDversionScript)
+		$PFHXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PFH Version (SQL)", "VersionNumber PFH", $PFHversionScript)
 		
 		#Create XML
 		$xmlWriter = New-Object System.XMl.XmlTextWriter("$PSScriptRoot\ScriptConfig.XML", $null)
@@ -207,8 +212,8 @@ if ($XMLexist -eq $true)
 		
 		Write-host "CustomerBigram: $BigramXML"
 		Write-host "SQL-verison PPP:$PPPXML"
-		Write-host "SQL-verison PFH:$PFHXML"
 		Write-host "SQL-verison PUD:$PUDXML"
+  		Write-host "SQL-verison PFH:$PFHXML"
 		
 		Add-Type -AssemblyName PresentationCore, PresentationFramework
 		$ButtonType = [System.Windows.MessageBoxButton]::Ok
