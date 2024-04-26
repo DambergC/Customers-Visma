@@ -89,9 +89,9 @@ param
 
 $checkVersionConfig = '24.4.0'
 
-$PPPversionScript = '24400'
-$PUDversionScript = '24400'
-$PFHversionScript = '24400'
+$PPPversionScript = '24040'
+$PUDversionScript = '24040'
+$PFHversionScript = '24040'
 
 [XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML" -ErrorAction Ignore
 
