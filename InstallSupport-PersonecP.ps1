@@ -123,7 +123,7 @@ if ($XML -eq $true)
 		$xmlWriter.WriteElementString("DBscriptPath", "D:\Visma")
 		$xmlWriter.WriteElementString("PPP", "$PPPXML")
 		$xmlWriter.WriteElementString("PUD", "$PUDXML")
-  '		$xmlWriter.WriteElementString("PFH", "$PFHXML")
+  		$xmlWriter.WriteElementString("PFH", "$PFHXML")
 		$xmlWriter.WriteEndElement() # Configuration endnode
 		$xmlWriter.Flush()
 		$xmlWriter.Close()
