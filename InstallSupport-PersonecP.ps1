@@ -89,7 +89,7 @@ param
 
 $checkVersionConfig = '24.4.0'
 
-$PPPversionScript = '24040'
+$PPPversionScript = '24050'
 $PUDversionScript = '24040'
 $PFHversionScript = '24040'
 
