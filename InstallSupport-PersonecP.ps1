@@ -87,7 +87,7 @@ param
 	[Switch]$DBAbackup
 )
 
-$checkVersionConfig = '24.4.0'
+$checkVersionConfig = '24.5.0'
 
 $PPPversionScript = '24050'
 $PUDversionScript = '24040'
