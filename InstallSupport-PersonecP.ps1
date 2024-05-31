@@ -96,7 +96,7 @@ param
 	[Switch]$certthumbprint
 )
 
-$checkVersionConfig = '24.5.0'
+$checkVersionConfig = '24.5.1'
 
 $releaseVerison = '24050'
 
