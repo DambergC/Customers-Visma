@@ -11,6 +11,9 @@
 	.PARAMETER Backup
 		A description of the Backup parameter.
 	
+ 	.PARAMETER CertRights
+		A description of the Backup parameter.
+	
 	.PARAMETER SqlQueries
 		A description of the SqlQueries parameter.
 	
