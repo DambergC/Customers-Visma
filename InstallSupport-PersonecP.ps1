@@ -925,8 +925,7 @@ if ($DBAbackup -eq $true)
 
 #endregion
 
-#region DBbackup
-
+#region CertRights
 
 #Certrights
 if ($Certrights -eq $true)
@@ -970,3 +969,46 @@ Set-PermissionCertificate
 }
 
 #endregion
+
+#region Thumbprint
+
+#thumbprint
+if ($certthumbprint -eq $true)
+{
+# Define the starting date for the search
+$StartDate = Get-Date
+
+# Define the certificate path
+$CertPath = 'Cert:\LocalMachine\my'
+
+# Retrieve certificate details
+$CertsDetail = Get-ChildItem -Path $CertPath -Recurse | Where-Object {
+    $_.PsIsContainer -ne $true
+} | ForEach-Object {
+    # Calculate the number of days left until expiration
+    $DaysLeft = (New-TimeSpan -Start $StartDate -End $_.NotAfter).Days
+    # Format the expiration date
+    $FinalDate = Get-Date $_.NotAfter -Format 'dd/MM/yyyy hh:mm'
+    # Retrieve intended purposes
+    $Usages = $_.Extensions | Where-Object {
+        $_.Oid.FriendlyName -eq 'Enhanced Key Usage'
+    } | ForEach-Object {
+        $_.Format(0) -join ', '
+    }
+    # Create a custom object with the required details
+    [PSCustomObject]@{
+        Thumbprint    = $_.Thumbprint
+        Subject       = $_.Subject
+        ExpireDate    = $FinalDate
+        DaysRemaining = $DaysLeft
+        IntendedPurposes = $Usages
+    }
+} | Out-GridView -PassThru
+
+$CertsDetail.thumbprint | Set-Clipboard
+
+#endregion
+
+
+
+}
