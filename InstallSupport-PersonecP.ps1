@@ -89,7 +89,11 @@ param
 	[Parameter(Mandatory = $false)]
 	[Switch]$DBAbackup,
  	[Parameter(Mandatory = $false)]
-	[Switch]$CertRights
+	[Switch]$CertRights, ,
+ 	[Parameter(Mandatory = $false)]
+	[Switch]$certthumbprint
+
+
 )
 
 $checkVersionConfig = '24.5.0'
