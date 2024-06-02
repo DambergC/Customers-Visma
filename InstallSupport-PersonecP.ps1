@@ -1,4 +1,4 @@
-<#
+﻿<#
 	.Synopsis
 		Script to support technician with Personec P
 	
@@ -95,6 +95,8 @@ param
 	[Parameter(Mandatory = $false)]
 	[Switch]$certthumbprint
 )
+
+#Requires -Version 5
 
 $checkVersionConfig = '24.5.1'
 
@@ -512,7 +514,7 @@ if ($InventorySystem -eq $true)
 	# Inventory services and status
 	foreach ($Service in $Services)
 	{
-		$InfoOnService = Get-CimInstance win32_service  | Where-Object Name -eq $Service | Select-Object name, startname, state, Startmode -ErrorAction SilentlyContinue
+		$InfoOnService = Get-CimInstance win32_service | Where-Object Name -eq $Service | Select-Object name, startname, state, Startmode -ErrorAction SilentlyContinue
 		
 		$object = New-Object -TypeName PSObject
 		$object | Add-Member -MemberType NoteProperty -Name 'Service' -Value $InfoOnService.name
