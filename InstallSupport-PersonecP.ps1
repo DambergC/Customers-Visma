@@ -117,7 +117,7 @@ if ($XML -eq $true)
 	{
 		Add-Type -AssemblyName Microsoft.VisualBasic
 		$bigramtoXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter BIGRAM", "Enter customer bigram", "BIGRAM")
-		$ReleaseVersionXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter RELEASEVERSION", "ReleaseVersion", $ReleaseVersion)
+		$ReleaseVersionXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter RELEASEVERSION", "ReleaseVersion", $releaseVerison)
 		$PPPXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PPP Version (SQL)", "VersionNumber PPP", $PPPversionScript)
 		$PUDXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PUD Version (SQL)", "VersionNumber PUD", $PUDversionScript)
 		$PFHXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PFH Version (SQL)", "VersionNumber PFH", $PFHversionScript)
@@ -197,7 +197,7 @@ if ($XMLexist -eq $true)
 		$PFHXML = $xmlfile.configuration.PFH
 		
 		Add-Type -AssemblyName Microsoft.VisualBasic
-		$ReleaseVersionXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter RELEASEVERSION", "ReleaseVersion", $ReleaseVersion)
+		$ReleaseVersionXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter RELEASEVERSION", "ReleaseVersion", $releaseVerison)
 		$PPPXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PPP Version (SQL)", "VersionNumber PPP", $PPPversionScript)
 		$PUDXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PUD Version (SQL)", "VersionNumber PUD", $PUDversionScript)
 		$PFHXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PFH Version (SQL)", "VersionNumber PFH", $PFHversionScript)
