@@ -1,4 +1,4 @@
-<#
+﻿<#
 	.Synopsis
 		Script to support technician with Personec P
 	
@@ -6,34 +6,40 @@
 		This Script supports the work with upgrading Peronec P and task connected to the product
 	
 	.PARAMETER XML
-		A description of the XML parameter.
+		Only to be used first time to create a new Scriptconfig.xml. You need to provide BIGRAM
 	
 	.PARAMETER Backup
-		A description of the Backup parameter.
+		Backup files for personec p with some exclutions
 	
 	.PARAMETER SqlQueries
-		A description of the SqlQueries parameter.
+		Creates the sql-queries needed for upgrade but also for creating Quick Report users
 	
 	.PARAMETER InventorySystem
-		A description of the InventorySystem parameter.
+		Inventory serivces, installed applications from Visma and existing applications pools
 	
 	.PARAMETER InventorySettings
-		A description of the InventorySettings parameter.
+		Inventory settings from filebackup that might be useful for you during upgrade.
 	
 	.PARAMETER InventoryPasswords
-		A description of the InventoryPasswords parameter.
+		Extract the passwords from the filebackup
 	
 	.PARAMETER Password
-		A description of the Password parameter.
+		Generate passwords randomly.
 	
 	.PARAMETER ShutdownServices
-		A description of the ShutdownServices parameter.
+		Shutdown services and the site.
 	
 	.PARAMETER CopyReports
 		A description of the CopyReports parameter.
 	
 	.PARAMETER DBAbackup
 		A description of the DBAbackup parameter.
+	
+	.PARAMETER CertRights
+		Select a cert that you want to set defaultrights to manage private key.
+	
+	.PARAMETER certthumbprint
+		Select a cert and get thumbprint sent to clipboard.
 	
 	.EXAMPLE
 		InstallSupport-PersonecP.ps1 -backup
@@ -44,7 +50,6 @@
 	
 	.EXAMPLE
 		InstallSupport-PersonecP.ps1 -InventoryConfig
-		
 	
 	.EXAMPLE
 		InstallSupport-PersonecP.ps1 -ShutdownServices
@@ -61,7 +66,7 @@
 		Version 2.0 - XML-fil and remove password
 		Version 2.1 - Removed Swedish
 		Version 2.2 - Added scheduler and message broker services to check and stop.
-  		Version 2.3 - Added , Scheduler.txt* to exklude in backup
+		Version 2.3 - Added , Scheduler.txt* to exklude in backup
 #>
 param
 (
@@ -84,15 +89,24 @@ param
 	[Parameter(Mandatory = $false)]
 	[Switch]$CopyReports,
 	[Parameter(Mandatory = $false)]
-	[Switch]$DBAbackup
+	[Switch]$DBAbackup,
+	[Parameter(Mandatory = $false)]
+	[Switch]$CertRights,
+	[Parameter(Mandatory = $false)]
+	[Switch]$certthumbprint
 )
 
-$checkVersionConfig = '24.4.0'
+#Requires -Version 5
 
-$PPPversionScript = '24040'
+$checkVersionConfig = '24.5.1'
+
+$releaseVerison = '24050'
+
+$PPPversionScript = '24050'
 $PUDversionScript = '24040'
 $PFHversionScript = '24040'
 
+#region XML
 [XML]$xmlfile = Get-Content "$PSScriptRoot\ScriptConfig.XML" -ErrorAction Ignore
 
 # Check if XML-file exist, if not... create default
@@ -103,10 +117,11 @@ if ($XML -eq $true)
 	{
 		Add-Type -AssemblyName Microsoft.VisualBasic
 		$bigramtoXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter BIGRAM", "Enter customer bigram", "BIGRAM")
+		$ReleaseVersionXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter RELEASEVERSION", "ReleaseVersion", $releaseVerison)
 		$PPPXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PPP Version (SQL)", "VersionNumber PPP", $PPPversionScript)
-  		$PUDXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PUD Version (SQL)", "VersionNumber PUD", $PUDversionScript)
+		$PUDXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PUD Version (SQL)", "VersionNumber PUD", $PUDversionScript)
 		$PFHXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PFH Version (SQL)", "VersionNumber PFH", $PFHversionScript)
-
+		
 		
 		#Create XML
 		$xmlWriter = New-Object System.XMl.XmlTextWriter("$PSScriptRoot\ScriptConfig.XML", $null)
@@ -121,9 +136,10 @@ if ($XML -eq $true)
 		$xmlWriter.WriteElementString("ConfigVersion", "$checkVersionConfig")
 		$xmlWriter.WriteElementString("CustomerBigram", "$BigramToXML")
 		$xmlWriter.WriteElementString("DBscriptPath", "D:\Visma")
+		$xmlWriter.WriteElementString("ReleaseVersion", "$ReleaseVersionXML")
 		$xmlWriter.WriteElementString("PPP", "$PPPXML")
 		$xmlWriter.WriteElementString("PUD", "$PUDXML")
-  		$xmlWriter.WriteElementString("PFH", "$PFHXML")
+		$xmlWriter.WriteElementString("PFH", "$PFHXML")
 		$xmlWriter.WriteEndElement() # Configuration endnode
 		$xmlWriter.Flush()
 		$xmlWriter.Close()
@@ -147,6 +163,9 @@ if ($XML -eq $true)
 	
 }
 
+#endregion
+
+
 #region Variables & arrays
 
 $XMLexist = (test-path -Path "$PSScriptRoot\ScriptConfig.XML")
@@ -156,6 +175,7 @@ $XMLexist = (test-path -Path "$PSScriptRoot\ScriptConfig.XML")
 $ConfigVersion = $xmlfile.configuration.ConfigVersion
 $BigramXML = $xmlfile.configuration.customerbigram
 $dbscriptpathXML = $xmlfile.configuration.dbscriptpath
+$ReleaseVersionXML = $xmlfile.configuration.ReleaseVersion
 $PPPXML = $xmlfile.configuration.PPP
 $PUDXML = $xmlfile.configuration.PUD
 $PFHXML = $xmlfile.configuration.PFH
@@ -171,13 +191,15 @@ if ($XMLexist -eq $true)
 		$ConfigVersion = $xmlfile.configuration.ConfigVersion
 		$BigramXML = $xmlfile.configuration.customerbigram
 		$dbscriptpathXML = $xmlfile.configuration.dbscriptpath
+		$ReleaseVersionXML = $xmlfile.configuration.ReleaseVersion
 		$PPPXML = $xmlfile.configuration.PPP
 		$PUDXML = $xmlfile.configuration.PUD
 		$PFHXML = $xmlfile.configuration.PFH
 		
 		Add-Type -AssemblyName Microsoft.VisualBasic
+		$ReleaseVersionXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter RELEASEVERSION", "ReleaseVersion", $releaseVerison)
 		$PPPXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PPP Version (SQL)", "VersionNumber PPP", $PPPversionScript)
-  		$PUDXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PUD Version (SQL)", "VersionNumber PUD", $PUDversionScript)
+		$PUDXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PUD Version (SQL)", "VersionNumber PUD", $PUDversionScript)
 		$PFHXML = [Microsoft.VisualBasic.Interaction]::InputBox("Enter PFH Version (SQL)", "VersionNumber PFH", $PFHversionScript)
 		
 		#Create XML
@@ -192,6 +214,7 @@ if ($XMLexist -eq $true)
 		$xmlWriter.WriteElementString("ConfigVersion", "$checkVersionConfig")
 		$xmlWriter.WriteElementString("CustomerBigram", "$BigramXML")
 		$xmlWriter.WriteElementString("DBscriptPath", "D:\Visma")
+		$xmlWriter.WriteElementString("ReleaseVersion", "$ReleaseVersionXML")
 		$xmlWriter.WriteElementString("PPP", "$PPPXML")
 		$xmlWriter.WriteElementString("PFH", "$PFHXML")
 		$xmlWriter.WriteElementString("PUD", "$PUDXML")
@@ -205,15 +228,17 @@ if ($XMLexist -eq $true)
 		$ConfigVersion = $xmlfile.configuration.ConfigVersion
 		$BigramXML = $xmlfile.configuration.customerbigram
 		$dbscriptpathXML = $xmlfile.configuration.dbscriptpath
+		$ReleaseVersionXML = $xmlfile.configuration.ReleaseVersion
 		$PPPXML = $xmlfile.configuration.PPP
 		$PUDXML = $xmlfile.configuration.PUD
 		$PFHXML = $xmlfile.configuration.PFH
 		
 		
 		Write-host "CustomerBigram: $BigramXML"
+		Write-Host "ReleaseVersion: $ReleaseVersionXML"
 		Write-host "SQL-verison PPP:$PPPXML"
 		Write-host "SQL-verison PUD:$PUDXML"
-  		Write-host "SQL-verison PFH:$PFHXML"
+		Write-host "SQL-verison PFH:$PFHXML"
 		
 		Add-Type -AssemblyName PresentationCore, PresentationFramework
 		$ButtonType = [System.Windows.MessageBoxButton]::Ok
@@ -249,26 +274,13 @@ if ($XMLexist -eq $false)
 	
 }
 
-else
-{
-	
-	
-	
-	
-}
-
-
-
-
-
 
 # Todays date (used with backupfolder and Pre-Check txt file
 $Today = (get-date -Format yyyyMMdd)
 $Time = (get-date -Format HH:MM:ss)
 
 # Services to check
-#$services = "Scheduler", "Ciceron Server Manager","NeptuneMB_$BigramXML", "PersonecPBatchManager$BigramXML", "PersonecPUtdataExportImportService$BigramXML", "RSPFlexService$BigramXML", "W3SVC", "World Wide Web Publishing Service"
-$services = "Scheduler", "Ciceron Server Manager", "NeptuneMB_$BigramXML", "PersonecPBatchManager$BigramXML", "PersonecPUtdataExportImportService$BigramXML", "RSPFlexService$BigramXML"
+$services = "Scheduler", "Ciceron Server Manager", "NeptuneMB_$BigramXML", "PersonecPBatchManager$BigramXML", "PersonecPUtdataExportImportService$BigramXML", "RSPFlexService$BigramXML", "Visma.P-Background-Service - $BigramXML", "Visma.PersonecP.PufIa.WinSvc - $BigramXML"
 # Array to save data
 $data = @()
 
@@ -310,7 +322,7 @@ $DBUser_NU = $BigramXML + "_NeptuneUser"
 
 #region Function 
 
-function Generate-RandomPassword
+function New-RandomPassword
 {
 	param (
 		[Parameter(Mandatory)]
@@ -389,7 +401,7 @@ Function Copy-ItemWithProgress
 		$Files = $LogData -match "^\s*(\d+)\s+(\S+)"
 		if ($Files -ne $Null)
 		{
-			$copied = ($Files[0 .. ($Files.Length - 2)] | %{ $_.Split("`t")[-2] } | Measure -sum).Sum
+			$copied = ($Files[0 .. ($Files.Length - 2)] | ForEach-Object{ $_.Split("`t")[-2] } | Measure-Object -sum).Sum
 			if ($LogData[-1] -match "(100|\d?\d\.\d)\%")
 			{
 				write-progress Copy -ParentID $RoboRun.ID -percentComplete $LogData[-1].Trim("% `t") $LogData[-1]
@@ -397,7 +409,7 @@ Function Copy-ItemWithProgress
 			}
 			else
 			{
-				write-progress Copy -ParentID $RoboRun.ID -Complete
+				write-progress Copy -ParentID $RoboRun.ID -Completed
 			}
 			write-progress ROBOCOPY -ID $RoboRun.ID -PercentComplete ($Copied/$FileSize * 100) $Files[-1].Split("`t")[-1]
 		}
@@ -459,7 +471,7 @@ if ($Password -eq $true)
 {
 	
 	
-	$passwordGenerate = Generate-RandomPassword -length 12
+	$passwordGenerate = New-RandomPassword -length 12
 	
 	Set-Clipboard -Value $passwordGenerate
 	
@@ -484,6 +496,7 @@ if ($InventorySystem -eq $true)
 	$ConfigVersion = $xmlfile.configuration.ConfigVersion
 	$BigramXML = $xmlfile.configuration.customerbigram
 	$dbscriptpathXML = $xmlfile.configuration.dbscriptpath
+	$ReleaseVersionXML = $xmlfile.configuration.ReleaseVersion
 	$PPPXML = $xmlfile.configuration.PPP
 	$PUDXML = $xmlfile.configuration.PUD
 	$PFHXML = $xmlfile.configuration.PFH
@@ -501,7 +514,7 @@ if ($InventorySystem -eq $true)
 	# Inventory services and status
 	foreach ($Service in $Services)
 	{
-		$InfoOnService = Get-WmiObject Win32_Service | where Name -eq $Service | Select-Object name, startname, state, Startmode -ErrorAction SilentlyContinue
+		$InfoOnService = Get-CimInstance win32_service | Where-Object Name -eq $Service | Select-Object name, startname, state, Startmode -ErrorAction SilentlyContinue
 		
 		$object = New-Object -TypeName PSObject
 		$object | Add-Member -MemberType NoteProperty -Name 'Service' -Value $InfoOnService.name
@@ -578,6 +591,7 @@ if ($InventorySettings -eq $true)
 	$ConfigVersion = $xmlfile.configuration.ConfigVersion
 	$BigramXML = $xmlfile.configuration.customerbigram
 	$dbscriptpathXML = $xmlfile.configuration.dbscriptpath
+	$ReleaseVersionXML = $xmlfile.configuration.ReleaseVersion
 	$PPPXML = $xmlfile.configuration.PPP
 	$PUDXML = $xmlfile.configuration.PUD
 	$PFHXML = $xmlfile.configuration.PFH
@@ -668,6 +682,7 @@ if ($InventoryPasswords -eq $true)
 	$ConfigVersion = $xmlfile.configuration.ConfigVersion
 	$BigramXML = $xmlfile.configuration.customerbigram
 	$dbscriptpathXML = $xmlfile.configuration.dbscriptpath
+	$ReleaseVersionXML = $xmlfile.configuration.ReleaseVersion
 	$PPPXML = $xmlfile.configuration.PPP
 	$PUDXML = $xmlfile.configuration.PUD
 	$PFHXML = $xmlfile.configuration.PFH
@@ -675,7 +690,6 @@ if ($InventoryPasswords -eq $true)
 	
 	$data5 = @()
 	
-	#Region Passwords
 	
 	$pstid = Get-IniFile "$PSScriptRoot\$today\programs\$BigramXML\ppp\Personec_p\pstid.ini" -ErrorAction SilentlyContinue
 	[xml]$Batch = Get-Content "$PSScriptRoot\$today\Programs\$BigramXML\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
@@ -706,6 +720,7 @@ if ($InventoryPasswords -eq $true)
 	$data5 | format-list
 }
 
+#endregion
 
 #region backup
 
@@ -766,7 +781,7 @@ if ($SqlQueries -eq $true)
 	
 	
 	
-	$QRReadPW = Generate-RandomPassword -length 15
+	$QRReadPW = New-RandomPassword -length 14
 	
 	$SQL_queries = @"
 #------------------------------------------------#
@@ -776,14 +791,14 @@ if ($SqlQueries -eq $true)
 ##Personic P
 USE $DB_PPP
 SELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
-:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$PPPXML\mRSPu$PPPXML.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$ReleaseVersionXML\mRSPu$PPPXML.sql
 GO
-:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$PPPXML\mRSPview.sql
-:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$PPPXML\mRSPproc.sql
-:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$PPPXML\mRSPtriggers.sql
-:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$PPPXML\mRSPgra.sql
-:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$PPPXML\msDBUPDATERIGHTSP.sql
-:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$PPPXML\PPPds_Feltexter.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$ReleaseVersionXML\mRSPview.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$ReleaseVersionXML\mRSPproc.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$ReleaseVersionXML\mRSPtriggers.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$ReleaseVersionXML\mRSPgra.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$ReleaseVersionXML\msDBUPDATERIGHTSP.sql
+:r d:\visma\Install\HRM\PPP\DatabaseServer\Script\SW\$ReleaseVersionXML\PPPds_Feltexter.sql
 GO
 SELECT DBVERSION, PROGVERSION FROM dbo.OA0P0997
 SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
@@ -791,12 +806,12 @@ SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
 #Personic U
 USE $DB_PUD
 SELECT * FROM dbo.PU_VERSIONSINFO
-:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$PUDXML\mPSUu$PUDXML.sql
+:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$ReleaseVersionXML\mPSUu$PUDXML.sql
 GO
-:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$PUDXML\mPSUproc.sql
-:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$PUDXML\mPSUview.sql
-:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$PUDXML\mPSUgra.sql
-:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$PUDXML\msdbupdaterightsU.sql
+:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$ReleaseVersionXML\mPSUproc.sql
+:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$ReleaseVersionXML\mPSUview.sql
+:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$ReleaseVersionXML\mPSUgra.sql
+:r d:\visma\Install\HRM\PUD\DatabaseServer\Script\SW\$ReleaseVersionXML\msdbupdaterightsU.sql
 GO
 SELECT * FROM dbo.PU_VERSIONSINFO
 SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
@@ -804,13 +819,13 @@ SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
 ##Personic PFH
 USE $DB_PFH
 SELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
-:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$PFHXML\mPSFu$PFHXML.sql
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$ReleaseVersionXML\mPSFu$PFHXML.sql
 GO
-:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$PFHXML\mPSFproc.sql
-:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$PFHXML\mPSFview.sql
-:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$PFHXML\mPSFgra.sql
-:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$PFHXML\msDBUPDATERIGHTSF.sql
-:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$PFHXML\PFHds_Feltexter.sql
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$ReleaseVersionXML\mPSFproc.sql
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$ReleaseVersionXML\mPSFview.sql
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$ReleaseVersionXML\mPSFgra.sql
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$ReleaseVersionXML\msDBUPDATERIGHTSF.sql
+:r d:\visma\Install\HRM\PFH\DatabaseServer\Script\SW\$ReleaseVersionXML\PFHds_Feltexter.sql
 GO
 SELECT DBVERSION, PROGVERSION FROM dbo.OF0P0997
 SELECT * FROM dbo.RMRUNSCRIPT order by RUNDATETIME1 desc
@@ -909,14 +924,102 @@ if ($DBAbackup -eq $true)
 		Import-Module dbatools -Verbose -force
 	}
 	
-	$cred = Get-Credential -Message 'LÃ¶senordet till viwinstall behÃ¶vs matas in hÃ¤r...' -UserName viwinstall
+	$cred = Get-Credential -Message 'The Viwinstallpasswword please...' -UserName viwinstall
 	Add-Type -AssemblyName Microsoft.VisualBasic
 	$instans = [Microsoft.VisualBasic.Interaction]::InputBox("Vilken SQLinstans ska kollas?", "Skriv in sqlinstans", "localhost")
 	$backupplats = [Microsoft.VisualBasic.Interaction]::InputBox("Vart ska backuperna sparas?", "Skriv in annan sÃ¶kvÃ¤g vid behov", "d:\visma")
 	
-	get-dbaDatabase -SqlInstance $instans -SqlCredential $cred | Select-Object -Property name, size -ExpandProperty name | Where-Object name -like '*$BigramXML*' | Out-GridView -PassThru -Title 'VÃ¤lj de databaser du vill ha backup pÃ¥ (markera flera med att hÃ¥lla ner CTRL' | foreach { Backup-DbaDatabase -SqlCredential $cred -SqlInstance $instans -Database $_ -CopyOnly -FilePath $backupplats -Verbose }
+	get-dbaDatabase -SqlInstance $instans -SqlCredential $cred | Select-Object -Property name, size -ExpandProperty name | Where-Object name -like '*$BigramXML*' | Out-GridView -PassThru -Title 'VÃ¤lj de databaser du vill ha backup pÃ¥ (markera flera med att hÃ¥lla ner CTRL' | ForEach-Object { Backup-DbaDatabase -SqlCredential $cred -SqlInstance $instans -Database $_ -CopyOnly -FilePath $backupplats -Verbose }
 	
 	
 }
 
 #endregion
+
+#region CertRights
+
+#Certrights
+if ($Certrights -eq $true)
+{
+	
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
+	function Set-PermissionCertificate
+	{
+		
+		$Certificate = Get-ChildItem Cert:\LocalMachine\My | Out-GridView -Title 'Select cert' -PassThru
+		
+		$rsaCert = [System.Security.Cryptography.X509Certificates.RSACertificateExtensions]::GetRSAPrivateKey($Certificate)
+		
+		[string]$uniqueName = $rsaCert.key.UniqueName
+		[string]$keyFilePath = "$env:ALLUSERSPROFILE\Microsoft\Crypto\RSA\MachineKeys\$uniqueName"
+		$acl = Get-Acl -Path $keyFilePath
+		
+		$rule1 = new-object security.accesscontrol.filesystemaccessrule 'Visma Services Trusted Users', 'fullcontrol', allow
+		
+		$acl.AddAccessRule($rule1)
+		Set-Acl -Path $keyFilePath -AclObject $acl
+		
+		$rule2 = new-object security.accesscontrol.filesystemaccessrule 'IIS_IUSRS', 'read', allow
+		
+		$acl.AddAccessRule($rule2)
+		Set-Acl -Path $keyFilePath -AclObject $acl
+		
+	}
+	Set-PermissionCertificate
+	
+	
+}
+
+#endregion
+
+#region Thumbprint
+
+#thumbprint
+if ($certthumbprint -eq $true)
+{
+	# Define the starting date for the search
+	$StartDate = Get-Date
+	
+	# Define the certificate path
+	$CertPath = 'Cert:\LocalMachine\my'
+	
+	# Retrieve certificate details
+	$CertsDetail = Get-ChildItem -Path $CertPath -Recurse | Where-Object {
+		$_.PsIsContainer -ne $true
+	} | ForEach-Object {
+		# Calculate the number of days left until expiration
+		$DaysLeft = (New-TimeSpan -Start $StartDate -End $_.NotAfter).Days
+		# Format the expiration date
+		$FinalDate = Get-Date $_.NotAfter -Format 'dd/MM/yyyy hh:mm'
+		# Retrieve intended purposes
+		$Usages = $_.Extensions | Where-Object {
+			$_.Oid.FriendlyName -eq 'Enhanced Key Usage'
+		} | ForEach-Object {
+			$_.Format(0) -join ', '
+		}
+		# Create a custom object with the required details
+		[PSCustomObject]@{
+			Thumbprint	     = $_.Thumbprint
+			Subject		     = $_.Subject
+			ExpireDate	     = $FinalDate
+			DaysRemaining    = $DaysLeft
+			IntendedPurposes = $Usages
+		}
+	} | Out-GridView -PassThru
+	
+	$CertsDetail.thumbprint | Set-Clipboard
+	
+	#endregion
+	
+	
+	
+}
