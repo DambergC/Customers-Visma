@@ -1124,7 +1124,7 @@ mpd/gKtPowpH7u/kxt6+Ov07y2/WJ5+E1WNzMK9D6u7Qy9s9ejg5fRJQH/XEa5D6ATQt9hh2Puqs
 Dxe/ob//Uwi/Zd/sb3XwW2ZsP9749Gox9xmkvcWjL9TB6+oOiLpdfgD5awZdN9Xt18kc+vFC+le7
 3ztNPSJ6H/LpWyapXw3/oGIHlP733TBfNxmzenx54Fe7fyWx/JBP33j+5Z3hHxVD74x83XTe28b6
 bxD0zupfSSo/4NE3Rc87s99AI7PmWtQP4Ovub8CBrE26jgtaY0zaMlgAJuopafenpCxf9v0Q5/W/
-gbT6G/03jCDfAqVqKMtf4dN8sBIGbf3eCvrFc3Y4kMavnhp5HUOvmH6zaMEp5HF1/JYdoncYfeju
+gbT6G/03jKDeAqVqKMtf4dN8sBIGbf3eCvrFc3Y4kMavnhp5HUOvmH6zaMEp5HF1/JYdoncYfeju
 d4d++uH3XPQXL3PuG8bfb8T5qkg+XOT82+53rXHeNGH7jgwecujblTj/NvttKhwtCJPyu2OnvFv5
 dY/px/tPHwPRuw+9ehfbT/XbJ1GHMfdZ4LcfKvykx28vfVD61U/y+qwiftOZxA9i5r1vL5917nFA
 /FlbK1/r27vtP9z0/ZkaeJtUA8hob+hDDih6kOzuo/GnX/S6eguY7p+xBmzkUVt3ddq/7IOqe9kn
@@ -1140,7 +1140,7 @@ DgPT/MYw+BPPZgvcPwGd/fMLgfDRyex3NP+2AfTR0exH+OB33j6AA5z5gnPZb9vd+h4HQGsRr65f
 jxx9cPQ/HPtHDt1/urb867P/UfhG7L96Ww9/xP6PvCLmd95+b/Z/49uEvjn7/8nhN81vFP5XFqm+
 ffj/7e33Dv/bDl3/0OH/uuT/2/CjzMOv5Xkw/F+c+b8o/I+8LuEHDf/XzjDekyr5No38UdTfWGT/
 K+xfOBX5aLwfmYl8v+D2jQL+J78DdPzqiWUQdhx5pG77T9Pff1r5kQ2pwK3/1pzyv7vkG84o/1kv
-mnzn9wdr/7VXTL66fv0pHP7G5QdAyDBf8G7JT2D2Da+W/NjLL3mp5G++/eibX7/sfvk/ldIZFQ2U
+mnzn9wdr/7VXTL66fv0pHP7G5QdAyDBf8G7JT2D2Da+W/NjLL3mp5G++/eibX7/sfvk//acYBw2U
 AAA=</Form>
   <Code><![CDATA[
 #region Control Helper Functions
@@ -2606,6 +2606,14 @@ $buttonIISSite_Click = {
 
 $buttonEncrypt_Click = {
 	
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("****************************************************************")
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("             Encrypting web.config appsettings ")
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("****************************************************************")
+	$richtextbox1.ScrollToCaret()
+	
 	$selectedBigram = $BigramListBox.SelectedItem
 	$selectedBackupfolder = $BackupFolderListbox.SelectedItem
 	
@@ -2615,7 +2623,7 @@ $buttonEncrypt_Click = {
 	# Define the section to encrypt and the path to the web.config file
 	$section = "appSettings"
 	
-	$apppaths = @()
+	$AppPaths = @()
 	
 	
 	
@@ -2634,6 +2642,14 @@ $buttonEncrypt_Click = {
 		
 	}
 	
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("****************************************************************")
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("             Finished Encrypting web.config ")
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("****************************************************************")
+	$richtextbox1.ScrollToCaret()
+	
 	
 	
 }
@@ -2641,6 +2657,14 @@ $buttonEncrypt_Click = {
 $buttonDecrypt_Click= {
 	$selectedBigram = $BigramListBox.SelectedItem
 	$selectedBackupfolder = $BackupFolderListbox.SelectedItem
+	
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("****************************************************************")
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("             Decrypting web.config appsettings ")
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("****************************************************************")
+	$richtextbox1.ScrollToCaret()
 	
 	# Define the path to aspnet_regiis.exe
 	$AspNetRegIisLocation = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe"
@@ -2663,6 +2687,15 @@ $buttonDecrypt_Click= {
 		$progressbaroverlay1.PerformStep()
 		
 	}
+	
+	
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("****************************************************************")
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("             Finished Decrypting web.config ")
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("****************************************************************")
+	$richtextbox1.ScrollToCaret()
 }
 ]]></Code>
   <TV>0</TV>
