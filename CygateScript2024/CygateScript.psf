@@ -1,6 +1,6 @@
 ﻿<File version="3.2">
   <FileID>5ceb5aeb-f23c-49b3-bc56-93ea4bf989bd</FileID>
-  <LastExport>133686205475048911</LastExport>
+  <LastExport>133686273066249360</LastExport>
   <Preview>iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
 jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAALlESURBVHhe7P0HdBxJm56JrlZ+ZPZq5Vb2SiOd
 ORod6c7IXM1KO1pJI+1odGckzcz/9/+392xD70kAhPfee+8t4b333nvvyqAMPFAFS743viwUuwgW
@@ -4216,6 +4216,24 @@ $buttonStartServices_Click={
 			Write-Log -Level INFO -Message "$serviceName set to AUTOMATIC --------------"
 		}
 		
+		if ($ServiceStartType -eq 'Manual')
+		{
+			Set-Service -Name $serviceName -StartupType Manual
+			$richtextbox1.AppendText("`n")
+			$richtextbox1.AppendText("             $serviceName set to MANUAL ")
+			Write-Log -Level INFO -Message "***************************************************************"
+			Write-Log -Level INFO -Message "$serviceName set to MANUAL --------------"
+		}
+		
+		if ($ServiceStartType -eq 'Disabled')
+		{
+			Set-Service -Name $serviceName -StartupType Disabled
+			$richtextbox1.AppendText("`n")
+			$richtextbox1.AppendText("             $serviceName set to DISABLED ")
+			Write-Log -Level INFO -Message "***************************************************************"
+			Write-Log -Level INFO -Message "$serviceName set to DISABLED --------------"
+		}
+		
 		if ($serviceStatus -eq 'Running')
 		{
 			Start-Service -Name $servicename
@@ -4310,6 +4328,6 @@ $buttonCloseApplicationAndE_Click={
 }
 ]]></Code>
   <TV>0</TV>
-  <Mode>0</Mode>
+  <Mode>1</Mode>
   <Assemblies />
 </File>
