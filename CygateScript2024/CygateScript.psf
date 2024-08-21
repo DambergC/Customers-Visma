@@ -1,6 +1,6 @@
 ﻿<File version="3.2">
   <FileID>5ceb5aeb-f23c-49b3-bc56-93ea4bf989bd</FileID>
-  <LastExport>133687003928540565</LastExport>
+  <LastExport>133687110087787849</LastExport>
   <Preview>iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
 jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAALorSURBVHhe7P0HlBxJe56JrrxEmb1aSVe7kqgr
 d3hEHemS0tVdLrXcpURpKfKSK5H8//n/8R6YGXgPdDfae++99xbtvffee+/KdJn23VVtgffGl9XV
@@ -3398,43 +3398,80 @@ $buttonPassword_Click = {
 	else
 	{
 		
-		$data5 = @()
+		###################################
+		# Check backupfolder if encrypted
+		###################################	
+		
+		$AppPaths = (Get-ChildItem -Path "$InstallDrive\Visma\Install\Backup\$selectedBackupfolder\wwwroot" -Recurse -Filter web.config).DirectoryName
 		
 		
-		$pstid = Get-IniFile "$InstallDrive\Visma\install\backup\$selectedBackupfolder\programs\$selectedBigram\ppp\Personec_p\pstid.ini" -ErrorAction SilentlyContinue
-		[xml]$Batch = Get-Content "$InstallDrive\Visma\install\backup\$selectedBackupfolder\Programs\$selectedBigram\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
-		[XML]$PIA = Get-Content "$InstallDrive\Visma\install\backup\$selectedBackupfolder\Wwwroot\$selectedBigram\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
+		foreach ($AppPath in $AppPaths)
+		{
+			
+			[XML]$CheckElementXML = Get-Content -Path "$InstallDrive\Visma\Install\Backup\$selectedBackupfolder\wwwroot\$selectedBigram\PPP\Personec_P_web\Lon\web.config"
+			
+			
+		}
 		
-		$object = New-Object -TypeName PSObject
-		$object | Add-Member -MemberType NoteProperty -Name 'NeptuneUser' -Value $PSTID.styr.NeptuneUser
-		$object | Add-Member -MemberType NoteProperty -Name 'NeptunePassword' -Value $PSTID.styr.NeptuneUser
-		$object | Add-Member -MemberType NoteProperty -Name 'Batchuser' -Value $Batch.configuration.appsettings.add.where{ $_.key -eq 'sysuser' }.value
-		$object | Add-Member -MemberType NoteProperty -Name 'BatchPassword' -Value $Batch.configuration.appsettings.add.where{ $_.key -eq 'SysPassword' }.value
+		[XML]$CheckElementXML = Get-Content -Path "$InstallDrive\Visma\Install\Backup\$selectedBackupfolder\wwwroot\$selectedBigram\PPP\Personec_P_web\Lon\web.config"
 		
-		$object | Add-Member -MemberType NoteProperty -Name 'PPP Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'P.Database.User' }.value
-		$object | Add-Member -MemberType NoteProperty -Name 'PPP Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'P.Database.Password' }.value
-		
-		$object | Add-Member -MemberType NoteProperty -Name 'PUD Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'U.Database.User' }.value
-		$object | Add-Member -MemberType NoteProperty -Name 'PUD Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'U.Database.Password' }.value
-		
-		$object | Add-Member -MemberType NoteProperty -Name 'PFH Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'F.Database.User' }.value
-		$object | Add-Member -MemberType NoteProperty -Name 'PFH Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'F.Database.Password' }.value
-		
-		$object | Add-Member -MemberType NoteProperty -Name 'Service Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'ServiceUser.Login' }.value
-		$object | Add-Member -MemberType NoteProperty -Name 'Service Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'serviceUser.Secret' }.value
-		$data5 += $object
-		
-		$result = $data5 | Out-String
-		
-		$richtextbox1.AppendText("`n")
-		$richtextbox1.AppendText("****************************************************************")
-		$richtextbox1.AppendText("`n")
-		$richtextbox1.AppendText("             INVENTORY Passwords          ")
-		$richtextbox1.AppendText("`n")
-		$richtextbox1.AppendText("****************************************************************")
-		$richtextbox1.AppendText("`n")
-		$richtextbox1.AppendText("             Settings from backup: $result")
-		$richtextbox1.ScrollToCaret()
+		if ($CheckElementXML.configuration.appSettings.EncryptedData -ne $null)
+		{
+			$richtextbox1.Clear()
+			$richtextbox1.AppendText("`n")
+			$richtextbox1.AppendText("****************************************************************")
+			$richtextbox1.AppendText("`n")
+			$richtextbox1.AppendText("             Backupfolder is encrypted!!!")
+			$richtextbox1.AppendText("`n")
+			$richtextbox1.AppendText("****************************************************************")
+			$richtextbox1.ScrollToCaret()
+			
+		}
+		else
+		{
+			
+			
+			
+			
+			
+			$data5 = @()
+			
+			
+			$pstid = Get-IniFile "$InstallDrive\Visma\install\backup\$selectedBackupfolder\programs\$selectedBigram\ppp\Personec_p\pstid.ini" -ErrorAction SilentlyContinue
+			[xml]$Batch = Get-Content "$InstallDrive\Visma\install\backup\$selectedBackupfolder\Programs\$selectedBigram\PPP\Personec_P\batch.config" -ErrorAction SilentlyContinue
+			[XML]$PIA = Get-Content "$InstallDrive\Visma\install\backup\$selectedBackupfolder\Wwwroot\$selectedBigram\PIA\PUF_IA Module\web.config" -ErrorAction SilentlyContinue
+			
+			$object = New-Object -TypeName PSObject
+			$object | Add-Member -MemberType NoteProperty -Name 'NeptuneUser' -Value $PSTID.styr.NeptuneUser
+			$object | Add-Member -MemberType NoteProperty -Name 'NeptunePassword' -Value $PSTID.styr.NeptuneUser
+			$object | Add-Member -MemberType NoteProperty -Name 'Batchuser' -Value $Batch.configuration.appsettings.add.where{ $_.key -eq 'sysuser' }.value
+			$object | Add-Member -MemberType NoteProperty -Name 'BatchPassword' -Value $Batch.configuration.appsettings.add.where{ $_.key -eq 'SysPassword' }.value
+			
+			$object | Add-Member -MemberType NoteProperty -Name 'PPP Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'P.Database.User' }.value
+			$object | Add-Member -MemberType NoteProperty -Name 'PPP Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'P.Database.Password' }.value
+			
+			$object | Add-Member -MemberType NoteProperty -Name 'PUD Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'U.Database.User' }.value
+			$object | Add-Member -MemberType NoteProperty -Name 'PUD Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'U.Database.Password' }.value
+			
+			$object | Add-Member -MemberType NoteProperty -Name 'PFH Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'F.Database.User' }.value
+			$object | Add-Member -MemberType NoteProperty -Name 'PFH Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'F.Database.Password' }.value
+			
+			$object | Add-Member -MemberType NoteProperty -Name 'Service Username' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'ServiceUser.Login' }.value
+			$object | Add-Member -MemberType NoteProperty -Name 'Service Password' -Value $PIA.configuration.appsettings.add.where{ $_.key -eq 'serviceUser.Secret' }.value
+			$data5 += $object
+			
+			$result = $data5 | Out-String
+			
+			$richtextbox1.AppendText("`n")
+			$richtextbox1.AppendText("****************************************************************")
+			$richtextbox1.AppendText("`n")
+			$richtextbox1.AppendText("             INVENTORY Passwords          ")
+			$richtextbox1.AppendText("`n")
+			$richtextbox1.AppendText("****************************************************************")
+			$richtextbox1.AppendText("`n")
+			$richtextbox1.AppendText("             Settings from backup: $result")
+			$richtextbox1.ScrollToCaret()
+		}
 	}
 }
 
@@ -4023,7 +4060,7 @@ $buttonStopIISSite_Click = {
 			
 			
 			
-			Stop-IISSite -Name $selectedBigram -Confirm $false
+			Stop-IISSite -Name $selectedBigram -Confirm:$false
 			$richtextbox1.AppendText("`n")
 			$richtextbox1.AppendText("             $selectedBigram site Stopped ")
 			$richtextbox1.ScrollToCaret()
