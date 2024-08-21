@@ -1,6 +1,6 @@
 ﻿<File version="3.2">
   <FileID>5ceb5aeb-f23c-49b3-bc56-93ea4bf989bd</FileID>
-  <LastExport>133686299132186303</LastExport>
+  <LastExport>133686992474821364</LastExport>
   <Preview>iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
 jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAALorSURBVHhe7P0HlBxJe56JrrxEmb1aSVe7kqgr
 d3hEHemS0tVdLrXcpURpKfKSK5H8//n/8R6YGXgPdDfae++99xbtvffee+/KdJn23VVtgffGl9XV
@@ -2504,9 +2504,12 @@ function Copy-WithProgress
 	$richtextbox1.AppendText('Analyzing robocopy job ...')
 	$richtextbox1.AppendText("`n")
 	
+	$selectedBackupfolder = $BackupFolderListbox.SelectedItem
+	$selectedBigram = $BigramListBox.SelectedItem
 	
-	$StagingLogPath = '{0}\temp\{1} robocopy staging.log' -f $env:windir, (Get-Date -Format 'yyyy-MM-dd HH-mm-ss');
 	
+	#$StagingLogPath = '{0}\temp\{1} robocopy staging.log' -f $env:windir, (Get-Date -Format 'yyyy-MM-dd HH-mm-ss');
+	$StagingLogPath = "$InstallDrive\Visma\install\Backup\$selectedBackupfolder\RoboCopyStaging.log"
 	$StagingArgumentList = '"{0}" "{1}" /LOG:"{2}" /L {3}' -f $Source, $Destination, $StagingLogPath, $CommonRobocopyParams;
 	
 	#$richtextbox1.AppendText('Staging arguments: {0}' -f $StagingArgumentList)
@@ -2534,7 +2537,9 @@ function Copy-WithProgress
 	
 	#region Start Robocopy
 	# Begin the robocopy process
-	$RobocopyLogPath = '{0}\temp\{1} robocopy.log' -f $env:windir, (Get-Date -Format 'yyyy-MM-dd HH-mm-ss');
+	
+	$RobocopyLogPath = "$InstallDrive\Visma\install\Backup\$selectedBackupfolder\RoboCopy.log"
+	#$RobocopyLogPath = '{0}\temp\{1} robocopy.log' -f $env:windir, (Get-Date -Format 'yyyy-MM-dd HH-mm-ss');
 	$ArgumentList = '"{0}" "{1}" /LOG:"{2}" /ipg:{3} {4}' -f $Source, $Destination, $RobocopyLogPath, $Gap, $CommonRobocopyParams;
 	
 	#$richtextbox1.AppendText('Beginning the robocopy process with arguments: {0}' -f $ArgumentList)
@@ -2863,6 +2868,8 @@ $BackupFolderListbox_SelectedIndexChanged = {
 	
 	
 	
+	
+	
 	$selectedItems = $BackupFolderListbox.SelectedItems
 	
 	$Backupfolder = $BackupFolderListbox.SelectedItem
@@ -2893,6 +2900,21 @@ $BackupFolderListbox_SelectedIndexChanged = {
 	
 	$SelectedBackupFolderTextbox.Clear()
 	$SelectedBackupFolderTextbox.AppendText($BackupFolderListbox.SelectedItem)
+	
+	$selectedBackupfolder = $BackupFolderListbox.SelectedItem
+	$selectedBigram = $BigramListBox.SelectedItem
+	
+	$backupExist = Test-Path "$InstallDrive\Visma\Install\Backup\$selectedBackupfolder\Robocopy.log"
+	
+	if ($backupExist -eq $true)
+	{
+		$buttonFileBackup.Enabled = $false
+	}
+	
+	else
+	{
+		$buttonFileBackup.Enabled = $true
+	}
 }
 
 $buttonCreateFolder_Click = {
@@ -3330,9 +3352,9 @@ $buttonSettings_Click = {
 				Write-Log -Level INFO -Message " Integration API   ---------------"
 				Write-Log -Level INFO -Message "Settings from backup: license.json exist"
 				Write-Log -Level INFO -Message "***************************************************************"
-				}
-				
-				else
+			}
+			
+			else
 			{
 				
 				$richtextbox1.AppendText("`n")
@@ -3351,11 +3373,11 @@ $buttonSettings_Click = {
 				Write-Log -Level INFO -Message "No License.json..."
 				Write-Log -Level INFO -Message "***************************************************************"
 			}
-			}
 		}
 	}
-	
-	$buttonPassword_Click = {
+}
+
+$buttonPassword_Click = {
 	$selectedBackupfolder = $BackupFolderListbox.SelectedItem
 	$selectedBigram = $BigramListBox.SelectedItem
 	
@@ -3537,7 +3559,7 @@ $buttonDBUpgrade_Click = {
 	else
 	{
 		
-
+		
 		[XML]$xmlValues = Get-Content "$InstallDrive\Visma\install\backup\appsettings\$selectedBigram.XML"
 		$QRRead = $selectedBigram + "_QRRead"
 		$DB_PPP = $selectedBigram + "_PPP"
@@ -3878,7 +3900,7 @@ $buttonStopServices_Click = {
 	else
 	{
 		
-				
+		
 		$result = @()
 		
 		
@@ -4102,7 +4124,7 @@ $buttonDecrypt_Click = {
 	else
 	{
 		
-
+		
 		$richtextbox1.Clear()
 		$richtextbox1.AppendText("`n")
 		$richtextbox1.AppendText("****************************************************************")
@@ -4185,7 +4207,7 @@ $buttonStartIISSite_Click = {
 
 
 
-$buttonStartServices_Click={
+$buttonStartServices_Click = {
 	
 	$selectedBigram = $BigramListBox.SelectedItem
 	$selectedBackupfolder = $BackupFolderListbox.SelectedItem
@@ -4265,7 +4287,7 @@ $buttonStartServices_Click={
 	
 }
 
-$buttonCloseApplicationAndE_Click={
+$buttonCloseApplicationAndE_Click = {
 	
 	
 	Add-Type -AssemblyName PresentationCore, PresentationFramework
@@ -4327,11 +4349,11 @@ $buttonCloseApplicationAndE_Click={
 		
 	}
 	
-		
-		
+	
+	
 }
 ]]></Code>
   <TV>0</TV>
-  <Mode>0</Mode>
+  <Mode>1</Mode>
   <Assemblies />
 </File>
