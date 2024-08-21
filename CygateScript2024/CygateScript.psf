@@ -1,6 +1,6 @@
 ﻿<File version="3.2">
   <FileID>5ceb5aeb-f23c-49b3-bc56-93ea4bf989bd</FileID>
-  <LastExport>133687115550445912</LastExport>
+  <LastExport>133687209447560365</LastExport>
   <Preview>iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
 jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAALorSURBVHhe7P0HlBxJe56JrrxEmb1aSVe7kqgr
 d3hEHemS0tVdLrXcpURpKfKSK5H8//n/8R6YGXgPdDfae++99xbtvffee+/KdJn23VVtgffGl9XV
@@ -2954,9 +2954,11 @@ $buttonFileBackup_Click = {
 	
 	
 	Copy-WithProgress -Source "$InstallDrive\Visma\programs" -Destination "$InstallDrive\Visma\Install\Backup\$BackupFolder\Programs"
-	
-	$richtextbox1.AppendText("Ending backup of programs...")
+	$richtextbox1.AppendText("****************************************************************")
 	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("             Ending backup of programs...         ")
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("****************************************************************")
 	$richtextbox1.ScrollToCaret()
 	
 	$progressbaroverlay1.TextOverlay = 'Starting backup of wwwroot...'
@@ -2965,9 +2967,12 @@ $buttonFileBackup_Click = {
 	$richtextbox1.ScrollToCaret()
 	
 	Copy-WithProgress -Source "$InstallDrive\Visma\wwwroot" -Destination "$InstallDrive\Visma\Install\Backup\$BackupFolder\wwwroot"
-	
-	$richtextbox1.AppendText("Ending backup of wwwroot...")
+	$richtextbox1.AppendText("****************************************************************")
 	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("             Ending backup of wwwroot...         ")
+	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText("****************************************************************")
+
 	$richtextbox1.ScrollToCaret()
 	
 	update-config
@@ -3429,7 +3434,7 @@ $buttonPassword_Click = {
 		}
 		else
 		{
-					
+			
 			$data5 = @()
 			
 			
