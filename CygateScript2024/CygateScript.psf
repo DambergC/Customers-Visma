@@ -1,6 +1,6 @@
 ﻿<File version="3.2">
   <FileID>5ceb5aeb-f23c-49b3-bc56-93ea4bf989bd</FileID>
-  <LastExport>133688002411767828</LastExport>
+  <LastExport>133688008739424352</LastExport>
   <Preview>iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
 jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAALorSURBVHhe7P0HlBxJe56JrrxEmb1aSVe7kqgr
 d3hEHemS0tVdLrXcpURpKfKSK5H8//n/8R6YGXgPdDfae++99xbtvffee+/KdJn23VVtgffGl9XV
@@ -4109,7 +4109,7 @@ $buttonEncrypt_Click = {
 		$AspNetRegIisLocation = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe"
 		
 		# Define the section to encrypt and the path to the web.config file
-		$section = "ApplicationSettings"
+		$section = "applicationSettings"
 		
 		$AppPaths = @()
 		
@@ -4176,7 +4176,7 @@ $buttonDecrypt_Click = {
 		$AspNetRegIisLocation = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe"
 		
 		# Define the section to encrypt and the path to the web.config file
-		$section = "ApplicationSettings"
+		$section = "applicationSettings"
 		
 		$apppaths = @()
 		
