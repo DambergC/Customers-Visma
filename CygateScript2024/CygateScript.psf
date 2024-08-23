@@ -1,6 +1,6 @@
 ﻿<File version="3.2">
   <FileID>5ceb5aeb-f23c-49b3-bc56-93ea4bf989bd</FileID>
-  <LastExport>133688028930144493</LastExport>
+  <LastExport>133688867817004906</LastExport>
   <Preview>iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
 jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAALorSURBVHhe7P0HlBxJe56JrrxEmb1aSVe7kqgr
 d3hEHemS0tVdLrXcpURpKfKSK5H8//n/8R6YGXgPdDfae++99xbtvffee+/KdJn23VVtgffGl9XV
@@ -2501,8 +2501,9 @@ function Copy-WithProgress
 	#endregion Robocopy params
 	
 	#region Robocopy Staging
-	$richtextbox1.AppendText('Analyzing robocopy job ...')
 	$richtextbox1.AppendText("`n")
+	$richtextbox1.AppendText('Analyzing robocopy job ...')
+	
 	
 	$selectedBackupfolder = $BackupFolderListbox.SelectedItem
 	$selectedBigram = $BigramListBox.SelectedItem
@@ -2520,7 +2521,7 @@ function Copy-WithProgress
 	# Get the total number of files that will be copied
 	$StagingContent = Get-Content -Path $StagingLogPath;
 	$TotalFileCount = $StagingContent.Count - 1;
-	
+	$richtextbox1.AppendText("`n")
 	$richtextbox1.AppendText('Total Files to be copied: {0}' -f $TotalFileCount)
 	Write-Log -Level INFO -Message "Total bytes to be copied: {0} -f $TotalFileCount"
 	$richtextbox1.AppendText("`n")
@@ -2528,7 +2529,7 @@ function Copy-WithProgress
 	
 	# Get the total number of bytes to be copied
 	[RegEx]::Matches(($StagingContent -join "`n"), $RegexBytes) | ForEach-Object { $BytesTotal = 0; } { $BytesTotal += $_.Value; };
-	
+	$richtextbox1.AppendText("`n")
 	$richtextbox1.AppendText('Total bytes to be copied: {0}' -f $BytesTotal)
 	Write-Log -Level INFO -Message "Total bytes to be copied: {0} -f $BytesTotal"
 	$richtextbox1.AppendText("`n")
@@ -2946,6 +2947,7 @@ $TB_BackupfolderName_TextChanged = {
 $buttonFileBackup_Click = {
 	
 	$progressbaroverlay1.TextOverlay = 'Starting backup of programs...'
+	$richtextbox1.AppendText("`n")
 	$richtextbox1.AppendText("Starting backup of programs...")
 	$richtextbox1.AppendText("`n")
 	$richtextbox1.ScrollToCaret()
@@ -2954,6 +2956,7 @@ $buttonFileBackup_Click = {
 	
 	
 	Copy-WithProgress -Source "$InstallDrive\Visma\programs" -Destination "$InstallDrive\Visma\Install\Backup\$BackupFolder\Programs"
+	$richtextbox1.AppendText("`n")
 	$richtextbox1.AppendText("****************************************************************")
 	$richtextbox1.AppendText("`n")
 	$richtextbox1.AppendText("             Ending backup of programs...         ")
@@ -2962,17 +2965,19 @@ $buttonFileBackup_Click = {
 	$richtextbox1.ScrollToCaret()
 	
 	$progressbaroverlay1.TextOverlay = 'Starting backup of wwwroot...'
+	$richtextbox1.AppendText("`n")
 	$richtextbox1.AppendText("Starting backup of wwwroot...")
 	$richtextbox1.AppendText("`n")
 	$richtextbox1.ScrollToCaret()
 	
 	Copy-WithProgress -Source "$InstallDrive\Visma\wwwroot" -Destination "$InstallDrive\Visma\Install\Backup\$BackupFolder\wwwroot"
+	$richtextbox1.AppendText("`n")
 	$richtextbox1.AppendText("****************************************************************")
 	$richtextbox1.AppendText("`n")
 	$richtextbox1.AppendText("             Ending backup of wwwroot...         ")
 	$richtextbox1.AppendText("`n")
 	$richtextbox1.AppendText("****************************************************************")
-
+	
 	$richtextbox1.ScrollToCaret()
 	
 	update-config
@@ -4006,9 +4011,13 @@ $buttonStopServices_Click = {
 			
 		}
 		Write-Log -Level INFO -Message "***************************************************************"
-		
 		$richtextbox1.AppendText("`n")
-		$richtextbox1.AppendText("             Stopping Services ")
+		$richtextbox1.AppendText("****************************************************************")
+		$richtextbox1.AppendText("`n")
+		$richtextbox1.AppendText("             Services STOPPED")
+		$richtextbox1.AppendText("`n")
+		$richtextbox1.AppendText("****************************************************************")
+		$richtextbox1.ScrollToCaret()
 	}
 }
 
@@ -4319,6 +4328,14 @@ $buttonStartServices_Click = {
 			Write-Log -Level INFO -Message "***************************************************************"
 			Write-Log -Level INFO -Message "$serviceName running with $serviceStartName "
 		}
+		
+		$richtextbox1.AppendText("`n")
+		$richtextbox1.AppendText("****************************************************************")
+		$richtextbox1.AppendText("`n")
+		$richtextbox1.AppendText("             Services STARTED")
+		$richtextbox1.AppendText("`n")
+		$richtextbox1.AppendText("****************************************************************")
+		$richtextbox1.ScrollToCaret()
 		
 		
 	}
