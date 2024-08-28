@@ -1,6 +1,6 @@
 ﻿<File version="3.2">
   <FileID>5ceb5aeb-f23c-49b3-bc56-93ea4bf989bd</FileID>
-  <LastExport>133691488100810412</LastExport>
+  <LastExport>133691499855535006</LastExport>
   <Preview>iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
 jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAALorSURBVHhe7P0HlBxJe56JrrxEmb1aSVe7kqgr
 d3hEHemS0tVdLrXcpURpKfKSK5H8//n/8R6YGXgPdDfae++99xbtvffee+/KdJn23VVtgffGl9XV
@@ -2806,6 +2806,7 @@ $formTeliaCygatePersonecP_Load = {
 	update-config
 }
 
+
 $buttonSaveBigram_Click = {
 	
 	$BIGRAM_XML = $TB_Bigram.text
@@ -4455,8 +4456,9 @@ $buttonCloseApplicationAndE_Click = {
 	
 	
 }
+
 ]]></Code>
   <TV>0</TV>
-  <Mode>1</Mode>
+  <Mode>0</Mode>
   <Assemblies />
 </File>
