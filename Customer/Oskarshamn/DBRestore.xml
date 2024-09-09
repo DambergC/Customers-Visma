@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<Configuration>
+	<ConfigVersion>1</ConfigVersion>
+	<Prod>
+	<Bigram>OSKNSK</Bigram>
+	<Sqlserver>OSKAR224</Sqlserver>
+	<BackuppathUNC>D:\Visma\DB_Backup\</BackuppathUNC>
+	<Databases>
+		<Db>OSKNSK_PAG</Db>
+		<Db>OSKNSK_PPP</Db>
+		<Db>OSKNSK_PUD</Db>
+		<Db>OSKNSK_PFH</Db>
+	</Databases>
+	</Prod>
+	<Test>
+	<Bigram>OSKNST</Bigram>
+	<Sqlserver>OSKAR224,1435</Sqlserver>
+	<Backuppath>D:\Visma\DB_Backup\</Backuppath>
+	<Databases>
+		<Db>OSKNST_PAG</Db>
+		<Db>OSKNST_PPP</Db>
+		<Db>OSKNST_PUD</Db>
+		<Db>OSKNST_PFH</Db>
+	</Databases>
+	<RspDbuser>rspdbusert</RspDbuser>
+	<Psutotint>psutotint</Psutotint>
+	<RestorePathMDF>d:\SQLDataTest</RestorePathMDF>
+	<RestorePathLOG>d:\SQLLogTest</RestorePathLOG>
+	<Importcatalog>\\localhost\import</Importcatalog>
+	<Exportcatalog>\\localhost\export</Exportcatalog>
+	</Test>
+</Configuration>
