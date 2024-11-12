@@ -1,6 +1,6 @@
 ﻿<File version="3.2">
   <FileID>5ceb5aeb-f23c-49b3-bc56-93ea4bf989bd</FileID>
-  <LastExport>133758881635969074</LastExport>
+  <LastExport>133758890827131415</LastExport>
   <Preview>iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
 jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAMIpSURBVHhe7P3XcxxLu+4HamJuJqSJmL9hdHfu
 zsXcSDeK0CjOSNqSzt77259b3jt6BxDee++999577723DY/2Bh7ohiWfybcaTYJgk4uLBmxwvc+K
@@ -3989,7 +3989,7 @@ $buttonStopServices_Click = {
 		$result = @()
 		
 		
-		$services = "Scheduler", "Ciceron Server Manager", "NeptuneMB_$selectedBigram", "PersonecPBatchManager$selectedBigram", "PersonecPUtdataExportImportService$selectedBigram", "RSPFlexService$selectedBigram", "Visma.P-Background-Service - $selectedBigram", "Visma.PersonecP.PufIa.WinSvc - $selectedBigram"
+		$services = "PBSScheduler_$selectedBigram","Scheduler", "Ciceron Server Manager", "NeptuneMB_$selectedBigram", "PersonecPBatchManager$selectedBigram", "PersonecPUtdataExportImportService$selectedBigram", "RSPFlexService$selectedBigram", "Visma.P-Background-Service - $selectedBigram", "Visma.PersonecP.PufIa.WinSvc - $selectedBigram"
 		
 
 		
@@ -4379,10 +4379,14 @@ $buttonStartServices_Click = {
 			
 			if ($serviceStatus -eq 'Running')
 			{
-				Start-Service -Name $servicename
+				
 				$checkCount = 0
 				$maxChecks = 15
 				$intervalSeconds = 2
+				
+				
+				Start-Service -Name $servicename
+
 				
 				# Loop to check the service status
 				while ($checkCount -lt $maxChecks)
@@ -4409,7 +4413,8 @@ $buttonStartServices_Click = {
 					}
 					else
 					{
-						Write-Log -Level INFO -Message "$serviceName try to start --------------"
+						$richtextbox1.AppendText("`n")
+						$richtextbox1.AppendText("             $serviceName laskjdföasldjfasödfj ")
 						
 					}
 					
