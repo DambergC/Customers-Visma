@@ -1,6 +1,6 @@
 ﻿<File version="3.2">
   <FileID>5ceb5aeb-f23c-49b3-bc56-93ea4bf989bd</FileID>
-  <LastExport>133758800806463024</LastExport>
+  <LastExport>133758855170487437</LastExport>
   <Preview>iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
 jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAMIpSURBVHhe7P3XcxxLu+4HamJuJqSJmL9hdHfu
 zsXcSDeK0CjOSNqSzt77259b3jt6BxDee++999577723DY/2Bh7ohiWfybcaTYJgk4uLBmxwvc+K
@@ -4310,92 +4310,142 @@ $buttonStartServices_Click = {
 	$selectedBigram = $BigramListBox.SelectedItem
 	$selectedBackupfolder = $BackupFolderListbox.SelectedItem
 	
-	$richtextbox1.Clear()
-	$richtextbox1.AppendText("`n")
-	$richtextbox1.AppendText("****************************************************************")
-	$richtextbox1.AppendText("`n")
-	$richtextbox1.AppendText("             Starting Service to original mode and status ")
-	$richtextbox1.AppendText("`n")
-	$richtextbox1.AppendText("****************************************************************")
-	$richtextbox1.ScrollToCaret()
+	
+	Add-Type -AssemblyName PresentationCore, PresentationFramework
+	$ButtonType = [System.Windows.MessageBoxButton]::YesNo
+	$MessageIcon = [System.Windows.MessageBoxImage]::Information
+	$MessageBody = "Have you started the website? othervise PUFLA will not start..."
+	$MessageTitle = "Website Started?"
+	
+	$Result = [System.Windows.MessageBox]::Show($MessageBody, $MessageTitle, $ButtonType, $MessageIcon)
 	
 	
-	# Load the XML data from the file
-	[XML]$xmlData = Get-Content "$InstallDrive\Visma\Install\backup\$selectedBackupfolder\ServicesRestorePoint.xml"
-	
-	$progressbaroverlay1.Maximum = $xmlData.Count
-	$progressbaroverlay1.Step = 1
-	$progressbaroverlay1.Value = 0
-	
-	
-	# Iterate through each service and restart it
-	foreach ($service in $xmlData.Objects.Object)
+	if ($Result -eq [System.Windows.MessageBoxResult]::Yes)
 	{
-		$serviceName = $service.Property[0]."#text"
-		$serviceStartName = $service.Property[1]."#text"
-		$serviceStatus = $service.Property[2]."#text"
-		$ServiceStartType = $service.Property[3]."#text"
 		
-		if ($ServiceStartType -eq 'Auto')
-		{
-			Set-Service -Name $serviceName -StartupType Automatic
-			$richtextbox1.AppendText("`n")
-			$richtextbox1.AppendText("             $serviceName set to AUTOMATIC ")
-			Write-Log -Level INFO -Message "***************************************************************"
-			Write-Log -Level INFO -Message "$serviceName set to AUTOMATIC --------------"
-		}
 		
-		if ($ServiceStartType -eq 'Manual')
-		{
-			Set-Service -Name $serviceName -StartupType Manual
-			$richtextbox1.AppendText("`n")
-			$richtextbox1.AppendText("             $serviceName set to MANUAL ")
-			Write-Log -Level INFO -Message "***************************************************************"
-			Write-Log -Level INFO -Message "$serviceName set to MANUAL --------------"
-		}
+		$richtextbox1.Clear()
+		$richtextbox1.AppendText("`n")
+		$richtextbox1.AppendText("****************************************************************")
+		$richtextbox1.AppendText("`n")
+		$richtextbox1.AppendText("             Starting Service to original mode and status ")
+		$richtextbox1.AppendText("`n")
+		$richtextbox1.AppendText("****************************************************************")
+		$richtextbox1.ScrollToCaret()
 		
-		if ($ServiceStartType -eq 'Disabled')
-		{
-			Set-Service -Name $serviceName -StartupType Disabled
-			$richtextbox1.AppendText("`n")
-			$richtextbox1.AppendText("             $serviceName set to DISABLED ")
-			Write-Log -Level INFO -Message "***************************************************************"
-			Write-Log -Level INFO -Message "$serviceName set to DISABLED --------------"
-		}
 		
-		if ($serviceStatus -eq 'Running')
+		# Load the XML data from the file
+		[XML]$xmlData = Get-Content "$InstallDrive\Visma\Install\backup\$selectedBackupfolder\ServicesRestorePoint.xml"
+		
+		$progressbaroverlay1.Maximum = $xmlData.Count
+		$progressbaroverlay1.Step = 1
+		$progressbaroverlay1.Value = 0
+		
+		
+		# Iterate through each service and restart it
+		foreach ($service in $xmlData.Objects.Object)
 		{
-			Start-Service -Name $servicename
-			$richtextbox1.AppendText("`n")
-			$richtextbox1.AppendText("             $serviceName STARTED ")
-			Write-Log -Level INFO -Message "***************************************************************"
-			Write-Log -Level INFO -Message "$serviceName STARTED --------------"
+			$serviceName = $service.Property[0]."#text"
+			$serviceStartName = $service.Property[1]."#text"
+			$serviceStatus = $service.Property[2]."#text"
+			$ServiceStartType = $service.Property[3]."#text"
 			
+			if ($ServiceStartType -eq 'Auto')
+			{
+				Set-Service -Name $serviceName -StartupType Automatic
+				$richtextbox1.AppendText("`n")
+				$richtextbox1.AppendText("             $serviceName set to AUTOMATIC ")
+				Write-Log -Level INFO -Message "***************************************************************"
+				Write-Log -Level INFO -Message "$serviceName set to AUTOMATIC --------------"
+			}
+			
+			if ($ServiceStartType -eq 'Manual')
+			{
+				Set-Service -Name $serviceName -StartupType Manual
+				$richtextbox1.AppendText("`n")
+				$richtextbox1.AppendText("             $serviceName set to MANUAL ")
+				Write-Log -Level INFO -Message "***************************************************************"
+				Write-Log -Level INFO -Message "$serviceName set to MANUAL --------------"
+			}
+			
+			if ($ServiceStartType -eq 'Disabled')
+			{
+				Set-Service -Name $serviceName -StartupType Disabled
+				$richtextbox1.AppendText("`n")
+				$richtextbox1.AppendText("             $serviceName set to DISABLED ")
+				Write-Log -Level INFO -Message "***************************************************************"
+				Write-Log -Level INFO -Message "$serviceName set to DISABLED --------------"
+			}
+			
+			if ($serviceStatus -eq 'Running')
+			{
+				Start-Service -Name $servicename
+				$checkCount = 0
+				$maxChecks = 15
+				$intervalSeconds = 2
+				
+				# Loop to check the service status
+				while ($checkCount -lt $maxChecks)
+				{
+					# Increment the check counter
+					$checkCount++
+					
+					# Get the current status of the service
+					$servicecheck = Get-Service -Name $serviceName
+					
+					if ($servicecheck.Status -eq 'Running')
+					{
+						# If the service is running, confirm it and exit the loop
+						
+						$richtextbox1.AppendText("`n")
+						$richtextbox1.AppendText("             $serviceName STARTED ")
+						Write-Log -Level INFO -Message "***************************************************************"
+						Write-Log -Level INFO -Message "$serviceName STARTED --------------"
+						
+						#Write-Output "Service $serviceName started successfully."
+						break
+					}
+					
+					# Wait for the specified interval before the next check
+					Start-Sleep -Seconds $intervalSeconds
+				}
+				
+				# If the loop completes and the service is not running, report back
+				if ($servicecheck.Status -ne 'Running')
+				{
+					Write-Output "Failed to start the service: $serviceName. Current status: $($servicecheck.Status)"
+				}
+				
+				
+
+				
+				
+			}
+			
+			if ($serviceStartName -ne 'Localsystem')
+			{
+				write-host "$servicename is running with $serviceStartName"
+				$richtextbox1.AppendText("`n")
+				$richtextbox1.AppendText("             $serviceName running with Account ")
+				$richtextbox1.AppendText("`n")
+				$richtextbox1.AppendText("             Notify customer ")
+				
+				Write-Log -Level INFO -Message "***************************************************************"
+				Write-Log -Level INFO -Message "$serviceName running with $serviceStartName "
+			}
+			
+			$progressbaroverlay1.PerformStep()
 			
 		}
-		
-		if ($serviceStartName -ne 'Localsystem')
-		{
-			write-host "$servicename is running with $serviceStartName"
-			$richtextbox1.AppendText("`n")
-			$richtextbox1.AppendText("             $serviceName running with Account ")
-			$richtextbox1.AppendText("`n")
-			$richtextbox1.AppendText("             Notify customer ")
-			
-			Write-Log -Level INFO -Message "***************************************************************"
-			Write-Log -Level INFO -Message "$serviceName running with $serviceStartName "
-		}
-		
-		$progressbaroverlay1.PerformStep()
+		$richtextbox1.AppendText("`n")
+		$richtextbox1.AppendText("****************************************************************")
+		$richtextbox1.AppendText("`n")
+		$richtextbox1.AppendText("             Done...")
+		$richtextbox1.AppendText("`n")
+		$richtextbox1.AppendText("****************************************************************")
+		$richtextbox1.ScrollToCaret()
 		
 	}
-	$richtextbox1.AppendText("`n")
-	$richtextbox1.AppendText("****************************************************************")
-	$richtextbox1.AppendText("`n")
-	$richtextbox1.AppendText("             Done...")
-	$richtextbox1.AppendText("`n")
-	$richtextbox1.AppendText("****************************************************************")
-	$richtextbox1.ScrollToCaret()
 	
 }
 
