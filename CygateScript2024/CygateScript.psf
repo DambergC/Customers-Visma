@@ -1,6 +1,6 @@
 ﻿<File version="3.2">
   <FileID>5ceb5aeb-f23c-49b3-bc56-93ea4bf989bd</FileID>
-  <LastExport>133758788844632318</LastExport>
+  <LastExport>133758800806463024</LastExport>
   <Preview>iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
 jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAMIpSURBVHhe7P3XcxxLu+4HamJuJqSJmL9hdHfu
 zsXcSDeK0CjOSNqSzt77259b3jt6BxDee++999577723DY/2Bh7ohiWfybcaTYJgk4uLBmxwvc+K
@@ -4603,7 +4603,7 @@ DROP TABLE #AccountsToUpdate;
 	}
 
 
-$buttonNewNA_admin_Click={
+$buttonNewNA_admin2_Click={
 	#TODO: Place custom script here
 	
 	$selectedBigram = $BigramListBox.SelectedItem
@@ -4771,8 +4771,13 @@ select 'Kopplade_roller', tu.User_id, tug.UserGroup_Id
 	
 	
 }
+
+$buttonNewNA_admin_Click={
+	#TODO: Place custom script here
+	
+}
 ]]></Code>
   <TV>0</TV>
-  <Mode>0</Mode>
+  <Mode>1</Mode>
   <Assemblies />
 </File>
