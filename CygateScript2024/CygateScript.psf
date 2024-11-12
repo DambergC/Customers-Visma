@@ -1,6 +1,6 @@
 ﻿<File version="3.2">
   <FileID>5ceb5aeb-f23c-49b3-bc56-93ea4bf989bd</FileID>
-  <LastExport>133758890827131415</LastExport>
+  <LastExport>133758895118099434</LastExport>
   <Preview>iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
 jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAMIpSURBVHhe7P3XcxxLu+4HamJuJqSJmL9hdHfu
 zsXcSDeK0CjOSNqSzt77259b3jt6BxDee++999577723DY/2Bh7ohiWfybcaTYJgk4uLBmxwvc+K
@@ -4380,65 +4380,23 @@ $buttonStartServices_Click = {
 			if ($serviceStatus -eq 'Running')
 			{
 				
-				$checkCount = 0
-				$maxChecks = 15
-				$intervalSeconds = 2
-				
-				
-				Start-Service -Name $servicename
-
-				
-				# Loop to check the service status
-				while ($checkCount -lt $maxChecks)
+				try
 				{
-					# Increment the check counter
-					$checkCount++
-					
-					Write-Log -Level INFO -Message "Check nr $checkCount --------------"
-					
-					# Get the current status of the service
-					$servicecheck = Get-Service -Name $serviceName
-					
-					if ($servicecheck.Status -eq 'Running')
-					{
-						# If the service is running, confirm it and exit the loop
-						
-						$richtextbox1.AppendText("`n")
-						$richtextbox1.AppendText("             $serviceName STARTED ")
-						Write-Log -Level INFO -Message "***************************************************************"
-						Write-Log -Level INFO -Message "$serviceName STARTED --------------"
-						
-						#Write-Output "Service $serviceName started successfully."
-						break
-					}
-					else
-					{
-						$richtextbox1.AppendText("`n")
-						$richtextbox1.AppendText("             $serviceName laskjdföasldjfasödfj ")
-						
-					}
-					
-					# Wait for the specified interval before the next check
-					Start-Sleep -Seconds $intervalSeconds
-				}
-				
-				$servicecheck = Get-Service -Name $serviceName
-				
-				# If the loop completes and the service is not running, report back
-				if ($servicecheck.Status -ne 'Running')
-				{
-					Write-Log -Level INFO -Message "***************************************************************"
-					Write-Log -Level INFO -Message "Failed to start the service: $serviceName. Current status: $($servicecheck.Status)"
+					Start-Service -Name $serviceName -ErrorAction Stop
 					$richtextbox1.AppendText("`n")
-					
- 					$richtextbox1.AppendText("             $serviceName NOTSTARTED!!!! ")
+					$richtextbox1.AppendText("             $serviceName set to STARTED ")
+					Write-Log -Level INFO -Message "***************************************************************"
+					Write-Log -Level INFO -message "Service $serviceName started successfully."
+				}
+				catch
+				{
+					$richtextbox1.AppendText("`n")
+					$richtextbox1.AppendText("             $serviceName ERROR ERROR ERROE ")
+					Write-Log -Level INFO -Message "***************************************************************"
+					Write-Log -Level ERROR -message "Failed to start the service: $serviceName. Error: $_"
 				}
 				
-				
-				
-				
-				
-				
+		
 				
 			}
 			
