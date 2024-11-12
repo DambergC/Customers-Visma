@@ -4390,6 +4390,9 @@ $buttonStartServices_Click = {
 					# Increment the check counter
 					$checkCount++
 					
+					$richtextbox1.AppendText("`n")
+					$richtextbox1.AppendText("             check nr: $checkCount ")
+					
 					# Get the current status of the service
 					$servicecheck = Get-Service -Name $serviceName
 					
@@ -4414,6 +4417,8 @@ $buttonStartServices_Click = {
 				if ($servicecheck.Status -ne 'Running')
 				{
 					Write-Output "Failed to start the service: $serviceName. Current status: $($servicecheck.Status)"
+					$richtextbox1.AppendText("`n")
+					$richtextbox1.AppendText("             $serviceName Notstarted ")
 				}
 				
 				
