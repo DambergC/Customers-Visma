@@ -1,6 +1,6 @@
 ﻿<File version="3.2">
   <FileID>5ceb5aeb-f23c-49b3-bc56-93ea4bf989bd</FileID>
-  <LastExport>133783104330167917</LastExport>
+  <LastExport>133783113859199400</LastExport>
   <Preview>iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
 jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAANuuSURBVHhe7P0HcGTZet8JDrXUSiK1O8NVzERo
 pF1pJhRSUIohKQVJieRQpB7J51+/99p3V5fv8t6h4L333ntb8N57l/BAZgKZCZ+J9AbeA2X+e84F
@@ -990,7 +990,7 @@ iqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIo
 iqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIo
 iqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIoiqIo
 iqLWWv/pP/3/GQrwfB60nWIAAAAASUVORK5CYII=</Preview>
-  <Form>eb7N1yyHD6gFACODCAAAAAAABADsfVdz6syW9r2r/B9OzS1Tn0gmVM1MlYRIJicT7ogiY5Ph13/qp0ESopUI
+  <Form>pTaa/1R4D6gFACODCAAAAAAABADsfVdz6syW9r2r/B9OzS1Tn0gmVM1MlYRIJicT7ogiY5Ph13/qp0ESopUI
 Nnhbp85+3SBardWrVw7/k2sNu+3l4v9eX/7zn/+hg/8sd5/d//2v0m6x7E7+X3Uw7cw2i/8Xm80n
 9N///g/rq//+z0d3vhjMpv/r/39u8r///k9kNV6u5t3/nXZXy3lz/N//ya9a40E71d2VZ6Pu9H9b
 wWDzrf0W8IR9/q47FP6v/0ybE/nJPXm+cnc8aEZ2UnPZzcvzzqbddv6//tPuD8adufzT/4rMpsv5
@@ -2506,55 +2506,55 @@ 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
-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</Form>
+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</Form>
   <Code><![CDATA[
 #region Control Helper Functions
 
@@ -5062,11 +5062,10 @@ else
 	#Write-Output ".NET Framework SystemDefaultTlsVersions (64-bit): $dotNetFrameworkTLS"
 	#Write-Output ".NET Framework SystemDefaultTlsVersions (32-bit): $dotNetFrameworkTLSWow6432"
 	
-	$regpathtest = Test-Path 'HKLM:\SOFTWARE\Microsoft\.NETFramework\v4.0.30319\SystemDefaultTlsVersions'
-	$regpathtest64 = Test-Path 'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NETFramework\v4.0.30319\SystemDefaultTlsVersions'
+	#$regpathtest = Test-Path 'HKLM:\SOFTWARE\Microsoft\.NETFramework\v4.0.30319\SystemDefaultTlsVersions'
+	#$regpathtest64 = Test-Path 'HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NETFramework\v4.0.30319\SystemDefaultTlsVersions'
 	
-	if ($regpathtest)
-	{
+	
 		if ($dotNetFrameworkTLS = '1')
 		{
 			$TLSRegFix32.Image = $Trafficlight.Images[2]
@@ -5075,37 +5074,27 @@ else
 		else
 		{
 			$TLSRegFix32.Image = $Trafficlight.Images[0]
-		}
 	}
 	
-	else {
-		$TLSRegFix32.Image = $Trafficlight.Images[0]
+	if ($dotNetFrameworkTLSWow6432 = '1')
+	{
+		$TLSRegFix64.Image = $Trafficlight.Images[2]
 	}
 	
-	if ($regpathtest64) {
-		
-		if ($dotNetFrameworkTLSWow6432 = '1')
-		{
-			$TLSRegFix64.Image = $Trafficlight.Images[2]
-		}
-		
-		else
-		{
-			$TLSRegFix64.Image = $Trafficlight.Images[0]
-		}
-		
-	}
-	
-	else {
+	else
+	{
 		$TLSRegFix64.Image = $Trafficlight.Images[0]
 	}
 	
-	
-	
 }
 
-$labelComingSoon.BackColor = [System.Drawing.Color]::FromName("Transparent")]]></Code>
+
+
+
+
+
+]]></Code>
   <TV>0</TV>
-  <Mode>0</Mode>
+  <Mode>1</Mode>
   <Assemblies />
 </File>
